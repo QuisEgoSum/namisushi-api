@@ -1,0 +1,83 @@
+production: false
+
+server:
+  domain: localhost:8000
+  http:
+    protocol: http
+    port: 8000
+    #deprecated
+    host: 127.0.0.1
+  ws:
+    port: 3000
+  allowedOrigins: [
+    http://localhost:8000
+  ]
+  allowedHeaders: [
+    origin,
+    content-type,
+    cookie,
+    x-real-host
+  ]
+  contentSecurityPolicy:
+    directives:
+      defaultSrc: [
+          "'self'",
+          "'unsafe-inline'",
+          "'unsafe-eval'",
+          "*.jsdelivr.net",
+          "*.googleapis.com",
+          "*.gstatic.com",
+          "blob:",
+          "data:"
+      ]
+      data: [
+          "'unsafe-inline'",
+          "'unsafe-eval'",
+          "blob:",
+          "data:"
+      ]
+
+
+telegram:
+  token: 0000000000:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+
+database:
+  credentials:
+    connectionString: mongodb://localhost/nami-local
+
+user:
+  superadmin:
+    id: 4920737570657261646d696e
+    email: admin@nami.ru
+    password: 123456
+  session:
+    cookie:
+      path: /
+      domain: localhost
+      sameSite: strict
+      maxAge: 5184000000
+    maximum: 8
+  avatar:
+    file:
+      allowedTypes: [
+          image/jpeg,
+          image/png,
+          image/jpg
+      ]
+      maximumSize: 10485760
+
+product:
+  image:
+    file:
+      allowedTypes: [
+          image/jpeg,
+          image/png,
+          image/jpg
+      ]
+      maximumSize: 10485760
+
+order:
+  discount:
+    # Процент скидки от стоимости заказа
+    withoutDelivery: 10
+    weekday: 15

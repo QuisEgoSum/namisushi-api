@@ -1,0 +1,15 @@
+node_modules/**/*
+
+note.txt
+logs/
+*.log
+*.png
+*.jpg
+
+.idea
+
+*-dump
+test-backup
+*-migration-backup
+.vscode
+dump/

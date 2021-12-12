@@ -1,0 +1,55 @@
+{
+  "name": "shop-app-back",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./src/main.js",
+  "scripts": {
+    "dev": "nodemon --inspect ./src/main.js",
+    "start": "node --inspect ./src/main.js"
+  },
+  "keywords": [],
+  "author": "Евдоким",
+  "license": "",
+  "dependencies": {
+    "ajv": "^7.0.2",
+    "ajv-errors": "^2.0.0",
+    "ajv-keywords": "^4.0.0",
+    "bcrypt": "^5.0.0",
+    "email-validator": "^2.0.4",
+    "fastify": "^3.9.2",
+    "fastify-cookie": "^4.2.0",
+    "fastify-cors": "^5.1.0",
+    "fastify-helmet": "^5.0.3",
+    "fastify-multer": "^2.0.2",
+    "fastify-multipart": "^4.0.7",
+    "fastify-static": "^3.3.0",
+    "fastify-swagger": "^4.9.0",
+    "jsdoc": "^3.6.7",
+    "module-alias": "^2.2.2",
+    "mongoose": "^5.11.8",
+    "node-telegram-bot-api": "^0.54.0",
+    "socket.io": "^4.1.3",
+    "uuid": "^8.3.2",
+    "winston": "^3.3.3",
+    "yaml": "^1.10.2"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.16.0",
+    "express": "^4.17.1",
+    "http-proxy-middleware": "^1.0.6",
+    "nodemon": "^2.0.6",
+    "socket.io-client": "^4.0.1"
+  },
+  "_moduleAliases": {
+    "@": "src",
+    "@config": "src/config.js",
+    "core": "src/core",
+    "utils": "src/utils",
+    "@logger": "src/utils/logger",
+    "helpers": "src/helpers",
+    "common": "src/common",
+    "libs": "src/libs",
+    "bot": "src/bot"
+  }
+}
