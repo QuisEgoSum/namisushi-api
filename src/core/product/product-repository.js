@@ -29,7 +29,7 @@ const productUpdate = (productId, update) => Product
 const findProduct = productId => Product
     .findById(ObjectId(productId))
     .populate([
-        {path: 'tags', model: 'Tag'},
+        // {path: 'tags', model: 'Tag'},
         {path: 'categories', model: 'Category'}
     ])
     .select('+createdAt +updatedAt')
@@ -50,7 +50,7 @@ const findProducts = options => Product
     .skip(options.page)
     .limit(options.limit)
     .select('-categories -show')
-    .populate({path: 'tags', model: 'Tag', select: '-_id'})
+    // .populate({path: 'tags', model: 'Tag', select: '-_id'})
     .lean()
 
 
@@ -65,7 +65,7 @@ const findProductsExpand = options => Product
     .limit(options.limit)
     .select('+createdAt +updatedAt')
     .populate([
-        {path: 'tags', model: 'Tag'},
+        // {path: 'tags', model: 'Tag'},
         {path: 'categories', model: 'Category'}
     ])
     .lean()
