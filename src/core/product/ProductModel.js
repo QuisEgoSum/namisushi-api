@@ -77,13 +77,13 @@ const ProductModel = new Schema(
                 type: String
             }
         },
-        tags: {
-            type: Array,
-            items: {
-                type: Schema.Types.ObjectId,
-                ref: 'Tag'
-            }
-        },
+        // tags: {
+        //     type: Array,
+        //     items: {
+        //         type: Schema.Types.ObjectId,
+        //         ref: 'Tag'
+        //     }
+        // },
         categories: {
             type: Array,
             items: {
