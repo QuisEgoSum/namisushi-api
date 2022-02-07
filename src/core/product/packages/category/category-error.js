@@ -11,8 +11,8 @@ class CategoryNotExistsError extends ApplicationError.EntityNotExistsError {
     constructor(error) {
         super(
             {
-                message: error.message || 'Категория не найдена',
-                code: error.code || 5000
+                message: error?.message || 'Категория не найдена',
+                code: error?.code || 5000
             }
         )
     }
@@ -28,8 +28,8 @@ class CategoryExistsError extends ApplicationError.EntityExistsError {
     constructor(error) {
         super(
             {
-                message: error.message || 'Категория с таким именем уже существует',
-                code: error.code || 5001
+                message: error?.message || 'Категория с таким именем уже существует',
+                code: error?.code || 5001
             }
         )
     }
