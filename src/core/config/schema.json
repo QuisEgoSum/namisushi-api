@@ -1,0 +1,298 @@
+{
+  "type": "object",
+  "properties": {
+    "production": {
+      "type": "boolean"
+    },
+    "server": {
+      "type": "object",
+      "properties": {
+        "http": {
+          "type": "object",
+          "properties": {
+            "protocol": {
+              "type": "string",
+              "enum": [
+                "http",
+                "https"
+              ]
+            },
+            "address": {
+              "type": "string"
+            },
+            "host": {
+              "type": "string"
+            },
+            "port": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 65353
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "protocol",
+            "address",
+            "host",
+            "port"
+          ]
+        },
+        "cors": {
+          "type": "object",
+          "properties": {
+            "allowedOrigins": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "allowedHeaders": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "additionalProperties": false,
+          "required": ["allowedOrigins", "allowedHeaders"]
+        },
+        "csp": {
+          "type": "object",
+          "properties": {
+            "defaultSrc": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "data": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "http",
+        "cors",
+        "csp"
+      ]
+    },
+    "logger": {
+      "type": "object",
+      "properties": {
+        "pretty": {
+          "type": "boolean"
+        },
+        "isoTime": {
+          "type": "boolean"
+        },
+        "time": {
+          "type": "boolean"
+        },
+        "level": {
+          "type": "string",
+          "enum": [
+            "info",
+            "debug"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "pretty",
+        "isoTime",
+        "time",
+        "level"
+      ]
+    },
+    "user": {
+      "type": "object",
+      "properties": {
+        "session": {
+          "type": "object",
+          "properties": {
+            "maximum": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "cookie": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string"
+                },
+                "domain": {
+                  "type": "string"
+                },
+                "sameSite": {
+                  "type": [
+                    "string",
+                    "boolean"
+                  ]
+                },
+                "maxAge": {
+                  "type": "integer"
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "path",
+                "domain"
+              ]
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "maximum",
+            "cookie"
+          ]
+        },
+        "superadmin": {
+          "type": "object",
+          "properties": {
+            "password": {
+              "type": "string",
+              "minLength": 6,
+              "maxLength": 1024
+            },
+            "username": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 24
+            },
+            "email": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "password",
+            "username",
+            "email"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "session",
+        "superadmin"
+      ]
+    },
+    "database": {
+      "type": "object",
+      "properties": {
+        "credentials": {
+          "type": "object",
+          "properties": {
+            "connectionString": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "connectionString"
+          ]
+        },
+        "options": {
+          "type": "object",
+          "properties": {
+            "useNewUrlParser": {
+              "type": "boolean"
+            },
+            "useUnifiedTopology": {
+              "type": "boolean"
+            },
+            "ignoreUndefined": {
+              "type": "boolean"
+            },
+            "keepAlive": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "credentials",
+        "options"
+      ]
+    },
+    "telegram": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        }
+      },
+      "required": ["token"],
+      "additionalProperties": false
+    },
+    "product": {
+      "type": "object",
+      "properties": {
+        "image": {
+          "type": "object",
+          "properties": {
+            "file": {
+              "type": "object",
+              "properties": {
+                "allowedTypes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "maximumSize": {
+                  "type": "integer"
+                }
+              },
+              "required": ["allowedTypes", "maximumSize"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["file"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["image"],
+      "additionalProperties": false
+    },
+    "order": {
+      "type": "object",
+      "properties": {
+        "discount": {
+          "type": "object",
+          "properties": {
+            "withoutDelivery": {
+              "type": "integer"
+            },
+            "weekday": {
+              "type": "integer"
+            }
+          },
+          "required": ["withoutDelivery", "weekday"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["discount"],
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "production",
+    "server",
+    "logger",
+    "user",
+    "database",
+    "telegram",
+    "product",
+    "order"
+  ]
+}

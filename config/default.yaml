@@ -1,78 +1,82 @@
 production: false
 
-server:
-  domain: localhost:8000
-  http:
-    protocol: http
-    port: 8000
-    #deprecated
-    host: 127.0.0.1
-  ws:
-    port: 3000
-  allowedOrigins: [
-    http://localhost:8000
-  ]
-  allowedHeaders: [
-    origin,
-    content-type,
-    cookie,
-    x-real-host
-  ]
-  contentSecurityPolicy:
-    directives:
-      defaultSrc: [
-          "'self'",
-          "'unsafe-inline'",
-          "'unsafe-eval'",
-          "*.jsdelivr.net",
-          "*.googleapis.com",
-          "*.gstatic.com",
-          "blob:",
-          "data:"
-      ]
-      data: [
-          "'unsafe-inline'",
-          "'unsafe-eval'",
-          "blob:",
-          "data:"
-      ]
-
-
-telegram:
-  token: 0000000000:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-
 database:
   credentials:
-    connectionString: mongodb://localhost/nami-local
+    connectionString: mongodb://localhost/namisushi-local
+  options:
+    useNewUrlParser: true
+    useUnifiedTopology: true
+    ignoreUndefined: false
+    keepAlive: true
+
+server:
+  http:
+    protocol: http
+    address: 127.0.0.1
+    host: localhost:8080/api
+    port: 8080
+  cors:
+    allowedOrigins:
+      - http://localhost:8000
+    allowedHeaders:
+      - origin
+      - content-type
+      - cookie
+      - x-real-host
+  csp:
+    directives:
+      defaultSrc: [
+        "'self'",
+        "'unsafe-inline'",
+        "'unsafe-eval'",
+        "*.jsdelivr.net",
+        "*.googleapis.com",
+        "*.gstatic.com",
+        "blob:",
+        "data:"
+      ]
+      data: [
+        "'unsafe-inline'",
+        "'unsafe-eval'",
+        "blob:",
+        "data:"
+      ]
+
+
+logger:
+  # Recommended false for production
+  pretty: true
+  time: true
+  # Recommended false for production
+  isoTime: true
+  level: debug # debug | info
 
 user:
-  superadmin:
-    id: 4920737570657261646d696e
-    email: admin@nami.ru
-    password: 123456
   session:
+    maximum: 10
+
     cookie:
       path: /
       domain: localhost
       sameSite: strict
       maxAge: 5184000000
-    maximum: 8
-  avatar:
-    file:
-      allowedTypes: [
-          image/jpeg,
-          image/png,
-          image/jpg
-      ]
-      maximumSize: 10485760
+
+  superadmin:
+    username: admin
+    email: admin@nowhere.org
+    password: SuperSecretPassword
+
+
+telegram:
+  token: 0000000000:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
 product:
   image:
     file:
       allowedTypes: [
-          image/jpeg,
-          image/png,
-          image/jpg
+        image/jpeg,
+        image/png,
+        image/jpg
       ]
       maximumSize: 10485760
 
