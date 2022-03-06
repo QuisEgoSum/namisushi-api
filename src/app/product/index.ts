@@ -14,6 +14,8 @@ class Product {
   ) {
     this.service = service
     this.schemas = schemas
+
+    this.router = this.router.bind(this)
   }
 
   async router(fastify: FastifyInstance) {

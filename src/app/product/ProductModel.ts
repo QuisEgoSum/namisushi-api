@@ -15,11 +15,11 @@ interface ProductCommon {
 export interface SingleProduct extends ProductCommon {
   type: ProductType.SINGLE
   cost: number
-  weight: string[]
+  weight: number
 }
 
 export interface VariantProduct extends ProductCommon {
-  type: ProductType.VERSION
+  type: ProductType.VARIANT
   variants: {
     _id: Types.ObjectId
     title: string

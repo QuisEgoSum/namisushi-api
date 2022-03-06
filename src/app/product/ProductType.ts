@@ -2,5 +2,5 @@
 
 export enum ProductType {
   SINGLE = 'SINGLE',
-  VERSION = 'VERSION'
+  VARIANT = 'VARIANT'
 }

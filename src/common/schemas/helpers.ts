@@ -47,7 +47,7 @@ export class ObjectId extends SchemaHelper {
 
   pattern: string
 
-  constructor(params: ObjectIdParams) {
+  constructor(params: ObjectIdParams = {}) {
     params.example = params.example || new mongoose.Types.ObjectId().toHexString()
     params.description = params.description
       ? params.description

@@ -3,6 +3,7 @@ import {createHttpServer} from './servers/http'
 import {createConnection} from '@core/database'
 import {initDocs} from '@app/docs'
 import {initUser} from '@app/user'
+import {initProduct} from '@app/product'
 import {promisify} from 'util'
 import {config} from '@config'
 import {logger} from '@logger'
@@ -13,12 +14,14 @@ import {logger} from '@logger'
 
   const docs = await initDocs()
   const user = await initUser()
+  const product = await initProduct()
 
   const httpServer = await createHttpServer(
     {
       routers: [
         docs.router,
-        user.router
+        user.router,
+        product.router
       ],
       swagger: docs.swagger,
       securityOptions: {
