@@ -35,7 +35,8 @@ class SchemaHelper {
 }
 
 interface ObjectIdParams extends SchemaHelperParams {
-  entity?: string
+  entity?: string,
+  errorMessage?: string
 }
 
 export class ObjectId extends SchemaHelper {
@@ -57,7 +58,9 @@ export class ObjectId extends SchemaHelper {
     this.pattern = '^[0-9a-fA-F]{24}$'
     this.errorMessage.pattern = params.entity
       ? ObjectId.errorPattern.replace('{{stub}}', params.entity)
-      : 'Invalid unique ID'
+      : params.errorMessage
+        ? params.errorMessage
+        : 'Invalid unique ID'
     this.errorMessage.type = this.errorMessage.pattern
   }
 }

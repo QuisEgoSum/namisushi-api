@@ -20,7 +20,7 @@ export interface IBaseService<T, R extends BaseRepository<T>> {
   /**
    * @throws {EntityNotExistsError}
    */
-  findById(id: string): Promise<T>
+  findById(id: string | Types.ObjectId, projection?: unknown | null, options?: QueryOptions | null): Promise<T>
 
   /**
    * @throws {EntityExistsError | EntityNotExistsError}
@@ -41,7 +41,7 @@ export interface IBaseService<T, R extends BaseRepository<T>> {
 
   findOneAndUpdate(filter: FilterQuery<T>, update: UpdateQuery<T>, options: QueryOptions & { upsert: true } & ReturnsNewDoc): Promise<T>
 
-  findOne(filter: FilterQuery<T>, options: QueryOptions): Promise<T>
+  findOne(filter: FilterQuery<T>, projection?: unknown | null, options?: QueryOptions | null): Promise<T>
 
   findOneAndDelete(filter?: FilterQuery<T>, options?: QueryOptions | null): Promise<T>
 

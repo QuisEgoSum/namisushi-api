@@ -43,6 +43,8 @@ export interface IBaseRepository<T> {
 
   findByIdAndUpdate(id: string | mongoose.Types.ObjectId, update: UpdateQuery<T>, options: QueryOptions & { upsert: true } & ReturnsNewDoc): Promise<T | null>
 
+  find(filter: FilterQuery<T>, projection?: any | null, options?: QueryOptions | null): Promise<T[]>
+
   findPage(page: PageOptions, filter: FilterQuery<T>, projection?: unknown | null, options?: QueryOptions | null): Promise<DataList<T>>
 
   findOneAndDelete(filter?: FilterQuery<T>, options?: QueryOptions | null): Promise<T | null>

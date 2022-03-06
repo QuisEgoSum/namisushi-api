@@ -17,8 +17,8 @@ import type {BulkWriteOptions, BulkWriteResult, AnyBulkWriteOperation, MongoServ
 export class BaseRepository<T> implements IBaseRepository<T> {
   public readonly Model: mongoose.Model<T>
 
-  constructor(Model: mongoose.Model<T>) {
-    this.Model = Model
+  constructor(model: mongoose.Model<T>) {
+    this.Model = model
   }
 
   static errorHandler(error: Error | MongoServerError) {
@@ -97,6 +97,12 @@ export class BaseRepository<T> implements IBaseRepository<T> {
       .deleteOne({_id: new mongoose.Types.ObjectId(id)})
       .exec()
       .then(result => !!result.deletedCount)
+  }
+
+  async find<I extends T>(filter: FilterQuery<I>, projection?: any | null, options?: QueryOptions | null): Promise<I[]> {
+    return await this.Model.find(filter, projection, options)
+      .lean()
+      .exec() as unknown as Promise<I[]>
   }
 
   async findPage(page: PageOptions, filter: FilterQuery<T> = {}, projection?: unknown | null, options?: QueryOptions | null): Promise<DataList<T>> {

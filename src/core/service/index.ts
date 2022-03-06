@@ -1,6 +1,15 @@
+import {IBaseService} from './IBaseService'
 import {BaseService} from './BaseService'
+import {IGenericService} from '@core/service/IGenericService'
+import {GenericService} from './GenericService'
 
 
 export {
-  BaseService
+  BaseService,
+  GenericService
+}
+
+export type {
+  IBaseService,
+  IGenericService
 }
