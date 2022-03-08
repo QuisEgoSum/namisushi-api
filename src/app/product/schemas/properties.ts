@@ -78,11 +78,20 @@ export const weight = {
     maximum: 'Вес продукта не может превышать 100000'
   }
 }
+export const icon = {
+  description: 'Raw SVG',
+  type: 'string',
+  maxLength: 10000,
+  errorMessage: {
+   maxLength: 'Размер иконки не должен превышать 10000 символов'
+  }
+}
 export const variant = {
   type: 'object',
   properties: {
     _id: new ObjectId(),
     title: title,
+    icon: icon,
     cost: cost,
     weight: weight
   },

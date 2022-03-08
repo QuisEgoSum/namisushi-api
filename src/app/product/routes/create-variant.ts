@@ -3,27 +3,28 @@ import type {FastifyInstance} from 'fastify'
 import type {ProductService} from '@app/product/ProductService'
 
 
-interface CreateSingleRequest {
-  Body: schemas.entities.CreateSingleProduct
+
+interface CreateVariantRequest {
+  Body: schemas.entities.CreateVariantProduct
 }
 
 
-export async function createSingle(fastify: FastifyInstance, service: ProductService) {
+export async function createVariant(fastify: FastifyInstance, service: ProductService) {
   return fastify
-    .route<CreateSingleRequest>(
+    .route<CreateVariantRequest>(
       {
         method: 'POST',
-        url: '/admin/product/SINGLE',
+        url: '/admin/product/VARIANT',
         schema: {
-          summary: 'Создать SINGLE продукт',
+          summary: 'Создать VARIANT продукт',
           tags: ['Продукт'],
-          body: schemas.entities.CreateSingleProduct,
+          body: schemas.entities.CreateVariantProduct,
           response: {
             [201]: {
               description: 'Созданный продукт',
               type: 'object',
               properties: {
-                product: schemas.entities.SingleProduct
+                product: schemas.entities.VariantProduct
               },
               additionalProperties: false,
               required: ['product']
@@ -35,7 +36,7 @@ export async function createSingle(fastify: FastifyInstance, service: ProductSer
           admin: true
         },
         handler: async function(request, reply) {
-          const product = await service.createSingle(request.body)
+          const product = await service.createVariant(request.body)
 
           reply
             .code(201)

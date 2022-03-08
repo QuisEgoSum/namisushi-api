@@ -23,18 +23,17 @@ export const swagger: Record<string, any> = {
     tags: [],
     'x-tagGroups': [
       {
-        name: 'User',
+        name: 'Пользователь',
         tags: [
-          'User',
-          'User - Me',
-          'User - Admin'
+          'Пользователь',
+          'Администратор'
         ]
       },
       {
-        name: 'Product',
+        name: 'Продукт',
         tags: [
-          'Product',
-          'Product - Category'
+          'Продукт',
+          'Категория'
         ]
       }
     ]

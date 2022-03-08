@@ -6,7 +6,7 @@ import {
   show,
   title,
   typeSingle, typeVariant,
-  updatedAt, variants, weight
+  updatedAt, variants, weight, icon
 } from '@app/product/schemas/properties'
 
 
@@ -116,6 +116,7 @@ export interface CreateVariantProduct {
   show: boolean
   variants: {
     title: string
+    icon: string
     cost: number
     weight: number
   }[]
@@ -135,6 +136,7 @@ export const CreateVariantProduct = {
         type: 'object',
         properties: {
           title,
+          icon,
           cost,
           weight
         },
@@ -148,7 +150,10 @@ export const CreateVariantProduct = {
           }
         }
       },
-      minItems: 2
+      minItems: 2,
+      errorMessage: {
+        minItems: 'Вариантов продукта должно быть не менее двух'
+      }
     }
   },
   additionalProperties: false,
@@ -157,6 +162,7 @@ export const CreateVariantProduct = {
     'description',
     'ingredients',
     'show',
+    'variants'
   ],
   errorMessage: {
     required: {
