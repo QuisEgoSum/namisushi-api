@@ -16,12 +16,12 @@ export async function createUser(fastify: FastifyInstance, service: UserService)
         url: '/admin/user',
         method: 'POST',
         schema: {
-          summary: 'Create user',
-          tags: ['User - Admin'],
+          summary: 'Создать пользователя',
+          tags: ['Администратор'],
           body: schemas.entities.CreateUser,
           response: {
             [201]: {
-              description: 'User',
+              description: 'Созданный пользователь',
               type: 'object',
               properties: {
                 user: schemas.entities.UserBase

@@ -19,14 +19,14 @@ export async function findUser(fastify: FastifyInstance, service: UserService) {
         url: '/admin/user/:userId',
         method: 'GET',
         schema: {
-          summary: 'Get user by id',
-          tags: ['User - Admin'],
+          summary: 'Найти пользователя по id',
+          tags: ['Администратор'],
           params: {
             userId: schemas.properties._id
           },
           response: {
             [200]: {
-              description: 'User',
+              description: 'Пользователь',
               type: 'object',
               properties: {
                 user: schemas.entities.UserBase

@@ -17,16 +17,16 @@ export async function signout(fastify: FastifyInstance, service: UserService) {
         url: '/user/signout',
         method: 'DELETE',
         schema: {
-          summary: 'User sign out',
-          tags: ['User - Me'],
+          summary: 'Выход из аккаунта',
+          tags: ['Пользователь'],
           headers: {
             'x-localhost': {
-              description: 'Any value for set cookie for the localhost domain',
+              description: 'Установите любое значение, чтобы ответ устанавливал куки для домена localhost',
               type: 'string'
             }
           },
           response: {
-            [200]: new MessageResponse('You have logged out of your account')
+            [200]: new MessageResponse('Вы вышли из своего аккаунта')
           }
         },
         security: {
@@ -48,7 +48,7 @@ export async function signout(fastify: FastifyInstance, service: UserService) {
             .clearCookie('sessionId', cookieOptions)
             .code(200)
             .type('application/json')
-            .send({message: 'You have logged out of your account'})
+            .send({message: 'Вы вышли из своего аккаунта'})
         }
       }
     )

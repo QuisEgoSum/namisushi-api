@@ -17,12 +17,12 @@ export async function updateUser(fastify: FastifyInstance, service: UserService)
         url: '/user',
         method: 'PATCH',
         schema: {
-          summary: 'Update user',
-          tags: ['User - Me'],
+          summary: 'Обновить пользователя',
+          tags: ['Пользователь'],
           body: schemas.entities.UpdateUser,
           response: {
             [200]: {
-              description: 'User',
+              description: 'Пользователь',
               type: 'object',
               properties: {
                 user: schemas.entities.UserBase

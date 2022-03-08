@@ -9,15 +9,15 @@ interface FindUsersRequest {
 }
 
 
-export async function findUsersAdmin(fastify: FastifyInstance, service: UserService) {
+export async function findUsers(fastify: FastifyInstance, service: UserService) {
   return fastify
     .route<FindUsersRequest>(
       {
         url: '/admin/users',
         method: 'GET',
         schema: {
-          summary: 'Get users list for admin',
-          tags: ['User - Admin'],
+          summary: 'Поиск пользователей',
+          tags: ['Администратор'],
           querystring: schemas.entities.FindUsersQueryAdmin,
           response: {
             [200]: new DataList(schemas.entities.UserBase),

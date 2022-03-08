@@ -10,11 +10,11 @@ export async function getUser(fastify: FastifyInstance, service: UserService) {
         url: '/user',
         method: 'GET',
         schema: {
-          summary: 'Get user',
-          tags: ['User - Me'],
+          summary: 'Получить пользователя',
+          tags: ['Пользователь'],
           response: {
             [200]: {
-              description: 'User',
+              description: 'Пользователь',
               type: 'object',
               properties: {
                 user: schemas.entities.UserBase

@@ -10,10 +10,10 @@ export async function signoutAll(fastify: FastifyInstance, service: UserService)
         url: '/user/signout/all',
         method: 'DELETE',
         schema: {
-          summary: 'User sign out of all sessions except current one',
-          tags: ['User - Me'],
+          summary: 'Выйти из всех сессий пользователя, кроме текущей',
+          tags: ['Пользователь'],
           response: {
-            [200]: new MessageResponse('You have logged out of {N} sessions')
+            [200]: new MessageResponse('Вы завершили {N} сессий')
           }
         },
         security: {
@@ -25,7 +25,7 @@ export async function signoutAll(fastify: FastifyInstance, service: UserService)
           reply
             .code(200)
             .type('application/json')
-            .send({message: `You have logged out of ${numberOfSessions} sessions`})
+            .send({message: `Вы завершили ${numberOfSessions} сессий`})
         }
       }
     )

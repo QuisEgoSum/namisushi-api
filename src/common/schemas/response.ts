@@ -127,14 +127,14 @@ export class DataList {
   private example?: unknown
   constructor(schema: Record<any, any>) {
     this.title = 'DataList'
-    this.description = 'Data list'
+    this.description = 'Список данных'
     this.properties = {
       total: {
-        description: 'Total data for queries',
+        description: 'Всего данных для этих условий поиска',
         type: 'integer'
       },
       pages: {
-        description: 'Total pages for queries',
+        description: 'Количество страниц для этих условий поиска',
         type: 'integer'
       },
       data: {

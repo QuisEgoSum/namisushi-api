@@ -16,18 +16,18 @@ export async function signin(fastify: FastifyInstance, service: UserService) {
         url: '/user/signin',
         method: 'POST',
         schema: {
-          summary: 'User sing in',
-          tags: ['User - Me'],
+          summary: 'Авторизоваться',
+          tags: ['Пользователь'],
           body: schemas.entities.UserCredentials,
           headers: {
             'x-localhost': {
-              description: 'Any value for set cookie for the localhost domain',
+              description: 'Установите любое значение, чтобы ответ устанавливал куки для домена localhost',
               type: 'string'
             }
           },
           response: {
             [200]: {
-              description: 'User',
+              description: 'Пользователь',
               type: 'object',
               properties: {
                 user: schemas.entities.UserBase

@@ -20,15 +20,15 @@ export async function updateUserById(fastify: FastifyInstance, service: UserServ
         url: '/admin/user/:userId',
         method: 'PATCH',
         schema: {
-          summary: 'Update user by id',
-          tags: ['User - Admin'],
+          summary: 'Обновить пользователя по id',
+          tags: ['Администратор'],
           params: {
             userId: schemas.properties._id
           },
           body: schemas.entities.UpdateUserById,
           response: {
             [200]: {
-              description: 'User',
+              description: 'Обновлённый пользователь',
               type: 'object',
               properties: {
                 user: schemas.entities.UserBase

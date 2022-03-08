@@ -24,10 +24,10 @@ export const UserCredentials = {
   additionalProperties: false,
   required: ['login', 'password'],
   errorMessage: {
-    type: 'Enter your the password and username or email address',
+    type: 'Введите логин и пароль',
     required: {
-      login: 'Enter your username or email address',
-      password: 'Enter your password'
+      login: 'Введите логин',
+      password: 'Введите пароль'
     }
   }
 }
@@ -96,12 +96,11 @@ export const CreateUser = {
   additionalProperties: false,
   required: ['username', 'email', 'role', 'password'],
   errorMessage: {
-    type: 'User data must be object',
     required: {
-      username: 'Enter username',
-      email: 'Enter email',
-      role: 'Select role',
-      password: 'Enter password'
+      username: 'Введите имя',
+      email: 'Введите email',
+      role: 'Выберите роль',
+      password: 'Введите пароль'
     }
   }
 }
@@ -199,8 +198,8 @@ export const UpdateUserPassword = {
   required: ['password', 'oldPassword'],
   errorMessage: {
     required: {
-      password: 'Enter your password',
-      oldPassword: 'Enter your old password'
+      password: 'Введите новый пароль',
+      oldPassword: 'Введите старый пароль'
     }
   }
 }

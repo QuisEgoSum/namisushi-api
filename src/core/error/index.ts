@@ -7,7 +7,7 @@ export const EntityNotExistsError = OpenapiError.compile(
   },
     {
       error: 'EntityNotExists',
-      message: 'Entity not exists',
+      message: 'Не найдено',
       code: 1000
     }
 )
@@ -17,7 +17,7 @@ export const JsonSchemaValidationError = OpenapiError.compile(
     properties: {
       message: {
         type: 'string',
-        example: 'Invalid JSON property'
+        example: 'Описание ошибки'
       },
       keyword: {
         type: 'string',
@@ -87,7 +87,7 @@ export const JsonSchemaValidationErrors = OpenapiError.compile(
   },
     {
       error: 'JsonSchemaValidationErrors',
-      message: 'Not valid data',
+      message: 'Невалидные данные',
       code: 1001
     }
 )
@@ -98,7 +98,7 @@ export const InvalidDataError = OpenapiError.compile(
   },
     {
       error: 'InvalidDataError',
-      message: 'Invalid data',
+      message: 'Невалидные данные',
       code: 1003
     }
 )
@@ -109,7 +109,7 @@ export const AccessError = OpenapiError.compile(
   },
     {
       error: 'AccessError',
-      message: 'Not enough rights to perform this action',
+      message: 'У вас не достаточно прав для выполнения этого действия',
       code: 1004
     }
 )
@@ -120,7 +120,7 @@ export const AuthorizationError = OpenapiError.compile(
   },
     {
       error: 'AuthorizationError',
-      message: 'You are not logged in',
+      message: 'Вы не авторизованы',
       code: 1005
     }
 )
@@ -160,7 +160,7 @@ export const EntityExistsError = UniqueKeyError.extends(
   {},
   {
     error: 'EntityExistsError',
-    message: 'Entity exists',
+    message: 'Уже существует',
     code: 1008
   }
 )
@@ -169,7 +169,7 @@ export const NoDataForUpdatingError = InvalidDataError.extends(
   {},
   {
     error: 'NoDataForUpdatingError',
-    message: 'There is no data for updating',
+    message: 'Отсутствуют данные для обновления',
     code: 1009
   }
 )
@@ -206,7 +206,7 @@ export const InvalidJsonStructureError = InvalidDataError.extends(
   },
   {
     error: 'InvalidJsonStructureError',
-    message: 'Invalid JSON structure',
+    message: 'Тело содержит невалидную JSON структуру',
     code: 1012
   }
 )
@@ -215,7 +215,7 @@ export const WaitingTimeExceededError = InternalError.extends(
   {},
   {
     error: 'WaitingTimeExceededError',
-    message: 'Waiting time exceeded',
+    message: 'Время ожидания превышено',
     code: 1013
   }
 )
@@ -235,7 +235,7 @@ export const RouteNotFoundError = OpenapiError.compile(
   },
   {
     error: 'RouteNotFoundError',
-    message: 'Route not found',
+    message: 'Конечная точка не найдена',
     code: 1014
   }
 )
@@ -244,7 +244,7 @@ export const RequestHandlingError = InvalidDataError.extends(
   {
     properties: {
       message: {
-        description: 'Contain several examples(one of) of this error message',
+        description: 'Несколько примеров сообщений',
         type: 'string',
         default: 'Body cannot be empty when content-type is set to \'application/json\'',
         oneOf: [
