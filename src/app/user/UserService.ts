@@ -109,32 +109,6 @@ export class UserService extends BaseService<IUser, UserRepository> {
     return super.create(createUser)
   }
 
-  async findPreviewPage(query: FindUsersQuery): Promise<DataList<UserPreview>> {
-    const filter: FilterQuery<IUser> = {}
-    if (query.mUsername) {
-      filter.username = new RegExp(escapeStringRegexp(query.mUsername), 'i')
-    }
-    if (query.fEmail) {
-      filter.email = query.fEmail
-    }
-    return this.repository.findPage(
-      {
-        limit: query.limit,
-        page: query.page
-      },
-      filter,
-      {
-        username: 1,
-        avatar: 1
-      },
-      {
-        sort: {
-          username: 1
-        }
-      }
-    )
-  }
-
   async findPage(query: FindUsersQueryAdmin): Promise<DataList<IUser>> {
     const filter: FilterQuery<IUser> = {}
     if ('fRole' in query) {
