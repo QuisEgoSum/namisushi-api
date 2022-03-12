@@ -1,10 +1,18 @@
 import {GenericService} from '@core/service'
-import {IProduct, SingleProduct, VariantProduct} from './ProductModel'
+import {IProduct, ISingleProduct, IVariantProduct} from './ProductModel'
 import {ProductRepository} from '@app/product/ProductRepository'
-import {CreateSingleProduct, CreateVariantProduct, UpdateSingleProduct} from '@app/product/schemas/entities'
+import {
+  CreateSingleProduct,
+  CreateVariantProduct,
+  UpdateSingleProduct,
+  VariantProduct
+} from '@app/product/schemas/entities'
 import {ProductType} from '@app/product/ProductType'
 import {ProductDoesNotExist} from '@app/product/product-error'
 import {VariantService} from '@app/product/packages/variant/VariantService'
+import {BaseVariant, CreateVariant} from '@app/product/packages/variant/schemas/entities'
+import {Types} from 'mongoose'
+import {IVariant} from '@app/product/packages/variant/VariantModel'
 
 
 export class ProductService extends GenericService<IProduct, ProductRepository> {
@@ -17,11 +25,11 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
 
     this.variantService = variantService
 
-    this.Error.EntityExistsError = ProductDoesNotExist
+    this.Error.EntityNotExistsError = ProductDoesNotExist
   }
 
   async createSingle(product: CreateSingleProduct) {
-    return await this.create<SingleProduct>({
+    return await this.create<ISingleProduct>({
       type: ProductType.SINGLE,
       title: product.title,
       description: product.description,
@@ -33,7 +41,7 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
   }
 
   async createVariant(product: CreateVariantProduct) {
-    return await this.create<VariantProduct>({
+    return await this.create<IVariantProduct>({
       type: ProductType.VARIANT,
       title: product.title,
       description: product.description,
@@ -42,11 +50,28 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
     })
   }
 
+  async addVariant(productId: string, variant: CreateVariant): Promise<BaseVariant> {
+    return await this.variantService.create({
+      productId: new Types.ObjectId(productId),
+      title: variant.title,
+      show: variant.show,
+      icon: variant.icon,
+      cost: variant.cost,
+      weight: variant.weight
+    })
+  }
+
+  async findVariantById(productId: string): Promise<VariantProduct> {
+    const product = await this.repository.findVariantProductById(productId)
+    if (!product) throw new this.Error.EntityNotExistsError()
+    return product
+  }
+
   async findAndUpdateSingle(productId: string, update: UpdateSingleProduct) {
     this.checkUpdateData(update)
     const product = await this.repository.findAndUpdateSingle(productId, update)
     if (!product) {
-      throw new this.Error.EntityExistsError()
+      throw new this.Error.EntityNotExistsError()
     }
     return product
   }

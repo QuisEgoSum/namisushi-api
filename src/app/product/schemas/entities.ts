@@ -9,6 +9,8 @@ import {
   updatedAt, weight, images
 } from '@app/product/schemas/properties'
 import {BaseVariant} from '@app/product/packages/variant/schemas/entities'
+import {Types} from 'mongoose'
+import {ProductType} from '@app/product/ProductType'
 
 
 export const SingleProduct = {
@@ -42,6 +44,21 @@ export const SingleProduct = {
     'updatedAt'
   ]
 }
+
+
+export interface VariantProduct {
+  _id: Types.ObjectId
+  type: ProductType.VARIANT
+  show: boolean
+  title: string
+  description: string
+  ingredients: string[]
+  images: string[]
+  variants: BaseVariant[],
+  createdAt: number
+  updatedAt: number
+}
+
 
 export const VariantProduct = {
   title: 'SingleProduct',

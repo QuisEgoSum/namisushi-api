@@ -3,6 +3,43 @@ import {Schema} from 'openapi-error'
 import {error as userError} from '@app/user'
 
 
+class Response {
+  private type: string
+  private additionalProperties: boolean
+  constructor() {
+    this.type = 'object'
+    this.additionalProperties = false
+  }
+}
+
+export class Ok extends Response {
+  private description: string
+  private properties: Record<string, any>
+  private required: string[]
+  constructor(schema: Record<string, any>, entity: string) {
+    super()
+    this.description = 'Ok'
+    this.properties = {
+      [entity]: schema
+    }
+    this.required = [entity]
+  }
+}
+
+export class Created extends Response {
+  private description: string
+  private properties: Record<string, any>
+  private required: string[]
+  constructor(schema: Record<string, any>, entity: string) {
+    super()
+    this.description = 'Created'
+    this.properties = {
+      [entity]: schema
+    }
+    this.required = [entity]
+  }
+}
+
 export class MessageResponse {
   private type: string
   private properties: Record<any, any>

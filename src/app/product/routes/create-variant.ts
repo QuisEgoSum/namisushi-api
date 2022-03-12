@@ -1,10 +1,13 @@
 import * as schemas from '../schemas'
+import {Created} from '@common/schemas/response'
 import type {FastifyInstance} from 'fastify'
 import type {ProductService} from '@app/product/ProductService'
 
 
-
 interface CreateVariantRequest {
+  Params: {
+    productId: string
+  },
   Body: schemas.entities.CreateVariantProduct
 }
 
@@ -18,17 +21,12 @@ export async function createVariant(fastify: FastifyInstance, service: ProductSe
         schema: {
           summary: 'Создать VARIANT продукт',
           tags: ['Управление продуктами'],
+          params: {
+            productId: schemas.properties._id
+          },
           body: schemas.entities.CreateVariantProduct,
           response: {
-            [201]: {
-              description: 'Созданный продукт',
-              type: 'object',
-              properties: {
-                product: schemas.entities.VariantProduct
-              },
-              additionalProperties: false,
-              required: ['product']
-            }
+            [201]: new Created(schemas.entities.VariantProduct, 'product'),
           }
         },
         security: {

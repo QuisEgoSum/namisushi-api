@@ -13,26 +13,17 @@ interface ProductCommon {
   updatedAt: number
 }
 
-export interface SingleProduct extends ProductCommon {
+export interface ISingleProduct extends ProductCommon {
   type: ProductType.SINGLE
   cost: number
   weight: number
 }
 
-export interface ProductVariant {
-  _id: Types.ObjectId
-  title: string
-  icon: string
-  cost: number
-  weight: number
-}
-
-export interface VariantProduct<T = ProductVariant | Partial<ProductVariant>> extends ProductCommon {
+export interface IVariantProduct extends ProductCommon {
   type: ProductType.VARIANT
-  variants: T[]
 }
 
-export type IProduct = SingleProduct | VariantProduct
+export type IProduct = ISingleProduct | IVariantProduct
 
 
 const ProductSchema = new Schema<IProduct>(
@@ -45,17 +36,6 @@ const ProductSchema = new Schema<IProduct>(
     type: String,
     cost: Number,
     weight: Number,
-    variants: [
-      {
-        title: String,
-        icon: {
-          type: String,
-          default: null
-        },
-        cost: Number,
-        weight: Number
-      }
-    ],
     createdAt: Number,
     updatedAt: Number
   },

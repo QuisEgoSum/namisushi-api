@@ -1,6 +1,7 @@
 import * as schemas from '../schemas'
 import type {FastifyInstance} from 'fastify'
 import type {ProductService} from '@app/product/ProductService'
+import {Created} from '@common/schemas/response'
 
 
 interface CreateSingleRequest {
@@ -19,15 +20,7 @@ export async function createSingle(fastify: FastifyInstance, service: ProductSer
           tags: ['Управление продуктами'],
           body: schemas.entities.CreateSingleProduct,
           response: {
-            [201]: {
-              description: 'Созданный продукт',
-              type: 'object',
-              properties: {
-                product: schemas.entities.SingleProduct
-              },
-              additionalProperties: false,
-              required: ['product']
-            }
+            [201]: new Created(schemas.entities.SingleProduct, 'product')
           }
         },
         security: {
