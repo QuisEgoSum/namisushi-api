@@ -10,7 +10,6 @@ export const httpLogger = logger.child({
         method: request.method,
         url: request.url,
         ip: request.headers['x-real-ip'],
-        body: request.body,
         params: request.params,
         query: request.query
       }

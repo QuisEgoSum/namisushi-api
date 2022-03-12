@@ -1,8 +1,8 @@
-import {EntityNotExistsError, InvalidDataError} from '@error'
+import {EntityDoesNotExistError, InvalidDataError} from '@error'
 import {config} from '@config'
 
 
-export const ProductDoesNotExist = EntityNotExistsError.extends(
+export const ProductDoesNotExist = EntityDoesNotExistError.extends(
   {},
   {
     error: 'ProductDoesNotExist',
@@ -20,7 +20,7 @@ export const MaximumImagesExceededError = InvalidDataError.extends(
   }
 )
 
-export const ProductImageDoesNotExist = EntityNotExistsError.extends(
+export const ProductImageDoesNotExist = EntityDoesNotExistError.extends(
   {},
   {
     error: 'ProductImageDoesNotExist',

@@ -27,7 +27,7 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
 
     this.variantService = variantService
 
-    this.Error.EntityNotExistsError = ProductDoesNotExist
+    this.Error.EntityDoesNotExistError = ProductDoesNotExist
   }
 
   async createSingle(product: CreateSingleProduct) {
@@ -66,7 +66,7 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
 
   async findVariantProductById(productId: string): Promise<VariantProduct> {
     const product = await this.repository.findVariantProductById(productId)
-    if (!product) throw new this.Error.EntityNotExistsError()
+    if (!product) throw new this.Error.EntityDoesNotExistError()
     return product
   }
 
@@ -74,7 +74,7 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
     this.checkUpdateData(update)
     const product = await this.repository.findAndUpdateSingle(productId, update)
     if (!product) {
-      throw new this.Error.EntityNotExistsError()
+      throw new this.Error.EntityDoesNotExistError()
     }
     return product
   }
@@ -83,7 +83,7 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
     this.checkUpdateData(update)
     const product = await this.repository.findAndUpdateVariant(productId, update)
     if (!product) {
-      throw new this.Error.EntityNotExistsError()
+      throw new this.Error.EntityDoesNotExistError()
     }
     return await this.findVariantProductById(productId)
   }
@@ -106,7 +106,7 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
     )
     const updatedProduct = await this.repository.addToSetImages(productId, images)
     if (!updatedProduct) {
-      throw new this.Error.EntityNotExistsError()
+      throw new this.Error.EntityDoesNotExistError()
     }
     return updatedProduct.images
   }

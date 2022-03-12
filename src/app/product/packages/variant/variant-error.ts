@@ -1,7 +1,7 @@
-import {EntityNotExistsError} from '@error'
+import {EntityDoesNotExistError} from '@error'
 
 
-export const VariantDoesNotExist = EntityNotExistsError.extends(
+export const VariantDoesNotExist = EntityDoesNotExistError.extends(
   {},
   {
     error: 'VariantDoesNotExist',

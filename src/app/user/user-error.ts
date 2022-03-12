@@ -1,4 +1,4 @@
-import {AccessError, AuthorizationError, EntityExistsError, EntityNotExistsError, InvalidDataError} from '@core/error'
+import {AccessError, AuthorizationError, EntityExistsError, EntityDoesNotExistError, InvalidDataError} from '@core/error'
 
 
 export const UserAuthorizationError = AuthorizationError.extends(
@@ -27,7 +27,7 @@ export const IncorrectUserCredentials = InvalidDataError.extends(
   }
 )
 
-export const UserNotExistsError = EntityNotExistsError.extends(
+export const UserNotExistsError = EntityDoesNotExistError.extends(
   {},
   {
     error: 'UserNotExistsError',

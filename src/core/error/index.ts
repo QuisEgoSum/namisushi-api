@@ -1,7 +1,7 @@
 import OpenapiError from 'openapi-error'
 
 
-export const EntityNotExistsError = OpenapiError.compile(
+export const EntityDoesNotExistError = OpenapiError.compile(
   {
     httpCode: 404
   },

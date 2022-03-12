@@ -1,5 +1,5 @@
 import {BaseRepository, BaseRepositoryError} from '@core/repository'
-import {EntityExistsError, EntityNotExistsError, NoDataForUpdatingError} from '@core/error'
+import {EntityExistsError, EntityDoesNotExistError, NoDataForUpdatingError} from '@core/error'
 import type {IBaseService} from './IBaseService'
 import type {
   Types,
@@ -14,7 +14,7 @@ import type {
 export class BaseService<T, R extends BaseRepository<T>> implements IBaseService<T, R> {
   public Error: {
     EntityExistsError: typeof EntityExistsError,
-    EntityNotExistsError: typeof EntityNotExistsError
+    EntityNotExistsError: typeof EntityDoesNotExistError
   }
 
   public repository: R
@@ -23,7 +23,7 @@ export class BaseService<T, R extends BaseRepository<T>> implements IBaseService
     this.repository = repository
     this.Error = {
       EntityExistsError: EntityExistsError,
-      EntityNotExistsError: EntityNotExistsError
+      EntityNotExistsError: EntityDoesNotExistError
     }
   }
 

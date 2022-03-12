@@ -1,5 +1,5 @@
 import {BaseRepositoryError} from '@core/repository'
-import {EntityExistsError, EntityNotExistsError, NoDataForUpdatingError} from '@core/error'
+import {EntityExistsError, EntityDoesNotExistError, NoDataForUpdatingError} from '@core/error'
 import type {
   Types,
   UpdateQuery,
@@ -15,7 +15,7 @@ import {IGenericService} from '@core/service/IGenericService'
 export class GenericService<T, R extends IGenericRepository<T>> implements IGenericService<T, R> {
   public Error: {
     EntityExistsError: typeof EntityExistsError,
-    EntityNotExistsError: typeof EntityNotExistsError
+    EntityDoesNotExistError: typeof EntityDoesNotExistError
   }
 
   public repository: R
@@ -24,7 +24,7 @@ export class GenericService<T, R extends IGenericRepository<T>> implements IGene
     this.repository = repository
     this.Error = {
       EntityExistsError: EntityExistsError,
-      EntityNotExistsError: EntityNotExistsError
+      EntityDoesNotExistError: EntityDoesNotExistError
     }
   }
 
@@ -51,7 +51,7 @@ export class GenericService<T, R extends IGenericRepository<T>> implements IGene
     const isDeleted = await this.repository.deleteById(id)
 
     if (!isDeleted) {
-      throw new this.Error.EntityNotExistsError()
+      throw new this.Error.EntityDoesNotExistError()
     }
   }
 
@@ -59,7 +59,7 @@ export class GenericService<T, R extends IGenericRepository<T>> implements IGene
     const document = await this.repository.findById<I>(id, projection, options)
 
     if (document === null) {
-      throw new this.Error.EntityNotExistsError()
+      throw new this.Error.EntityDoesNotExistError()
     }
 
     return document
@@ -69,7 +69,7 @@ export class GenericService<T, R extends IGenericRepository<T>> implements IGene
     const document = await this.repository.findByIdAndDelete<I>(id)
 
     if (document === null) {
-      throw new this.Error.EntityNotExistsError()
+      throw new this.Error.EntityDoesNotExistError()
     }
 
     return document
@@ -80,7 +80,7 @@ export class GenericService<T, R extends IGenericRepository<T>> implements IGene
     const document = await this.repository.findByIdAndUpdate<I>(id, update, {new: true})
 
     if (document === null) {
-      throw new this.Error.EntityNotExistsError()
+      throw new this.Error.EntityDoesNotExistError()
     }
 
     return document
@@ -90,7 +90,7 @@ export class GenericService<T, R extends IGenericRepository<T>> implements IGene
     const document = await this.repository.findOne<I>(filter, projection, options)
 
     if (document === null) {
-      throw new this.Error.EntityNotExistsError()
+      throw new this.Error.EntityDoesNotExistError()
     }
 
     return document
@@ -100,7 +100,7 @@ export class GenericService<T, R extends IGenericRepository<T>> implements IGene
     const isDeleted = await this.repository.deleteOne<I>(query)
 
     if (!isDeleted) {
-      throw new this.Error.EntityNotExistsError()
+      throw new this.Error.EntityDoesNotExistError()
     }
   }
 
@@ -109,7 +109,7 @@ export class GenericService<T, R extends IGenericRepository<T>> implements IGene
     const document = await this.repository.findOneAndUpdate<I>(filter, update, options)
 
     if (document === null) {
-      throw new this.Error.EntityNotExistsError()
+      throw new this.Error.EntityDoesNotExistError()
     }
 
     return document
@@ -119,7 +119,7 @@ export class GenericService<T, R extends IGenericRepository<T>> implements IGene
     const document = await this.repository.findOneAndDelete<I>(filter, options)
 
     if (document === null) {
-      throw new this.Error.EntityNotExistsError()
+      throw new this.Error.EntityDoesNotExistError()
     }
 
     return document
@@ -130,7 +130,7 @@ export class GenericService<T, R extends IGenericRepository<T>> implements IGene
     const result = await this.repository.updateOne<I>(filter, update, options)
 
     if (result.matchedCount === 0) {
-      throw new this.Error.EntityNotExistsError()
+      throw new this.Error.EntityDoesNotExistError()
     }
   }
 
@@ -140,7 +140,7 @@ export class GenericService<T, R extends IGenericRepository<T>> implements IGene
     const result = await this.repository.updateById<I>(id, update, options)
 
     if (result.matchedCount === 0) {
-      throw new this.Error.EntityNotExistsError()
+      throw new this.Error.EntityDoesNotExistError()
     }
   }
 
