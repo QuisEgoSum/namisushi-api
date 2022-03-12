@@ -8,11 +8,13 @@ import {
   VariantProduct
 } from '@app/product/schemas/entities'
 import {ProductType} from '@app/product/ProductType'
-import {ProductDoesNotExist} from '@app/product/product-error'
+import {MaximumImagesExceededError, ProductDoesNotExist} from '@app/product/product-error'
 import {VariantService} from '@app/product/packages/variant/VariantService'
 import {BaseVariant, CreateVariant, UpdateVariant} from '@app/product/packages/variant/schemas/entities'
 import {Types} from 'mongoose'
-import {IVariant} from '@app/product/packages/variant/VariantModel'
+import {MultipartFile} from 'fastify-multipart'
+import {config} from '@config'
+import {createFilepath, moveFile} from '@utils/fs'
 
 
 export class ProductService extends GenericService<IProduct, ProductRepository> {
@@ -88,5 +90,22 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
 
   async findAndUpdateVariant(productId: string, variantId: string, update: UpdateVariant) {
     return await this.variantService.findAndUpdate(productId, variantId, update)
+  }
+
+  async attachImage(productId: string, files: MultipartFile[]): Promise<string[]> {
+    const product = await this.findById(productId, {images: 1})
+    if (product.images.length + files.length > config.product.image.maximum) {
+      throw new MaximumImagesExceededError()
+    }
+    const images = await Promise.all(
+      files
+        .map(file => createFilepath(config.product.image.file.destination, file.mimetype.split('/').pop() || 'png'))
+        .map((promise, i) => promise.then(filepath => moveFile(files[i].filepath, filepath)))
+    )
+    const updatedProduct = await this.repository.addToSetImages(productId, images)
+    if (!updatedProduct) {
+      throw new this.Error.EntityNotExistsError()
+    }
+    return updatedProduct.images
   }
 }

@@ -239,6 +239,9 @@
         "image": {
           "type": "object",
           "properties": {
+            "maximum": {
+              "type": "integer"
+            },
             "file": {
               "type": "object",
               "properties": {
@@ -250,13 +253,16 @@
                 },
                 "maximumSize": {
                   "type": "integer"
+                },
+                "destination": {
+                  "type": "string"
                 }
               },
               "required": ["allowedTypes", "maximumSize"],
               "additionalProperties": false
             }
           },
-          "required": ["file"],
+          "required": ["maximum", "file"],
           "additionalProperties": false
         }
       },

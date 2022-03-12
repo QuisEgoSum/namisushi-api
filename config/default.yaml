@@ -72,6 +72,7 @@ telegram:
 
 product:
   image:
+    maximum: 10
     file:
       allowedTypes: [
         image/jpeg,

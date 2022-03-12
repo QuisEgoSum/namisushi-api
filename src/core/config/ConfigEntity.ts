@@ -74,7 +74,9 @@ interface TelegramConfig {
 
 interface ProductConfig {
   image: {
+    maximum: number
     file: {
+      destination: string,
       allowedTypes: string[],
       maximumSize: number
     }
@@ -117,6 +119,10 @@ export class ConfigEntity {
     this.order = defaultConfig.order
 
     const rootDir = path.resolve(__dirname, '../../../')
+
+    if (!this.product.image.file.destination) {
+      this.product.image.file.destination = path.resolve(rootDir, 'image/product')
+    }
 
     this.paths = {
       root: rootDir,

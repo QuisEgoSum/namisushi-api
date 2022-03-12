@@ -5,3 +5,4 @@ src/**/*.js
 *.log
 *.png
 *.jpg
+image/

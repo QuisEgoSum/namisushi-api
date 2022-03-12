@@ -4,6 +4,7 @@ import fastifyCors from 'fastify-cors'
 import fastifyHelmet from 'fastify-helmet'
 import fastifyStatic from 'fastify-static'
 import fastifyCookie from 'fastify-cookie'
+import fastifyMultipart from 'fastify-multipart'
 import {config} from '@config'
 import {httpLogger} from './modules/logger'
 import {errorHandler} from './modules/error-handler'
@@ -34,6 +35,7 @@ export async function createHttpServer(options: CreateHttpServerOptions) {
     // @ts-ignore
     .setValidatorCompiler(({schema}) => ajv.compile(schema))
     .setSchemaErrorFormatter(schemaErrorFormatter)
+    .register(fastifyMultipart)
     .register(fastifyCors, {
       allowedHeaders: config.server.cors.allowedHeaders,
       origin: config.server.cors.allowedOrigins,

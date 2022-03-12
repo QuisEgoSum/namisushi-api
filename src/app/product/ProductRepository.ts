@@ -52,4 +52,12 @@ export class ProductRepository extends GenericRepository<IProduct> {
       }
     ]).then(result => result[0] || null)
   }
+
+  async addToSetImages(productId: string, images: string[]): Promise<{images: string[]} | null> {
+    return this.findByIdAndUpdate<IProduct>(
+      new Types.ObjectId(productId),
+      {$addToSet: {images}},
+      {new: true, projection: {images: 1}}
+    )
+  }
 }
