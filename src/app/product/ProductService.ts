@@ -10,7 +10,7 @@ import {
 import {ProductType} from '@app/product/ProductType'
 import {ProductDoesNotExist} from '@app/product/product-error'
 import {VariantService} from '@app/product/packages/variant/VariantService'
-import {BaseVariant, CreateVariant} from '@app/product/packages/variant/schemas/entities'
+import {BaseVariant, CreateVariant, UpdateVariant} from '@app/product/packages/variant/schemas/entities'
 import {Types} from 'mongoose'
 import {IVariant} from '@app/product/packages/variant/VariantModel'
 
@@ -84,5 +84,9 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
       throw new this.Error.EntityNotExistsError()
     }
     return await this.findVariantProductById(productId)
+  }
+
+  async findAndUpdateVariant(productId: string, variantId: string, update: UpdateVariant) {
+    return await this.variantService.findAndUpdate(productId, variantId, update)
   }
 }
