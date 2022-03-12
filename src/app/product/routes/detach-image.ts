@@ -20,7 +20,7 @@ export async function detachImage(fastify: FastifyInstance, service: ProductServ
         method: 'DELETE',
         url: '/admin/product/:productId/image/:imageName',
         schema: {
-          summary: 'Добавить продукту картинки',
+          summary: 'Удалить картинку у продукта',
           tags: ['Управление продуктами'],
           params: {
             productId: schemas.properties._id,
