@@ -4,7 +4,7 @@ import type {FastifyInstance} from 'fastify'
 import type {ProductService} from '@app/product/ProductService'
 
 
-interface CreateVariantRequest {
+interface CreateProductVariantRequest {
   Params: {
     productId: string
   },
@@ -12,9 +12,9 @@ interface CreateVariantRequest {
 }
 
 
-export async function createVariant(fastify: FastifyInstance, service: ProductService) {
+export async function createProductVariant(fastify: FastifyInstance, service: ProductService) {
   return fastify
-    .route<CreateVariantRequest>(
+    .route<CreateProductVariantRequest>(
       {
         method: 'POST',
         url: '/admin/product/VARIANT',

@@ -4,14 +4,14 @@ import type {ProductService} from '@app/product/ProductService'
 import {Created} from '@common/schemas/response'
 
 
-interface CreateSingleRequest {
+interface CreateProductSingleRequest {
   Body: schemas.entities.CreateSingleProduct
 }
 
 
-export async function createSingle(fastify: FastifyInstance, service: ProductService) {
+export async function createProductSingle(fastify: FastifyInstance, service: ProductService) {
   return fastify
-    .route<CreateSingleRequest>(
+    .route<CreateProductSingleRequest>(
       {
         method: 'POST',
         url: '/admin/product/SINGLE',

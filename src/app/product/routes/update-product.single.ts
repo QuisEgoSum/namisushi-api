@@ -1,12 +1,11 @@
 import * as schemas from '../schemas'
 import type {FastifyInstance} from 'fastify'
 import type {ProductService} from '@app/product/ProductService'
-import {ISingleProduct} from '@app/product/ProductModel'
 import {NotFound, Ok} from '@common/schemas/response'
 import {ProductDoesNotExist} from '@app/product/product-error'
 
 
-interface UpdateSingleRequest {
+interface UpdateProductSingleRequest {
   Params: {
     productId: string
   },
@@ -14,9 +13,9 @@ interface UpdateSingleRequest {
 }
 
 
-export async function updateSingle(fastify: FastifyInstance, service: ProductService) {
+export async function updateProductSingle(fastify: FastifyInstance, service: ProductService) {
   return fastify
-    .route<UpdateSingleRequest>(
+    .route<UpdateProductSingleRequest>(
       {
         method: 'PATCH',
         url: '/admin/product/SINGLE/:productId',
