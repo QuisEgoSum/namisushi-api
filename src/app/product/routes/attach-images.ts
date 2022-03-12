@@ -2,7 +2,7 @@ import * as schemas from '../schemas'
 import {config} from '@config'
 import type {FastifyInstance} from 'fastify'
 import type {MultipartFile} from 'fastify-multipart'
-import {Ok} from '@common/schemas/response'
+import {BadRequest, Ok} from '@common/schemas/response'
 import {ProductService} from '@app/product/ProductService'
 
 
@@ -22,15 +22,15 @@ export async function attachImages(fastify: FastifyInstance, service: ProductSer
         url: '/admin/product/:productId/files',
         schema: {
           summary: 'Добавить продукту картинки',
+          description: 'Один или несколько файлов в прозвольном свойстве или свойствах'
+            + `<br/><br/>*Допустимые mimetype: ${config.product.image.file.allowedTypes.join(', ')}.*`
+            + `<br/>*Максимальный размер файла ${config.product.image.file.maximumSize}b.*`,
           tags: ['Управление продуктами'],
           consumes: ['multipart/form-data'],
           params: {
             productId: schemas.properties._id
           },
           body: {
-            description: 'Один или несколько файлов в прозвольном свойстве или свойствах'
-              + `<br/><br/>*Допустимые mimetype: ${config.product.image.file.allowedTypes.join(', ')}.*`
-              + `<br/>*Максимальный размер файла ${config.product.image.file.maximumSize}b.*`,
             type: 'array',
             items: {
               type: 'object',
@@ -66,7 +66,8 @@ export async function attachImages(fastify: FastifyInstance, service: ProductSer
             }
           },
           response: {
-            [200]: new Ok(schemas.properties.images, 'images')
+            [200]: new Ok(schemas.properties.images, 'images'),
+            [400]: new BadRequest().bodyErrors()
           }
         },
         security: {

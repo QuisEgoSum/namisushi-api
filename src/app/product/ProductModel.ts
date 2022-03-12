@@ -45,5 +45,7 @@ const ProductSchema = new Schema<IProduct>(
   }
 )
 
-
+/**
+ * collection name used in /app/product/ProductRepository.ts
+ */
 export const ProductModel = model<IProduct>('Product', ProductSchema, 'products')

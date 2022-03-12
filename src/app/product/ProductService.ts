@@ -8,13 +8,13 @@ import {
   VariantProduct
 } from '@app/product/schemas/entities'
 import {ProductType} from '@app/product/ProductType'
-import {MaximumImagesExceededError, ProductDoesNotExist} from '@app/product/product-error'
+import {MaximumImagesExceededError, ProductDoesNotExist, ProductImageDoesNotExist} from '@app/product/product-error'
 import {VariantService} from '@app/product/packages/variant/VariantService'
 import {BaseVariant, CreateVariant, UpdateVariant} from '@app/product/packages/variant/schemas/entities'
 import {Types} from 'mongoose'
 import {MultipartFile} from 'fastify-multipart'
 import {config} from '@config'
-import {createFilepath, moveFile} from '@utils/fs'
+import {createFilepath, deleteFile, moveFile} from '@utils/fs'
 
 
 export class ProductService extends GenericService<IProduct, ProductRepository> {
@@ -100,12 +100,23 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
     const images = await Promise.all(
       files
         .map(file => createFilepath(config.product.image.file.destination, file.mimetype.split('/').pop() || 'png'))
-        .map((promise, i) => promise.then(filepath => moveFile(files[i].filepath, filepath)))
+        .map((promise, i) => promise.then(
+          file => moveFile(files[i].filepath, file.filepath).then(() => file.filename))
+        )
     )
     const updatedProduct = await this.repository.addToSetImages(productId, images)
     if (!updatedProduct) {
       throw new this.Error.EntityNotExistsError()
     }
     return updatedProduct.images
+  }
+
+  async deleteImage(productId: string, imageName: string) {
+    const result = await this.repository.pullImage(productId, imageName)
+    if (result.matchedCount == 0) {
+      await this.existsById(productId)
+      throw new ProductImageDoesNotExist()
+    }
+    await deleteFile(config.product.image.file.destination, imageName)
   }
 }

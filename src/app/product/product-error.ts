@@ -1,4 +1,4 @@
-import {EntityNotExistsError, InvalidDataError} from '../../core/error'
+import {EntityNotExistsError, InvalidDataError} from '@error'
 import {config} from '@config'
 
 
@@ -17,5 +17,14 @@ export const MaximumImagesExceededError = InvalidDataError.extends(
     error: 'MaximumImagesExceededError',
     message: `Вы не можете добавить продукту больше ${config.product.image.maximum} изображений`,
     code: 3001
+  }
+)
+
+export const ProductImageDoesNotExist = EntityNotExistsError.extends(
+  {},
+  {
+    error: 'ProductImageDoesNotExist',
+    message: 'Картинка не найдена',
+    code: 3002
   }
 )

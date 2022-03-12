@@ -1,4 +1,4 @@
-import {IProduct, ProductModel, IVariantProduct} from '@app/product/ProductModel'
+import {IProduct, ProductModel} from '@app/product/ProductModel'
 import {GenericRepository} from '@core/repository/GenericRepository'
 import {UpdateSingleProduct, UpdateVariantProduct, VariantProduct} from '@app/product/schemas/entities'
 import {Types} from 'mongoose'
@@ -59,5 +59,9 @@ export class ProductRepository extends GenericRepository<IProduct> {
       {$addToSet: {images}},
       {new: true, projection: {images: 1}}
     )
+  }
+
+  async pullImage(productId: string, imageName: string) {
+    return this.updateOne({_id: new Types.ObjectId(productId), images: imageName}, {$pull: {images: imageName}})
   }
 }

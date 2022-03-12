@@ -3,6 +3,10 @@ import path from 'path'
 import {v4} from 'uuid'
 import mv from 'mv'
 import util from 'util'
+import {logger as defaultLogger} from '@logger'
+
+
+const logger = defaultLogger.child({label: 'fs'})
 
 
 async function validateFilepath(filepath: string): Promise<boolean> {
@@ -16,9 +20,10 @@ async function validateFilepath(filepath: string): Promise<boolean> {
 
 export async function createFilepath(dir: string, ext: string) {
   for (let i = 0; i < 5; i++) {
-    const filepath = path.resolve(dir, v4() + '.' + ext)
+    const filename = v4() + '.' + ext
+    const filepath = path.resolve(dir, filename)
     if (await validateFilepath(filepath)) {
-      return filepath
+      return {filename, filepath}
     }
   }
   throw new Error('Failed create filepath')
@@ -27,4 +32,12 @@ export async function createFilepath(dir: string, ext: string) {
 export async function moveFile(from: string, to: string) {
   await util.promisify(mv)(from, to)
   return to
+}
+
+export async function deleteFile(dir: string, filename: string) {
+  try {
+    await fs.promises.rm(path.resolve(dir, filename))
+  } catch(error) {
+    logger.error(error)
+  }
 }
