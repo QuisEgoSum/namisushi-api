@@ -35,8 +35,8 @@ export class BaseService<T, R extends BaseRepository<T>> implements IBaseService
     }
   }
 
-  public checkUpdateData(data: {[key: string]: any}) {
-    if (!Object.keys(data).length) {
+  public checkUpdateData(data?: Record<string, any>) {
+    if (!data || !Object.keys(data).length) {
       throw new NoDataForUpdatingError()
     }
   }
@@ -104,6 +104,7 @@ export class BaseService<T, R extends BaseRepository<T>> implements IBaseService
   }
 
   async findOneAndUpdate(filter: FilterQuery<T>, update: UpdateQuery<T>, options?: QueryOptions & {upsert?: true} & ReturnsNewDoc): Promise<T> {
+    this.checkUpdateData(update)
     const document = await this.repository.findOneAndUpdate(filter, update, options)
 
     if (document === null) {
@@ -123,7 +124,8 @@ export class BaseService<T, R extends BaseRepository<T>> implements IBaseService
     return document
   }
 
-  async updateOne(filter?: FilterQuery<T>, update?: UpdateQuery<T> | UpdateWithAggregationPipeline, options?: QueryOptions | null): Promise<void> {
+  async updateOne(filter?: FilterQuery<T>, update?: UpdateQuery<T>, options?: QueryOptions | null): Promise<void> {
+    this.checkUpdateData(update)
     const result = await this.repository.updateOne(filter, update, options)
 
     if (result.matchedCount === 0) {
@@ -132,7 +134,8 @@ export class BaseService<T, R extends BaseRepository<T>> implements IBaseService
   }
 
 
-  async updateById(id: string | Types.ObjectId, update?: UpdateQuery<T> | UpdateWithAggregationPipeline, options?: QueryOptions | null): Promise<void> {
+  async updateById(id: string | Types.ObjectId, update?: UpdateQuery<T>, options?: QueryOptions | null): Promise<void> {
+    this.checkUpdateData(update)
     const result = await this.repository.updateById(id, update, options)
 
     if (result.matchedCount === 0) {

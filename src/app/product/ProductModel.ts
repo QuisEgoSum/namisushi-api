@@ -8,6 +8,7 @@ interface ProductCommon {
   title: string
   description: string
   ingredients: string[]
+  images: string[]
   createdAt: number
   updatedAt: number
 }
@@ -40,14 +41,17 @@ const ProductSchema = new Schema<IProduct>(
     title: String,
     description: String,
     ingredients: [String],
+    images: [String],
     type: String,
     cost: Number,
     weight: Number,
     variants: [
       {
-        _id: Types.ObjectId,
         title: String,
-        icon: String,
+        icon: {
+          type: String,
+          default: null
+        },
         cost: Number,
         weight: Number
       }

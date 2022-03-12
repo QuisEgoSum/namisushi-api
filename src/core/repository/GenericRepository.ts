@@ -69,7 +69,7 @@ export abstract class GenericRepository<T> implements IGenericRepository<T> {
       .catch(error => GenericRepository.errorHandler(error)) as unknown as Promise<UpdateWriteOpResult>
   }
 
-  async findOneAndUpdate<I extends T>(filter: FilterQuery<I>, update: UpdateQuery<I>, options?: QueryOptions & {upsert?: true} & ReturnsNewDoc): Promise<I | null> {
+  async findOneAndUpdate<I extends T>(filter: FilterQuery<I>, update: UpdateQuery<I>, options: QueryOptions & {upsert?: true} & ReturnsNewDoc = {new: true}): Promise<I | null> {
     return await this.Model
       .findOneAndUpdate(filter, update, options)
       .lean()
@@ -77,7 +77,7 @@ export abstract class GenericRepository<T> implements IGenericRepository<T> {
       .catch(error => GenericRepository.errorHandler(error)) as unknown as Promise<I | null>
   }
 
-  async findByIdAndUpdate<I extends T>(id: string | Types.ObjectId, update: UpdateQuery<I>, options?: QueryOptions & {upsert?: true} & ReturnsNewDoc): Promise<I | null> {
+  async findByIdAndUpdate<I extends T>(id: string | Types.ObjectId, update: UpdateQuery<I>, options: QueryOptions & {upsert?: true} & ReturnsNewDoc = {new: true}): Promise<I | null> {
     return await this.Model
       .findByIdAndUpdate(new Types.ObjectId(id), update, options)
       .lean()

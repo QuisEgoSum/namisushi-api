@@ -16,7 +16,7 @@ export async function createSingle(fastify: FastifyInstance, service: ProductSer
         url: '/admin/product/SINGLE',
         schema: {
           summary: 'Создать SINGLE продукт',
-          tags: ['Продукт'],
+          tags: ['Управление продуктами'],
           body: schemas.entities.CreateSingleProduct,
           response: {
             [201]: {

@@ -36,8 +36,8 @@ export class GenericService<T, R extends IGenericRepository<T>> implements IGene
     }
   }
 
-  public checkUpdateData(data: {[key: string]: any}) {
-    if (!Object.keys(data).length) {
+  public checkUpdateData(data?: Record<string, any>) {
+    if (!data || !Object.keys(data).length) {
       throw new NoDataForUpdatingError()
     }
   }
@@ -105,6 +105,7 @@ export class GenericService<T, R extends IGenericRepository<T>> implements IGene
   }
 
   async findOneAndUpdate<I extends T>(filter: FilterQuery<I>, update: UpdateQuery<I>, options: QueryOptions & { upsert: true } & ReturnsNewDoc): Promise<I> {
+    this.checkUpdateData(update)
     const document = await this.repository.findOneAndUpdate<I>(filter, update, options)
 
     if (document === null) {
@@ -125,6 +126,7 @@ export class GenericService<T, R extends IGenericRepository<T>> implements IGene
   }
 
   async updateOne<I extends T>(filter?: FilterQuery<I>, update?: UpdateQuery<I> | UpdateWithAggregationPipeline, options?: QueryOptions | null): Promise<void> {
+    this.checkUpdateData(update)
     const result = await this.repository.updateOne<I>(filter, update, options)
 
     if (result.matchedCount === 0) {
@@ -134,6 +136,7 @@ export class GenericService<T, R extends IGenericRepository<T>> implements IGene
 
 
   async updateById<I extends T>(id: string | Types.ObjectId, update?: UpdateQuery<I> | UpdateWithAggregationPipeline, options?: QueryOptions | null): Promise<void> {
+    this.checkUpdateData(update)
     const result = await this.repository.updateById<I>(id, update, options)
 
     if (result.matchedCount === 0) {

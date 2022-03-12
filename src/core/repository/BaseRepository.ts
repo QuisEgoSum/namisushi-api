@@ -54,7 +54,7 @@ export class BaseRepository<T> implements IBaseRepository<T> {
       .catch(error => BaseRepository.errorHandler(error)) as unknown as Promise<UpdateWriteOpResult>
   }
 
-  findOneAndUpdate(filter: FilterQuery<T>, update: UpdateQuery<T>, options?: QueryOptions & { upsert?: true } & ReturnsNewDoc): Promise<T | null> {
+  findOneAndUpdate(filter: FilterQuery<T>, update: UpdateQuery<T>, options: QueryOptions & { upsert?: true } & ReturnsNewDoc = {new: true}): Promise<T | null> {
     return this.Model
       .findOneAndUpdate(filter, update, options)
       .lean()
@@ -63,7 +63,7 @@ export class BaseRepository<T> implements IBaseRepository<T> {
 
   }
 
-  findByIdAndUpdate(id: string | mongoose.Types.ObjectId, update: UpdateQuery<T>, options?: QueryOptions & { upsert?: true } & ReturnsNewDoc): Promise<T | null> {
+  findByIdAndUpdate(id: string | mongoose.Types.ObjectId, update: UpdateQuery<T>, options: QueryOptions & { upsert?: true } & ReturnsNewDoc = {new: true}): Promise<T | null> {
     return this.Model
       .findByIdAndUpdate(new mongoose.Types.ObjectId(id), update, options)
       .lean()

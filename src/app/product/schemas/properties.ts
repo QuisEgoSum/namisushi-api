@@ -80,7 +80,7 @@ export const weight = {
 }
 export const icon = {
   description: 'Raw SVG',
-  type: 'string',
+  type: ['string', 'null'],
   maxLength: 10000,
   errorMessage: {
    maxLength: 'Размер иконки не должен превышать 10000 символов'
@@ -101,4 +101,8 @@ export const variant = {
 export const variants = {
   type: 'array',
   items: variant
+}
+export const images = {
+  type: 'array',
+  items: {type: 'string'}
 }

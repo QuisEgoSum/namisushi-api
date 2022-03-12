@@ -6,7 +6,7 @@ import {
   show,
   title,
   typeSingle, typeVariant,
-  updatedAt, variants, weight, icon
+  updatedAt, variants, weight, icon, images
 } from '@app/product/schemas/properties'
 
 
@@ -18,6 +18,7 @@ export const SingleProduct = {
     title,
     description,
     ingredients,
+    images,
     show,
     type: typeSingle,
     cost,
@@ -31,6 +32,7 @@ export const SingleProduct = {
     'title',
     'description',
     'ingredients',
+    'images',
     'show',
     'type',
     'cost',
@@ -48,6 +50,7 @@ export const VariantProduct = {
     title,
     description,
     ingredients,
+    images,
     show,
     type: typeVariant,
     variants,
@@ -60,6 +63,7 @@ export const VariantProduct = {
     'title',
     'description',
     'ingredients',
+    'images',
     'show',
     'type',
     'variants',
@@ -172,4 +176,27 @@ export const CreateVariantProduct = {
       show: 'Укажите статус отображения продукта',
     }
   }
+}
+
+export interface UpdateSingleProduct {
+  title?: string
+  description?: string
+  ingredients?: string[]
+  show?: boolean
+  cost?: number
+  weight?: number
+}
+
+export const UpdateSingleProduct = {
+  title: 'UpdateSingleProduct',
+  type: 'object',
+  properties: {
+    title,
+    description,
+    ingredients,
+    show,
+    cost,
+    weight
+  },
+  additionalProperties: false
 }

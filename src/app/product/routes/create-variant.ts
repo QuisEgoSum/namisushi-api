@@ -17,7 +17,7 @@ export async function createVariant(fastify: FastifyInstance, service: ProductSe
         url: '/admin/product/VARIANT',
         schema: {
           summary: 'Создать VARIANT продукт',
-          tags: ['Продукт'],
+          tags: ['Управление продуктами'],
           body: schemas.entities.CreateVariantProduct,
           response: {
             [201]: {
