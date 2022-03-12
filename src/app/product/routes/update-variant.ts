@@ -23,7 +23,7 @@ export async function updateVariant(fastify: FastifyInstance, service: ProductSe
         method: 'PATCH',
         url: '/admin/product/VARIANT/:productId/variant/:variantId',
         schema: {
-          summary: 'Создать вариант продукта',
+          summary: 'Обновить вариант продукта',
           tags: ['Управление вариантами продуктов'],
           params: {
             productId: schemas.properties._id,
