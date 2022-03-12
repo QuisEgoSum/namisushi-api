@@ -6,8 +6,9 @@ import {
   show,
   title,
   typeSingle, typeVariant,
-  updatedAt, variants, weight, icon, images
+  updatedAt, weight, images
 } from '@app/product/schemas/properties'
+import {BaseVariant} from '@app/product/packages/variant/schemas/entities'
 
 
 export const SingleProduct = {
@@ -53,7 +54,11 @@ export const VariantProduct = {
     images,
     show,
     type: typeVariant,
-    variants,
+    variants: {
+      type: 'array',
+      items: BaseVariant,
+      default: []
+    },
     createdAt,
     updatedAt
   },
@@ -118,12 +123,6 @@ export interface CreateVariantProduct {
   description: string
   ingredients: string[]
   show: boolean
-  variants: {
-    title: string
-    icon: string
-    cost: number
-    weight: number
-  }[]
 }
 
 export const CreateVariantProduct = {
@@ -133,40 +132,14 @@ export const CreateVariantProduct = {
     title,
     description,
     ingredients,
-    show,
-    variants: {
-      type: 'array',
-      items: {
-        type: 'object',
-        properties: {
-          title,
-          icon,
-          cost,
-          weight
-        },
-        additionalProperties: false,
-        required: ['title', 'cost', 'weight'],
-        errorMessage: {
-          required: {
-            title: 'Укажите название варианта продукта',
-            cost: 'Укажите стоимость варианта продукта',
-            weight: 'Укажите вес варианта продукта'
-          }
-        }
-      },
-      minItems: 2,
-      errorMessage: {
-        minItems: 'Вариантов продукта должно быть не менее двух'
-      }
-    }
+    show
   },
   additionalProperties: false,
   required: [
     'title',
     'description',
     'ingredients',
-    'show',
-    'variants'
+    'show'
   ],
   errorMessage: {
     required: {

@@ -4,12 +4,18 @@ import {ProductRepository} from '@app/product/ProductRepository'
 import {CreateSingleProduct, CreateVariantProduct, UpdateSingleProduct} from '@app/product/schemas/entities'
 import {ProductType} from '@app/product/ProductType'
 import {ProductDoesNotExist} from '@app/product/product-error'
-import {Types} from 'mongoose'
+import {VariantService} from '@app/product/packages/variant/VariantService'
 
 
 export class ProductService extends GenericService<IProduct, ProductRepository> {
-  constructor(repository: ProductRepository) {
+  private variantService: VariantService
+  constructor(
+    repository: ProductRepository,
+    variantService: VariantService
+  ) {
     super(repository)
+
+    this.variantService = variantService
 
     this.Error.EntityExistsError = ProductDoesNotExist
   }
@@ -32,8 +38,7 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
       title: product.title,
       description: product.description,
       show: product.show,
-      ingredients: product.ingredients,
-      variants: product.variants
+      ingredients: product.ingredients
     })
   }
 
