@@ -36,7 +36,7 @@ export async function updateProductSingle(fastify: FastifyInstance, service: Pro
           admin: true
         },
         handler: async function(request, reply) {
-          const product = await service.findAndUpdateSingle(request.params.productId, request.body)
+          const product = await service.findAndUpdateSingleProduct(request.params.productId, request.body)
 
           reply
             .code(200)

@@ -1,6 +1,6 @@
 import {IProduct, ProductModel, IVariantProduct} from '@app/product/ProductModel'
 import {GenericRepository} from '@core/repository/GenericRepository'
-import {UpdateSingleProduct, VariantProduct} from '@app/product/schemas/entities'
+import {UpdateSingleProduct, UpdateVariantProduct, VariantProduct} from '@app/product/schemas/entities'
 import {Types} from 'mongoose'
 import {ProductType} from '@app/product/ProductType'
 
@@ -20,6 +20,20 @@ export class ProductRepository extends GenericRepository<IProduct> {
     )
   }
 
+  async findAndUpdateVariant(productId: string, update: UpdateVariantProduct): Promise<{_id: Types.ObjectId} | null> {
+    return this.findOneAndUpdate(
+      {
+        _id: new Types.ObjectId(productId),
+        type: ProductType.VARIANT
+      },
+      update,
+      {
+        new: true,
+        projection: {_id: 1}
+      }
+    )
+  }
+
   async findVariantProductById(productId: string): Promise<VariantProduct | null> {
     return this.Model.aggregate<VariantProduct>([
       {$match: {_id: new Types.ObjectId(productId), type: ProductType.VARIANT}},
@@ -28,9 +42,9 @@ export class ProductRepository extends GenericRepository<IProduct> {
           from: 'product_variants',
           let: {productId: '$_id'},
           pipeline: [
-            {$match: {_id: '$$productId'}},
+            {$match: {$expr: {productId: '$$productId'}}},
             {$project: {
-
+              productId: 0
             }}
           ],
           as: 'variants'

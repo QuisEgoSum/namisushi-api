@@ -190,3 +190,22 @@ export const UpdateSingleProduct = {
   },
   additionalProperties: false
 }
+
+export interface UpdateVariantProduct {
+  title?: string
+  description?: string
+  ingredients?: string[]
+  show?: boolean
+}
+
+export const UpdateVariantProduct = {
+  title: 'UpdateVariantProduct',
+  type: 'object',
+  properties: {
+    title,
+    description,
+    ingredients,
+    show
+  },
+  additionalProperties: false
+}

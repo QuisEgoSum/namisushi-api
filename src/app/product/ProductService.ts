@@ -4,7 +4,7 @@ import {ProductRepository} from '@app/product/ProductRepository'
 import {
   CreateSingleProduct,
   CreateVariantProduct,
-  UpdateSingleProduct,
+  UpdateSingleProduct, UpdateVariantProduct,
   VariantProduct
 } from '@app/product/schemas/entities'
 import {ProductType} from '@app/product/ProductType'
@@ -51,6 +51,7 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
   }
 
   async addVariant(productId: string, variant: CreateVariant): Promise<BaseVariant> {
+    await this.existsById(productId)
     return await this.variantService.create({
       productId: new Types.ObjectId(productId),
       title: variant.title,
@@ -61,18 +62,27 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
     })
   }
 
-  async findVariantById(productId: string): Promise<VariantProduct> {
+  async findVariantProductById(productId: string): Promise<VariantProduct> {
     const product = await this.repository.findVariantProductById(productId)
     if (!product) throw new this.Error.EntityNotExistsError()
     return product
   }
 
-  async findAndUpdateSingle(productId: string, update: UpdateSingleProduct) {
+  async findAndUpdateSingleProduct(productId: string, update: UpdateSingleProduct) {
     this.checkUpdateData(update)
     const product = await this.repository.findAndUpdateSingle(productId, update)
     if (!product) {
       throw new this.Error.EntityNotExistsError()
     }
     return product
+  }
+
+  async findAndUpdateVariantProduct(productId: string, update: UpdateVariantProduct) {
+    this.checkUpdateData(update)
+    const product = await this.repository.findAndUpdateVariant(productId, update)
+    if (!product) {
+      throw new this.Error.EntityNotExistsError()
+    }
+    return await this.findVariantProductById(productId)
   }
 }
