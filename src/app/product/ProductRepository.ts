@@ -1,8 +1,9 @@
-import {IProduct, ProductModel} from '@app/product/ProductModel'
+import {IProduct, ISingleProduct, ProductModel} from '@app/product/ProductModel'
 import {GenericRepository} from '@core/repository/GenericRepository'
 import {UpdateSingleProduct, UpdateVariantProduct, VariantProduct} from '@app/product/schemas/entities'
 import {Types} from 'mongoose'
 import {ProductType} from '@app/product/ProductType'
+import {DataList} from '@common/data'
 
 
 export class ProductRepository extends GenericRepository<IProduct> {
@@ -70,5 +71,27 @@ export class ProductRepository extends GenericRepository<IProduct> {
       {_id: new Types.ObjectId(productId), images: oldImages},
       {$set: {images: images}}
     )
+  }
+
+  async findAll(): Promise<DataList<ISingleProduct | VariantProduct>> {
+    const [singleList, variantList, total] = await Promise.all([
+      this.Model.find({type: ProductType.SINGLE}),
+      this.Model.aggregate<VariantProduct>([
+        {$match: {type: ProductType.VARIANT}},
+        {
+          $lookup: {
+            from: 'product_variants',
+            let: {productId: '$_id'},
+            pipeline: [
+              {$match: {$expr: {productId: '$$productId'}}},
+              {$project: {productId: 0}}
+            ],
+            as: 'variants'
+          }
+        }
+      ]),
+      this.Model.count()
+    ]) as unknown as [any[], any[], number]
+    return new DataList<ISingleProduct | VariantProduct>(total, 1, singleList.concat(variantList))
   }
 }

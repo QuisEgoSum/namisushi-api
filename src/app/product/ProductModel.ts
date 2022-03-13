@@ -44,6 +44,8 @@ const ProductSchema = new Schema<IProduct>(
     timestamps: true
   }
 )
+  .index({type: 1})
+  .index({show: 1, type: 1})
 
 
 export const ProductModel = model<IProduct>('Product', ProductSchema, 'products')

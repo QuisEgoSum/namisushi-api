@@ -142,4 +142,8 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
     }
     return images
   }
+
+  async findAll() {
+    return this.repository.findAll()
+  }
 }
