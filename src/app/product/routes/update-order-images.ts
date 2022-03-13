@@ -1,7 +1,8 @@
 import * as schemas from '../schemas'
 import type {FastifyInstance} from 'fastify'
 import type {ProductService} from '@app/product/ProductService'
-import {Ok} from '@common/schemas/response'
+import {BadRequest, NotFound, Ok} from '@common/schemas/response'
+import {ProductDoesNotExist, ProductImagesNotCompatibleError} from '@app/product/product-error'
 
 
 export interface UpdateOrderImagesRequest {
@@ -27,7 +28,9 @@ export async function updateOrderImages(fastify: FastifyInstance, service: Produ
           },
           body: schemas.entities.UpdateOrderImages,
           response: {
-            [200]: new Ok(schemas.properties.images, 'images')
+            [200]: new Ok(schemas.properties.images, 'images'),
+            [400]: new BadRequest(ProductImagesNotCompatibleError.schema()).paramsErrors(),
+            [404]: new NotFound(ProductDoesNotExist.schema())
           }
         },
         security: {

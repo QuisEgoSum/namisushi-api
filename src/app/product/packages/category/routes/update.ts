@@ -1,8 +1,8 @@
 import * as schemas from '../schemas'
-import {EntityDoesNotExistError, EntityExistsError} from '@error'
 import {BadRequest, NotFound, Ok} from '@common/schemas/response'
 import type {FastifyInstance} from 'fastify'
 import type {CategoryService} from '@app/product/packages/category/CategoryService'
+import {CategoryDoesNotExistError, CategoryExistsError} from '@app/product/packages/category/category-error'
 
 
 interface UpdateRequest {
@@ -28,8 +28,8 @@ export async function update(fastify: FastifyInstance, service: CategoryService)
           body: schemas.entities.CreateCategory,
           response: {
             [200]: new Ok(schemas.entities.BaseCategory, 'category'),
-            [400]: new BadRequest(EntityExistsError.schema()).bodyErrors(),
-            [404]: new NotFound(EntityDoesNotExistError.schema())
+            [400]: new BadRequest(CategoryExistsError.schema()).bodyErrors().updateError(),
+            [404]: new NotFound(CategoryDoesNotExistError.schema())
           }
         },
         security: {

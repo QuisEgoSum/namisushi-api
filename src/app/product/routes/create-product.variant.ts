@@ -1,5 +1,5 @@
 import * as schemas from '../schemas'
-import {Created} from '@common/schemas/response'
+import {BadRequest, Created} from '@common/schemas/response'
 import type {FastifyInstance} from 'fastify'
 import type {ProductService} from '@app/product/ProductService'
 
@@ -27,6 +27,7 @@ export async function createProductVariant(fastify: FastifyInstance, service: Pr
           body: schemas.entities.CreateVariantProduct,
           response: {
             [201]: new Created(schemas.entities.VariantProduct, 'product'),
+            [400]: new BadRequest().bodyErrors()
           }
         },
         security: {

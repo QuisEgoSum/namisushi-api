@@ -33,7 +33,7 @@ export async function updateVariant(fastify: FastifyInstance, service: ProductSe
           response: {
             [200]: new Created(variantSchemas.entities.BaseVariant, 'variant'),
             [400]: new BadRequest().bodyErrors().updateError(),
-            [404]: new NotFound(ProductDoesNotExist.schema(), VariantDoesNotExist.schema())
+            [404]: new NotFound(VariantDoesNotExist.schema())
           }
         },
         security: {

@@ -1,7 +1,7 @@
 import * as schemas from '../schemas'
 import {FastifyInstance} from 'fastify'
 import {ProductService} from '@app/product/ProductService'
-import {MessageResponse, NotFound} from '@common/schemas/response'
+import {BadRequest, MessageResponse, NotFound} from '@common/schemas/response'
 import {ProductDoesNotExist, ProductImageDoesNotExist} from '@app/product/product-error'
 
 
@@ -28,6 +28,7 @@ export async function detachImage(fastify: FastifyInstance, service: ProductServ
           },
           response: {
             [200]: new MessageResponse('Картинка удалена'),
+            [400]: new BadRequest().paramsErrors(),
             [404]: new NotFound(ProductDoesNotExist.schema(), ProductImageDoesNotExist.schema())
           }
         },

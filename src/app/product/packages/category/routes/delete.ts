@@ -1,7 +1,7 @@
 import * as schemas from '../schemas'
 import type {FastifyInstance} from 'fastify'
 import type {CategoryService} from '@app/product/packages/category/CategoryService'
-import {MessageResponse, NotFound} from '@common/schemas/response'
+import {BadRequest, MessageResponse, NotFound} from '@common/schemas/response'
 import {CategoryDoesNotExistError} from '@app/product/packages/category/category-error'
 
 
@@ -26,6 +26,7 @@ export async function deleteById(fastify: FastifyInstance, service: CategoryServ
           },
           response: {
             [200]: new MessageResponse('Категория удалена'),
+            [400]: new BadRequest().paramsErrors(),
             [404]: new NotFound(CategoryDoesNotExistError.schema())
           }
         },
