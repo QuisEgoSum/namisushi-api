@@ -19,11 +19,19 @@ export const CategoryExistsError = EntityExistsError.extends(
   }
 )
 
-export const ProductAlreadyInCategory = InvalidDataError.extends(
+export const ProductAlreadyInCategoryError = InvalidDataError.extends(
   {},
   {
-    error: 'ProductAlreadyInCategory',
+    error: 'ProductAlreadyInCategoryError',
     message: 'Продукт уже находится в категории',
     code: 5002
+  }
+)
+export const ProductNotInCategoryError = InvalidDataError.extends(
+  {},
+  {
+    error: 'ProductNotInCategoryError',
+    message: 'Продукт не находится в этой категории',
+    code: 5003
   }
 )

@@ -23,6 +23,8 @@ const CategorySchema = new Schema<ICategory>(
   }
 )
   .index({title: 1}, {unique: true})
+  .index({productIds: 1})
+  .index({_id: 1, productIds: 1})
 
 
 export const CategoryModel = model<ICategory>('ProductCategory', CategorySchema, 'product_categories')
