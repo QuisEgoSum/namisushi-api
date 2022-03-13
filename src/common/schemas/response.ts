@@ -47,7 +47,7 @@ export class MessageResponse {
   private required: string[]
   private description: string
   constructor(...messages: string[]) {
-    this.description = 'Response message'
+    this.description = 'Ok'
     this.type = 'object'
     this.properties = {
       message: {

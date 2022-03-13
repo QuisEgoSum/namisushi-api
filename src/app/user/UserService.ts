@@ -48,7 +48,7 @@ export class UserService extends BaseService<IUser, UserRepository> {
     this.Error.EntityNotExistsError = UserNotExistsError
   }
 
-  errorHandler(error: Error | BaseRepositoryError): IUser {
+  errorHandler<T>(error: Error | BaseRepositoryError): T {
     if (error instanceof BaseRepositoryError.UniqueKeyError) {
       if (error.key === 'username') {
         throw new UserExistsError({message: 'User with this username already exists'})

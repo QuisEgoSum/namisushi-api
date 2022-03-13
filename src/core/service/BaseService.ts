@@ -6,8 +6,7 @@ import type {
   UpdateQuery,
   FilterQuery,
   QueryOptions,
-  ReturnsNewDoc,
-  UpdateWithAggregationPipeline
+  ReturnsNewDoc
 } from 'mongoose'
 
 
@@ -27,7 +26,7 @@ export class BaseService<T, R extends BaseRepository<T>> implements IBaseService
     }
   }
 
-  errorHandler(error: Error | BaseRepositoryError): T {
+  errorHandler<T>(error: Error | BaseRepositoryError): T {
     if (error instanceof BaseRepositoryError.UniqueKeyError) {
       throw new this.Error.EntityExistsError(error)
     } else {
@@ -77,6 +76,7 @@ export class BaseService<T, R extends BaseRepository<T>> implements IBaseService
   async findByIdAndUpdate(id: string | Types.ObjectId, update: Partial<T>): Promise<T> {
     this.checkUpdateData(update)
     const document = await this.repository.findByIdAndUpdate(id, update, {new: true})
+      .catch(error => this.errorHandler(error))
 
     if (document === null) {
       throw new this.Error.EntityNotExistsError()
@@ -106,6 +106,7 @@ export class BaseService<T, R extends BaseRepository<T>> implements IBaseService
   async findOneAndUpdate(filter: FilterQuery<T>, update: UpdateQuery<T>, options?: QueryOptions & {upsert?: true} & ReturnsNewDoc): Promise<T> {
     this.checkUpdateData(update)
     const document = await this.repository.findOneAndUpdate(filter, update, options)
+      .catch(error => this.errorHandler(error))
 
     if (document === null) {
       throw new this.Error.EntityNotExistsError()
@@ -127,6 +128,7 @@ export class BaseService<T, R extends BaseRepository<T>> implements IBaseService
   async updateOne(filter?: FilterQuery<T>, update?: UpdateQuery<T>, options?: QueryOptions | null): Promise<void> {
     this.checkUpdateData(update)
     const result = await this.repository.updateOne(filter, update, options)
+      .catch(error => this.errorHandler(error))
 
     if (result.matchedCount === 0) {
       throw new this.Error.EntityNotExistsError()
@@ -137,6 +139,7 @@ export class BaseService<T, R extends BaseRepository<T>> implements IBaseService
   async updateById(id: string | Types.ObjectId, update?: UpdateQuery<T>, options?: QueryOptions | null): Promise<void> {
     this.checkUpdateData(update)
     const result = await this.repository.updateById(id, update, options)
+      .catch(error => this.errorHandler(error))
 
     if (result.matchedCount === 0) {
       throw new this.Error.EntityNotExistsError()

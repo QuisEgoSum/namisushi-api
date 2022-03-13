@@ -11,7 +11,6 @@ import {PageOptions} from '@core/repository/IBaseRepository'
 import {DataList} from '@common/data'
 import {AnyBulkWriteOperation, BulkWriteOptions, BulkWriteResult, DeleteResult, MongoServerError} from 'mongodb'
 import {BaseRepositoryError} from '@core/repository/BaseRepositoryError'
-import {BaseRepository} from '@core/repository/BaseRepository'
 
 
 export abstract class GenericRepository<T> implements IGenericRepository<T> {

@@ -28,7 +28,7 @@ export class GenericService<T, R extends IGenericRepository<T>> implements IGene
     }
   }
 
-  errorHandler(error: Error | BaseRepositoryError): T {
+  errorHandler<T>(error: Error | BaseRepositoryError): T {
     if (error instanceof BaseRepositoryError.UniqueKeyError) {
       throw new this.Error.EntityExistsError(error)
     } else {
@@ -44,7 +44,7 @@ export class GenericService<T, R extends IGenericRepository<T>> implements IGene
 
   async create<I extends T>(entity: Partial<I>): Promise<I> {
     return this.repository.create<I>(entity)
-      .catch(error => this.errorHandler(error)) as unknown as Promise<I>
+      .catch(error => this.errorHandler(error))
   }
 
   async deleteById(id: string): Promise<void> {
@@ -107,6 +107,7 @@ export class GenericService<T, R extends IGenericRepository<T>> implements IGene
   async findOneAndUpdate<I extends T>(filter: FilterQuery<I>, update: UpdateQuery<I>, options: QueryOptions & { upsert: true } & ReturnsNewDoc): Promise<I> {
     this.checkUpdateData(update)
     const document = await this.repository.findOneAndUpdate<I>(filter, update, options)
+      .catch(error => this.errorHandler(error))
 
     if (document === null) {
       throw new this.Error.EntityDoesNotExistError()
@@ -128,6 +129,7 @@ export class GenericService<T, R extends IGenericRepository<T>> implements IGene
   async updateOne<I extends T>(filter?: FilterQuery<I>, update?: UpdateQuery<I> | UpdateWithAggregationPipeline, options?: QueryOptions | null): Promise<void> {
     this.checkUpdateData(update)
     const result = await this.repository.updateOne<I>(filter, update, options)
+      .catch(error => this.errorHandler(error))
 
     if (result.matchedCount === 0) {
       throw new this.Error.EntityDoesNotExistError()
@@ -138,6 +140,7 @@ export class GenericService<T, R extends IGenericRepository<T>> implements IGene
   async updateById<I extends T>(id: string | Types.ObjectId, update?: UpdateQuery<I> | UpdateWithAggregationPipeline, options?: QueryOptions | null): Promise<void> {
     this.checkUpdateData(update)
     const result = await this.repository.updateById<I>(id, update, options)
+      .catch(error => this.errorHandler(error))
 
     if (result.matchedCount === 0) {
       throw new this.Error.EntityDoesNotExistError()
