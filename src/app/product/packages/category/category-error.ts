@@ -1,4 +1,4 @@
-import {EntityDoesNotExistError, EntityExistsError} from '@error'
+import {EntityDoesNotExistError, EntityExistsError, InvalidDataError} from '@error'
 
 
 export const CategoryDoesNotExistError = EntityDoesNotExistError.extends(
@@ -16,5 +16,14 @@ export const CategoryExistsError = EntityExistsError.extends(
     error: 'CategoryExistsError',
     message: 'Категория с таким именем уже существует',
     code: 5001
+  }
+)
+
+export const ProductAlreadyInCategory = InvalidDataError.extends(
+  {},
+  {
+    error: 'ProductAlreadyInCategory',
+    message: 'Продукт уже находится в категории',
+    code: 5002
   }
 )

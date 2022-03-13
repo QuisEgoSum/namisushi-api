@@ -1,7 +1,11 @@
 import {BaseService} from '@core/service'
 import {ICategory} from '@app/product/packages/category/CategoryModel'
 import {CategoryRepository} from '@app/product/packages/category/CategoryRepository'
-import {CategoryDoesNotExistError, CategoryExistsError} from '@app/product/packages/category/category-error'
+import {
+  CategoryDoesNotExistError,
+  CategoryExistsError,
+  ProductAlreadyInCategory
+} from '@app/product/packages/category/category-error'
 import {BaseRepositoryError} from '@core/repository'
 
 
@@ -27,5 +31,12 @@ export class CategoryService extends BaseService<ICategory, CategoryRepository> 
 
   async findAll() {
     return this.repository.find({})
+  }
+
+  async addProduct(categoryId: string, productId: string) {
+    const category = await this.repository.addCategory(categoryId, productId)
+    if (category) return category
+    await this.existsById(categoryId)
+    throw new ProductAlreadyInCategory()
   }
 }

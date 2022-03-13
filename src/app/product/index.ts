@@ -39,7 +39,11 @@ export async function initProduct(): Promise<Product> {
   const variant = await initVariant()
   const category = await initCategory()
 
-  return new Product(new ProductService(new ProductRepository(ProductModel), variant.service), variant, category)
+  return new Product(
+    new ProductService(new ProductRepository(ProductModel), variant.service, category.service),
+    variant,
+    category
+  )
 }
 
 

@@ -20,17 +20,21 @@ import {Types} from 'mongoose'
 import {MultipartFile} from 'fastify-multipart'
 import {config} from '@config'
 import {createFilepath, deleteFile, moveFile} from '@utils/fs'
+import {CategoryService} from '@app/product/packages/category/CategoryService'
 
 
 export class ProductService extends GenericService<IProduct, ProductRepository> {
   private variantService: VariantService
+  private categoryService: CategoryService
   constructor(
     repository: ProductRepository,
-    variantService: VariantService
+    variantService: VariantService,
+    categoryService: CategoryService
   ) {
     super(repository)
 
     this.variantService = variantService
+    this.categoryService = categoryService
 
     this.Error.EntityDoesNotExistError = ProductDoesNotExist
   }
@@ -145,5 +149,10 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
 
   async findAll() {
     return this.repository.findAll()
+  }
+
+  async addToCategory(productId: string, categoryId: string) {
+    await this.existsById(productId)
+    return await this.categoryService.addProduct(categoryId, productId)
   }
 }
