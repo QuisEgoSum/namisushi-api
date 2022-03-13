@@ -209,3 +209,25 @@ export const UpdateVariantProduct = {
   },
   additionalProperties: false
 }
+
+export const UpdateOrderImages = {
+  title: 'UpdateOrderImages',
+  type: 'object',
+  properties: {
+    images: {
+      type: 'array',
+      items: {type: 'string'},
+      minItems: 0,
+      errorMessage: {
+        minItems: 'Вы отправили пустой список картинок'
+      }
+    }
+  },
+  additionalProperties: false,
+  required: ['images'],
+  errorMessage: {
+    required: {
+      images: 'Вы не отправили список картинок'
+    }
+  }
+}

@@ -18,8 +18,8 @@ export async function attachImages(fastify: FastifyInstance, service: ProductSer
   return fastify
     .route<AttachImagesRequest>(
       {
-        method: 'PATCH',
-        url: '/admin/product/:productId/files',
+        method: 'PUT',
+        url: '/admin/product/:productId/images',
         schema: {
           summary: 'Добавить продукту картинки',
           description: 'Один или несколько файлов в прозвольном свойстве или свойствах'

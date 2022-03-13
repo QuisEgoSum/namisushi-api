@@ -28,3 +28,12 @@ export const ProductImageDoesNotExist = EntityDoesNotExistError.extends(
     code: 3002
   }
 )
+
+export const ProductImagesNotCompatibleError = InvalidDataError.extends(
+  {},
+  {
+    error: 'ProductImagesNotCompatibleError',
+    message: 'Предоставленный список изображений не соответствует фактическому',
+    code: 3003
+  }
+)
