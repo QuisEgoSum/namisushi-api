@@ -3,7 +3,6 @@ import {GenericRepository} from '@core/repository/GenericRepository'
 import {UpdateSingleProduct, UpdateVariantProduct, VariantProduct} from '@app/product/schemas/entities'
 import {Types} from 'mongoose'
 import {ProductType} from '@app/product/ProductType'
-import {DataList} from '@common/data'
 
 
 export class ProductRepository extends GenericRepository<IProduct> {
@@ -92,5 +91,26 @@ export class ProductRepository extends GenericRepository<IProduct> {
       ])
     ]) as unknown as [any[], any[]]
     return singleList.concat(variantList)
+  }
+
+  findSingleVisible() {
+    return this.find<ISingleProduct>({type: ProductType.SINGLE, visible: true})
+  }
+
+  findVariantVisible() {
+    return this.Model.aggregate<VariantProduct>([
+      {$match: {type: ProductType.VARIANT, visible: true}},
+      {
+        $lookup: {
+          from: 'product_variants',
+          let: {productId: '$_id'},
+          pipeline: [
+            {$match: {$expr: {productId: '$$productId', visible: true}}},
+            {$project: {productId: 0}}
+          ],
+          as: 'variants'
+        }
+      }
+    ])
   }
 }

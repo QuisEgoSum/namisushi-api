@@ -21,6 +21,7 @@ import {MultipartFile} from 'fastify-multipart'
 import {config} from '@config'
 import {createFilepath, deleteFile, moveFile} from '@utils/fs'
 import {CategoryService} from '@app/product/packages/category/CategoryService'
+import {ICategory} from '@app/product/packages/category/CategoryModel'
 
 
 export class ProductService extends GenericService<IProduct, ProductRepository> {
@@ -154,5 +155,18 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
   async addToCategory(productId: string, categoryId: string) {
     await this.existsById(productId)
     return await this.categoryService.addProduct(categoryId, productId)
+  }
+
+  async findVisible(): Promise<{categories: ICategory[], products: Array<ISingleProduct | VariantProduct>}> {
+    const [categories, single, variant] = await Promise.all([
+      this.categoryService.findVisible(),
+      this.repository.findSingleVisible(),
+      this.repository.findVariantVisible()
+    ])
+    return {
+      categories,
+      //@ts-ignore
+      products: single.concat(variant)
+    }
   }
 }

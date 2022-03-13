@@ -61,7 +61,7 @@ export interface VariantProduct {
 
 
 export const VariantProduct = {
-  title: 'SingleProduct',
+  title: 'VariantProduct',
   type: 'object',
   properties: {
     _id,

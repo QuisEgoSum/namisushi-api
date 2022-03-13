@@ -28,7 +28,7 @@ export async function updateOrderImages(fastify: FastifyInstance, service: Produ
           },
           body: schemas.entities.UpdateOrderImages,
           response: {
-            [200]: new Ok(schemas.properties.images, 'images'),
+            [200]: Ok.wrapper(schemas.properties.images, 'images'),
             [400]: new BadRequest(ProductImagesNotCompatibleError.schema()).paramsErrors(),
             [404]: new NotFound(ProductDoesNotExist.schema())
           }

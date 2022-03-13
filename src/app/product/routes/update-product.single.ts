@@ -27,7 +27,7 @@ export async function updateProductSingle(fastify: FastifyInstance, service: Pro
           },
           body: schemas.entities.UpdateSingleProduct,
           response: {
-            [200]: new Ok(schemas.entities.SingleProduct, 'product'),
+            [200]: Ok.wrapper(schemas.entities.SingleProduct, 'product'),
             [400]: new BadRequest().bodyErrors().updateError(),
             [404]: new NotFound(ProductDoesNotExist.schema())
           }

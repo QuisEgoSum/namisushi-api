@@ -16,13 +16,21 @@ export class Ok extends Response {
   private description: string
   private properties: Record<string, any>
   private required: string[]
-  constructor(schema: Record<string, any>, entity: string) {
+
+  static wrapper(schema: Record<string, any>, entity: string): Ok {
+    return new Ok(
+      {
+        [entity]: schema
+      },
+      [entity]
+    )
+  }
+
+  constructor(properties: Record<string, any>, required: string[] = []) {
     super()
     this.description = 'Ok'
-    this.properties = {
-      [entity]: schema
-    }
-    this.required = [entity]
+    this.properties = properties
+    this.required = required
   }
 }
 

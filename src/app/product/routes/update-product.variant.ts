@@ -27,7 +27,7 @@ export async function updateProductVariant(fastify: FastifyInstance, service: Pr
           },
           body: schemas.entities.UpdateVariantProduct,
           response: {
-            [200]: new Ok(schemas.entities.VariantProduct, 'product'),
+            [200]: Ok.wrapper(schemas.entities.VariantProduct, 'product'),
             [400]: new BadRequest().bodyErrors().updateError(),
             [404]: new NotFound(ProductDoesNotExist.schema())
           }

@@ -46,4 +46,8 @@ export class CategoryService extends BaseService<ICategory, CategoryRepository> 
     await this.existsById(categoryId)
     throw new ProductNotInCategoryError()
   }
+
+  findVisible() {
+    return this.repository.find({visible: true})
+  }
 }

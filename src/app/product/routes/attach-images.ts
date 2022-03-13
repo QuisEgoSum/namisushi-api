@@ -67,7 +67,7 @@ export async function attachImages(fastify: FastifyInstance, service: ProductSer
             }
           },
           response: {
-            [200]: new Ok(schemas.properties.images, 'images'),
+            [200]: Ok.wrapper(schemas.properties.images, 'images'),
             [400]: new BadRequest().bodyErrors(),
             [404]: new NotFound(ProductDoesNotExist.schema())
           }

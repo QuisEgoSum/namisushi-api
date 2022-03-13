@@ -14,7 +14,7 @@ export async function find(fastify: FastifyInstance, service: CategoryService) {
           summary: 'Получить категории',
           tags: ['Управление категориями'],
           response: {
-            [200]: new Ok({type: 'array', items: schemas.entities.BaseCategory}, 'categories')
+            [200]: Ok.wrapper({type: 'array', items: schemas.entities.BaseCategory}, 'categories')
           }
         },
         security: {
