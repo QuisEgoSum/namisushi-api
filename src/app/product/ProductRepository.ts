@@ -73,8 +73,8 @@ export class ProductRepository extends GenericRepository<IProduct> {
     )
   }
 
-  async findAll(): Promise<DataList<ISingleProduct | VariantProduct>> {
-    const [singleList, variantList, total] = await Promise.all([
+  async findAll(): Promise<Array<ISingleProduct | VariantProduct>> {
+    const [singleList, variantList] = await Promise.all([
       this.Model.find({type: ProductType.SINGLE}),
       this.Model.aggregate<VariantProduct>([
         {$match: {type: ProductType.VARIANT}},
@@ -89,9 +89,8 @@ export class ProductRepository extends GenericRepository<IProduct> {
             as: 'variants'
           }
         }
-      ]),
-      this.Model.count()
-    ]) as unknown as [any[], any[], number]
-    return new DataList<ISingleProduct | VariantProduct>(total, 1, singleList.concat(variantList))
+      ])
+    ]) as unknown as [any[], any[]]
+    return singleList.concat(variantList)
   }
 }

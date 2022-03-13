@@ -26,6 +26,6 @@ export class CategoryService extends BaseService<ICategory, CategoryRepository> 
   }
 
   async findAll() {
-    return this.repository.findAll()
+    return this.repository.find({})
   }
 }
