@@ -13,6 +13,7 @@ export const title = {
     minLength: 'Название категории не может быть короче 1 символа'
   }
 }
+export const visible = {type: 'boolean'}
 export const productIds = {
   type: 'array',
   items: new ObjectId()

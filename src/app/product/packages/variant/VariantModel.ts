@@ -5,7 +5,7 @@ export interface IVariant {
   _id: Types.ObjectId
   productId: Types.ObjectId
   title: string
-  show: boolean
+  visible: boolean
   icon: string | null
   cost: number
   weight: number
@@ -19,7 +19,7 @@ const VariantSchema = new Schema<IVariant>(
       type: Schema.Types.ObjectId,
       ref: 'Product'
     },
-    show: Boolean,
+    visible: Boolean,
     title: String,
     icon: String,
     cost: Number,
@@ -33,8 +33,8 @@ const VariantSchema = new Schema<IVariant>(
   }
 )
   .index({productId: 1})
-  .index({show: 1})
-  .index({productId: 1, show: 1})
+  .index({visible: 1})
+  .index({productId: 1, visible: 1})
 
 
 export const VariantModel = model<IVariant>('ProductVariant', VariantSchema, 'product_variants')

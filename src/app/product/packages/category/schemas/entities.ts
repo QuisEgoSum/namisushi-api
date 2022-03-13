@@ -1,4 +1,4 @@
-import {_id, createdAt, productIds, title, updatedAt} from '@app/product/packages/category/schemas/properties'
+import {_id, createdAt, productIds, title, updatedAt, visible} from '@app/product/packages/category/schemas/properties'
 
 
 export const BaseCategory = {
@@ -7,6 +7,7 @@ export const BaseCategory = {
   properties: {
     _id,
     title,
+    visible,
     productIds,
     createdAt,
     updatedAt
@@ -23,38 +24,37 @@ export const BaseCategory = {
 
 export interface CreateCategory {
   title: string
+  visible: boolean
 }
 
 export const CreateCategory = {
   title: 'CreateCategory',
   type: 'object',
   properties: {
-    title
+    title,
+    visible
   },
   additionalProperties: false,
-  required: ['title'],
+  required: ['title', 'visible'],
   errorMessage: {
     required: {
-      title: 'Укажите название категории'
+      title: 'Укажите название категории',
+      visible: 'Укажите является ли категория видимой'
     }
   }
 }
 
 export interface UpdateCategory {
   title: string
+  visible: boolean
 }
 
 export const UpdateCategory = {
   title: 'UpdateCategory',
   type: 'object',
   properties: {
-    title
+    title,
+    visible
   },
-  additionalProperties: false,
-  required: ['title'],
-  errorMessage: {
-    required: {
-      title: 'Укажите название категории'
-    }
-  }
+  additionalProperties: false
 }

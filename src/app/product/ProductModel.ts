@@ -4,7 +4,7 @@ import {ProductType} from '@app/product/ProductType'
 
 interface ProductCommon {
   _id: Types.ObjectId
-  show: boolean
+  visible: boolean
   title: string
   description: string
   ingredients: string[]
@@ -28,7 +28,7 @@ export type IProduct = ISingleProduct | IVariantProduct
 
 const ProductSchema = new Schema<IProduct>(
   {
-    show: Boolean,
+    visible: Boolean,
     title: String,
     description: String,
     ingredients: [String],
@@ -45,7 +45,7 @@ const ProductSchema = new Schema<IProduct>(
   }
 )
   .index({type: 1})
-  .index({show: 1, type: 1})
+  .index({visible: 1, type: 1})
 
 
 export const ProductModel = model<IProduct>('Product', ProductSchema, 'products')

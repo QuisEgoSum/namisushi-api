@@ -44,7 +44,7 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
       type: ProductType.SINGLE,
       title: product.title,
       description: product.description,
-      show: product.show,
+      visible: product.visible,
       cost: product.cost,
       ingredients: product.ingredients,
       weight: product.weight
@@ -56,7 +56,7 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
       type: ProductType.VARIANT,
       title: product.title,
       description: product.description,
-      show: product.show,
+      visible: product.visible,
       ingredients: product.ingredients
     })
   }
@@ -66,7 +66,7 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
     return await this.variantService.create({
       productId: new Types.ObjectId(productId),
       title: variant.title,
-      show: variant.show,
+      visible: variant.visible,
       icon: variant.icon,
       cost: variant.cost,
       weight: variant.weight

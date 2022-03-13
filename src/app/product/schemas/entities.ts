@@ -3,7 +3,7 @@ import {
   createdAt,
   description,
   ingredients,
-  show,
+  visible,
   title,
   typeSingle, typeVariant,
   updatedAt, weight, images, type
@@ -22,7 +22,7 @@ export const SingleProduct = {
     description,
     ingredients,
     images,
-    show,
+    visible,
     type: typeSingle,
     cost,
     weight,
@@ -36,7 +36,7 @@ export const SingleProduct = {
     'description',
     'ingredients',
     'images',
-    'show',
+    'visible',
     'type',
     'cost',
     'weight',
@@ -49,7 +49,7 @@ export const SingleProduct = {
 export interface VariantProduct {
   _id: Types.ObjectId
   type: ProductType.VARIANT
-  show: boolean
+  visible: boolean
   title: string
   description: string
   ingredients: string[]
@@ -69,7 +69,7 @@ export const VariantProduct = {
     description,
     ingredients,
     images,
-    show,
+    visible,
     type: typeVariant,
     variants: {
       type: 'array',
@@ -86,7 +86,7 @@ export const VariantProduct = {
     'description',
     'ingredients',
     'images',
-    'show',
+    'visible',
     'type',
     'variants',
     'createdAt',
@@ -103,7 +103,7 @@ export const BaseProduct = {
     description,
     ingredients,
     images,
-    show,
+    visible,
     type,
     cost,
     weight,
@@ -122,7 +122,7 @@ export interface CreateSingleProduct {
   title: string
   description: string
   ingredients: string[]
-  show: boolean
+  visible: boolean
   cost: number
   weight: number
 }
@@ -134,7 +134,7 @@ export const CreateSingleProduct = {
     title,
     description,
     ingredients,
-    show,
+    visible,
     cost,
     weight
   },
@@ -143,7 +143,7 @@ export const CreateSingleProduct = {
     'title',
     'description',
     'ingredients',
-    'show',
+    'visible',
     'cost',
     'weight'
   ],
@@ -152,7 +152,7 @@ export const CreateSingleProduct = {
       title: 'Укажите название продукта',
       description: 'Укажите описание продукта',
       ingredients: 'Укажите список ингридентов продукта',
-      show: 'Укажите статус отображения продукта',
+      visible: 'Укажите статус отображения продукта',
       cost: 'Укажите стоимость продукта',
       weight: 'Укажите вес продукта'
     }
@@ -163,7 +163,7 @@ export interface CreateVariantProduct {
   title: string
   description: string
   ingredients: string[]
-  show: boolean
+  visible: boolean
 }
 
 export const CreateVariantProduct = {
@@ -173,21 +173,21 @@ export const CreateVariantProduct = {
     title,
     description,
     ingredients,
-    show
+    visible
   },
   additionalProperties: false,
   required: [
     'title',
     'description',
     'ingredients',
-    'show'
+    'visible'
   ],
   errorMessage: {
     required: {
       title: 'Укажите название продукта',
       description: 'Укажите описание продукта',
       ingredients: 'Укажите список ингридентов продукта',
-      show: 'Укажите статус отображения продукта',
+      visible: 'Укажите статус отображения продукта',
     }
   }
 }
@@ -196,7 +196,7 @@ export interface UpdateSingleProduct {
   title?: string
   description?: string
   ingredients?: string[]
-  show?: boolean
+  visible?: boolean
   cost?: number
   weight?: number
 }
@@ -208,7 +208,7 @@ export const UpdateSingleProduct = {
     title,
     description,
     ingredients,
-    show,
+    visible,
     cost,
     weight
   },
@@ -219,7 +219,7 @@ export interface UpdateVariantProduct {
   title?: string
   description?: string
   ingredients?: string[]
-  show?: boolean
+  visible?: boolean
 }
 
 export const UpdateVariantProduct = {
@@ -229,7 +229,7 @@ export const UpdateVariantProduct = {
     title,
     description,
     ingredients,
-    show
+    visible
   },
   additionalProperties: false
 }

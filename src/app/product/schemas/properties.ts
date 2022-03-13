@@ -3,7 +3,7 @@ import {ProductType} from '@app/product/ProductType'
 
 
 export const _id = new ObjectId({errorMessage: 'Невалидный уникальный идентификатор продукта'})
-export const show = {type: 'boolean'}
+export const visible = {type: 'boolean'}
 export const title = {
   type: 'string',
   minLength: 1,
