@@ -6,3 +6,4 @@ src/**/*.js
 *.png
 *.jpg
 image/
+package-lock.json
