@@ -97,24 +97,7 @@ export const VariantProduct = {
 export const BaseProduct = {
   title: 'ProductBase',
   type: 'object',
-  properties: {
-    _id,
-    title,
-    description,
-    ingredients,
-    images,
-    visible,
-    type,
-    cost,
-    weight,
-    variants: {
-      type: 'array',
-      items: BaseVariant
-    },
-    createdAt,
-    updatedAt
-  },
-  additionalProperties: false,
+  additionalProperties: true,
   oneOf: [SingleProduct, VariantProduct]
 }
 
