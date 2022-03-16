@@ -29,7 +29,7 @@ export async function addCategory(fastify: FastifyInstance, service: ProductServ
             categoryId: categorySchemas.properties._id
           },
           response: {
-            [200]: Ok.wrapper(categorySchemas.entities.BaseCategory, 'category'),
+            [200]: Ok.fromEntity(categorySchemas.entities.BaseCategory, 'category'),
             [400]: new BadRequest(ProductAlreadyInCategoryError.schema()).paramsErrors(),
             [404]: new NotFound(ProductDoesNotExist.schema(), CategoryDoesNotExistError.schema())
           }

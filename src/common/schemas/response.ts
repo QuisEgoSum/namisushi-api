@@ -17,7 +17,7 @@ export class Ok extends Response {
   private properties: Record<string, any>
   private required: string[]
 
-  static wrapper(schema: Record<string, any>, entity: string): Ok {
+  static fromEntity(schema: Record<string, any>, entity: string): Ok {
     return new Ok(
       {
         [entity]: schema

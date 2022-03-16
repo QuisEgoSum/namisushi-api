@@ -15,7 +15,7 @@ export async function find(fastify: FastifyInstance, service: ProductService) {
           description: 'Запрос без пагинации',
           tags: ['Управление продуктами'],
           response: {
-            [200]: Ok.wrapper({type: 'array', items: schemas.entities.BaseProduct}, 'products')
+            [200]: Ok.fromEntity({type: 'array', items: schemas.entities.BaseProduct}, 'products')
           }
         },
         security: {

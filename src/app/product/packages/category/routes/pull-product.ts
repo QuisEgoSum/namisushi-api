@@ -27,7 +27,7 @@ export async function pullProduct(fastify: FastifyInstance, service: CategorySer
             categoryId: schemas.properties._id
           },
           response: {
-            [200]: Ok.wrapper(schemas.entities.BaseCategory, 'category'),
+            [200]: Ok.fromEntity(schemas.entities.BaseCategory, 'category'),
             [400]: new BadRequest().paramsErrors(),
             [404]: new NotFound(CategoryDoesNotExistError.schema())
           }
