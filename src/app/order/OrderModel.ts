@@ -15,7 +15,9 @@ export interface IOrder {
   condition: OrderCondition,
   delivery: boolean
   deliveryCost?: number
-  discount?: OrderDiscount
+  discount?: {
+    type: OrderDiscount
+  }
   additionalInformation?: string
   deliveryCalculateManually: boolean
   time?: number
@@ -50,8 +52,10 @@ const OrderSchema = new Schema<IOrder>(
     },
     delivery: Boolean,
     discount: {
-      type: String,
-      enum: Object.values(OrderDiscount)
+      type: {
+        type: String,
+        enum: Object.values(OrderDiscount)
+      }
     },
     additionalInformation: String,
     deliveryCalculateManually: Boolean,

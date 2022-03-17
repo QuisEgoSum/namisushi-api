@@ -3,12 +3,21 @@ import {
   address, client, condition,
   cost, createdAt, delivery,
   deliveryCalculateManually,
-  deliveryCost, discount, isTestOrder,
+  deliveryCost, discountType, isTestOrder,
   numberOfProducts, phone, productCost,
-  productId, productWeight, time, updatedAt,
+  productId, productWeight, updatedAt,
   username, variantId, weight
 } from '@app/order/schemas/properties'
 
+
+export const discount = {
+  type: 'object',
+  properties: {
+    type: discountType
+  },
+  additionalProperties: false,
+  required: ['type']
+}
 
 export const OrderedProductList = {
   title: 'OrderedProductList',
@@ -82,7 +91,6 @@ export const BaseOrder = {
     discount,
     additionalInformation,
     deliveryCalculateManually,
-    time,
     products: OrderedProductList,
     isTestOrder,
     createdAt,
@@ -115,7 +123,6 @@ export interface CreateOrder {
   delivery: boolean
   deliveryCost?: number | null
   additionalInformation?: string
-  time?: number
   products: {
     product: string
     number: string
@@ -134,7 +141,6 @@ export const CreateOrder = {
     delivery,
     deliveryCost,
     additionalInformation,
-    time,
     products: CreateOrderProductList,
     isTestOrder
   },

@@ -82,7 +82,7 @@ export const delivery = {
     type: 'Флаг доставки должен быть логическим значением'
   }
 }
-export const discount = {
+export const discountType = {
   description: 'Идентификатор скидки, примененной к заказу',
   type: 'string',
   enum: Object.values(OrderDiscount)
