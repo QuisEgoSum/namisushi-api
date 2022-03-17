@@ -43,7 +43,7 @@ export function createDocsHook() {
 
     routeOptions.schema.response[400].addSchema(new RequestHandlingError().schema())
 
-    if (routeOptions.security?.auth) {
+    if (routeOptions.security?.auth === true) {
       routeOptions.schema.security.push({UserSession: []})
       routeOptions.schema.response[401] = new Unauthorized()
     }
