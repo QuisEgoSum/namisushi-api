@@ -24,8 +24,7 @@ export async function create(fastify: FastifyInstance, service: OrderService) {
           }
         },
         security: {
-          auth: true,
-          admin: true
+          auth: 'OPTIONAL'
         },
         handler: async function(request, reply) {
           const order = await service.createOrder(request.body, request.session.userId)

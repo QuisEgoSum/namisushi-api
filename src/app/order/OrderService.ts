@@ -13,7 +13,7 @@ export class OrderService extends BaseService<IOrder, OrderRepository> {
     this.Error.EntityNotExistsError = OrderDoesNotExistError
   }
 
-  async createOrder(order: CreateOrder, userId: Types.ObjectId) {
+  async createOrder(order: CreateOrder, userId: Types.ObjectId | null) {
     return null
   }
 }

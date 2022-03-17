@@ -2,14 +2,13 @@ import {FastifyRequest, RouteOptions} from 'fastify'
 import type {UserSession} from '@app/user/packages/session/SessionModel'
 import type {User} from '@app/user'
 
-
 declare module 'fastify' {
   interface FastifyRequest {
-    session: UserSession
+    session: UserSession | {sessionId: null, userId: null, userRole: null}
   }
   interface RouteOptions {
     security: {
-      auth: boolean,
+      auth: boolean | 'OPTIONAL',
       admin?: boolean
     }
   }
@@ -23,6 +22,16 @@ export interface CreateSecurityHookOptions {
 export async function createSecurityHook({user}: CreateSecurityHookOptions) {
   async function auth(request: FastifyRequest) {
     request.session = await user.authorization(request.cookies.sessionId)
+    request.log.info(request.session)
+  }
+
+  async function optionalAuth(request: FastifyRequest) {
+    try {
+      request.session = await user.authorization(request.cookies.sessionId)
+      request.log.info(request.session)
+    } catch {
+      request.session = {sessionId: null, userId: null, userRole: null}
+    }
   }
 
   async function isAdmin(request: FastifyRequest) {
@@ -40,8 +49,10 @@ export async function createSecurityHook({user}: CreateSecurityHookOptions) {
     if (routeOptions.security?.admin) {
       routeOptions.onRequest.unshift(isAdmin)
     }
-    if (routeOptions.security?.auth) {
+    if (routeOptions.security?.auth == true) {
       routeOptions.onRequest.unshift(auth)
+    } else if (routeOptions.security?.auth === 'OPTIONAL') {
+      routeOptions.onRequest.unshift(optionalAuth)
     }
   }
 }
