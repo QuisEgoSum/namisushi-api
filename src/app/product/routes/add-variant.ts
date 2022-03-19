@@ -3,7 +3,7 @@ import * as variantSchemas from '@app/product/packages/variant/schemas'
 import type {FastifyInstance} from 'fastify'
 import type {ProductService} from '@app/product/ProductService'
 import {BadRequest, Created, NotFound} from '@common/schemas/response'
-import {ProductDoesNotExist} from '@app/product/product-error'
+import {ProductDoesNotExistError} from '@app/product/product-error'
 
 
 interface AddVariantRequest {
@@ -30,7 +30,7 @@ export async function addVariant(fastify: FastifyInstance, service: ProductServi
           response: {
             [201]: new Created(variantSchemas.entities.BaseVariant, 'variant'),
             [400]: new BadRequest().bodyErrors().paramsErrors(),
-            [404]: new NotFound(ProductDoesNotExist.schema())
+            [404]: new NotFound(ProductDoesNotExistError.schema())
           }
         },
         security: {

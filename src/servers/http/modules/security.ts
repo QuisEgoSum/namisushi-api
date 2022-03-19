@@ -4,7 +4,8 @@ import type {User} from '@app/user'
 
 declare module 'fastify' {
   interface FastifyRequest {
-    session: UserSession | {sessionId: null, userId: null, userRole: null}
+    session: UserSession
+    optionalSession: UserSession | {sessionId: null, userId: null, userRole: null}
   }
   interface RouteOptions {
     security: {
@@ -27,10 +28,10 @@ export async function createSecurityHook({user}: CreateSecurityHookOptions) {
 
   async function optionalAuth(request: FastifyRequest) {
     try {
-      request.session = await user.authorization(request.cookies.sessionId)
-      request.log.info(request.session)
+      request.optionalSession = await user.authorization(request.cookies.sessionId)
+      request.log.info(request.optionalSession)
     } catch {
-      request.session = {sessionId: null, userId: null, userRole: null}
+      request.optionalSession = {sessionId: null, userId: null, userRole: null}
     }
   }
 

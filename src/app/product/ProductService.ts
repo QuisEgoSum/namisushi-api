@@ -1,27 +1,29 @@
 import {GenericService} from '@core/service'
-import {IProduct, ISingleProduct, IVariantProduct} from './ProductModel'
-import {ProductRepository} from '@app/product/ProductRepository'
+import {ProductType} from '@app/product/ProductType'
 import {
+  MaximumImagesExceededError,
+  ProductDoesNotExistError,
+  ProductImageDoesNotExist,
+  ProductImagesNotCompatibleError, ProductsDoNotExistError, ProductVariantsDoNotExistError
+} from '@app/product/product-error'
+import {Types} from 'mongoose'
+import {createFilepath, deleteFile, moveFile} from '@utils/fs'
+import {config} from '@config'
+import type {IProduct, ISingleProduct, IVariantProduct} from './ProductModel'
+import type {ProductRepository} from '@app/product/ProductRepository'
+import type {
   CreateSingleProduct,
   CreateVariantProduct,
   UpdateSingleProduct, UpdateVariantProduct,
   VariantProduct
 } from '@app/product/schemas/entities'
-import {ProductType} from '@app/product/ProductType'
-import {
-  MaximumImagesExceededError,
-  ProductDoesNotExist,
-  ProductImageDoesNotExist,
-  ProductImagesNotCompatibleError
-} from '@app/product/product-error'
-import {VariantService} from '@app/product/packages/variant/VariantService'
-import {BaseVariant, CreateVariant, UpdateVariant} from '@app/product/packages/variant/schemas/entities'
-import {Types} from 'mongoose'
-import {MultipartFile} from 'fastify-multipart'
-import {config} from '@config'
-import {createFilepath, deleteFile, moveFile} from '@utils/fs'
-import {CategoryService} from '@app/product/packages/category/CategoryService'
-import {ICategory} from '@app/product/packages/category/CategoryModel'
+import type {BaseVariant, CreateVariant, UpdateVariant} from '@app/product/packages/variant/schemas/entities'
+import type {VariantService} from '@app/product/packages/variant/VariantService'
+import type {CategoryService} from '@app/product/packages/category/CategoryService'
+import type {ICategory} from '@app/product/packages/category/CategoryModel'
+import type {CreateOrderProduct, CreateOrderSingleProduct, CreateOrderVariantProduct} from '@app/order/schemas/entities'
+import type {MultipartFile} from 'fastify-multipart'
+import {IOrderProduct} from '@app/order/OrderModel'
 
 
 export class ProductService extends GenericService<IProduct, ProductRepository> {
@@ -37,7 +39,7 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
     this.variantService = variantService
     this.categoryService = categoryService
 
-    this.Error.EntityDoesNotExistError = ProductDoesNotExist
+    this.Error.EntityDoesNotExistError = ProductDoesNotExistError
   }
 
   async createSingle(product: CreateSingleProduct) {
@@ -168,5 +170,169 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
       //@ts-ignore
       products: single.concat(variant)
     }
+  }
+
+  private addMissingProducts(array: string[], expected: string[] | IterableIterator<string>, actual: {_id: Types.ObjectId}[]) {
+    const expectedSet = new Set(expected)
+    actual.forEach(product => expectedSet.delete(String(product._id)))
+    array.push(...expectedSet)
+  }
+
+  async findAndCalculateProducts(sourceProducts: CreateOrderProduct[])/*: Promise<IOrderProduct>*/ {
+    const sourceSingleProductsMap: Map<string, CreateOrderSingleProduct> = new Map()
+    const sourceVariantProductsMap: Map<string, Map<string, CreateOrderVariantProduct>> = new Map()
+    const singleProductsMap: Map<string, {cost: number, weight: number}> = new Map()
+    const variantProductsMap: Map<string, Map<string, {cost: number, weight: number}>> = new Map()
+    const products: IOrderProduct[] = []
+    for (const product of sourceProducts) {
+      //SINGLE
+      if (!('variantId' in product)) {
+        const value = sourceSingleProductsMap.get(product.productId)
+        if (value !== undefined) {
+          value.number += product.number
+        } else {
+          sourceSingleProductsMap.set(product.productId, product)
+        }
+        continue
+      }
+      //VARIANT
+      let products = sourceVariantProductsMap.get(product.productId)
+      if (products === undefined) {
+        products = new Map()
+        sourceVariantProductsMap.set(product.productId, products)
+      }
+      const value = products.get(product.variantId)
+      if (value !== undefined) {
+        value.number += product.number
+      } else {
+        products.set(product.variantId, product)
+      }
+    }
+    const [singleProducts, variantProducts] = await Promise.all([
+      this.repository.findOrderSingleVisibleByIds(Array.from(sourceSingleProductsMap.keys())),
+      this.repository.findOrderVariantVisibleByIds(
+        Array.from(sourceVariantProductsMap.keys()),
+        Array.from(Array.from(sourceVariantProductsMap.values()).map(value => Array.from(value.keys())).flat())
+      )
+    ])
+    const notExistProductIds: string[] = []
+    if (singleProducts.length !== sourceSingleProductsMap.size) {
+      this.addMissingProducts(notExistProductIds, sourceSingleProductsMap.keys(), singleProducts)
+    }
+    if (variantProducts.length !== sourceVariantProductsMap.size) {
+      this.addMissingProducts(notExistProductIds, sourceVariantProductsMap.keys(), variantProducts)
+    }
+    if (notExistProductIds.length) {
+      throw new ProductsDoNotExistError({productIds: notExistProductIds})
+    }
+    singleProducts.forEach(product => singleProductsMap.set(String(product._id), {cost: product.cost, weight: product.weight}))
+    variantProducts.forEach(
+      product => variantProductsMap
+        .set(String(product._id), new Map(
+          product.variants.map(variant => [String(variant._id), {cost: variant.cost, weight: variant.weight}])
+        ))
+    )
+    const notExistVariants: {productId: string, variantId: string}[] = []
+    for (const [productId, sourceVariantsMap] of sourceVariantProductsMap.entries()) {
+      const variantsMap = variantProductsMap.get(productId)
+      if (!variantsMap) {
+        throw new ProductsDoNotExistError({productIds: [productId]})
+      }
+      for (const [variantId, sourceVariant] of sourceVariantsMap.entries()) {
+        const variant = variantsMap.get(variantId)
+        if (!variant) {
+          notExistVariants.push({productId, variantId})
+          continue
+        }
+        products.push({
+          productId: new Types.ObjectId(productId),
+          variantId: new Types.ObjectId(variantId),
+          cost: variant.cost,
+          weight: variant.weight,
+          number: sourceVariant.number
+        })
+      }
+    }
+    if (notExistVariants.length) {
+      throw new ProductVariantsDoNotExistError({variants: notExistVariants})
+    }
+    for (const [productId, sourceProduct] of sourceSingleProductsMap.entries()) {
+      const product = singleProductsMap.get(productId)
+      if (!product) {
+        throw new ProductsDoNotExistError({productIds: [productId]})
+      }
+      products.push({
+        productId: new Types.ObjectId(productId),
+        cost: product.cost,
+        weight: product.weight,
+        number: sourceProduct.number
+      })
+    }
+    return products
+
+    // const expectSingleProductIds: Set<string> = new Set()
+    // const expectVariantProductIds: Set<string> = new Set()
+    // const expectVariantIds: Set<string> = new Set()
+    // const orderVariantProducts: CreateOrderVariantProduct[] = []
+    // products.forEach(product => {
+    //   if ('variantId' in product) {
+    //     expectVariantProductIds.add(product.productId)
+    //     expectVariantIds.add(product.variantId)
+    //     orderVariantProducts.push(product)
+    //   } else {
+    //     expectSingleProductIds.add(product.productId)
+    //   }
+    // })
+    // const [singleProducts, variantProducts] = await Promise.all([
+    //   this.repository.findOrderSingleVisibleByIds(Array.from(expectSingleProductIds)),
+    //   this.repository.findOrderVariantVisibleByIds(Array.from(expectVariantProductIds), Array.from(expectVariantIds))
+    // ])
+    // const notExistProductIds: string[] = []
+    // if (expectSingleProductIds.size !== singleProducts.length) {
+    //   const singleNotExistsIds = new Set(expectSingleProductIds)
+    //   singleProducts.forEach(product => singleNotExistsIds.delete(String(product._id)))
+    //   notExistProductIds.push(...singleNotExistsIds)
+    // }
+    // if (expectVariantProductIds.size !== variantProducts.length) {
+    //   const variantNotExistsIds = new Set(expectVariantProductIds)
+    //   variantProducts.forEach(product => variantNotExistsIds.delete(String(product._id)))
+    //   notExistProductIds.push(...variantNotExistsIds)
+    // }
+    // if (notExistProductIds.length) {
+    //   throw new ProductsDoNotExistError({productIds: notExistProductIds})
+    // }
+    // const notExistVariants: {productId: string, variantId: string}[] = []
+    // const existVariantIds = new Set(
+    //   variantProducts
+    //     .map(product => product.variants.map(variant => String(variant._id)))
+    //     .flat()
+    // )
+    // if (existVariantIds.size != expectVariantIds.size) {
+    //   const foundVariantsMap: Map<string, Set<string>> = new Map(
+    //     variantProducts
+    //       .map(product => [String(product._id), new Set(product.variants.map(variant => String(variant._id)))])
+    //   )
+    //   for (const product of orderVariantProducts) {
+    //     //@ts-ignore - проверка существования была выше
+    //     if (!foundVariantsMap.get(product.productId).has(product.variantId)) {
+    //       notExistVariants.push({
+    //         productId: product.productId,
+    //         variantId: product.variantId
+    //       })
+    //     }
+    //   }
+    // }
+    // if (notExistVariants.length) {
+    //   throw new ProductVariantsDoNotExistError({variants: notExistVariants})
+    // }
+    // return {
+    //   single: new Map(singleProducts.map(product => [String(product._id), {cost: product.cost, weight: product.weight}])) as OrderSingleProductMap,
+    //   variant: new Map(variantProducts
+    //     .map(product => [
+    //       String(product._id),
+    //       new Map(product.variants.map(variant => [String(variant._id), {cost: variant.cost, weight: variant.weight}]))
+    //     ])
+    //   ) as OrderVariantProductMap
+    // }
   }
 }

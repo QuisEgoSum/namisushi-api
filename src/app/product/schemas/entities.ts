@@ -6,7 +6,7 @@ import {
   visible,
   title,
   typeSingle, typeVariant,
-  updatedAt, weight, images, type
+  updatedAt, weight, images
 } from '@app/product/schemas/properties'
 import {BaseVariant} from '@app/product/packages/variant/schemas/entities'
 import {Types} from 'mongoose'
@@ -237,4 +237,19 @@ export const UpdateOrderImages = {
       images: 'Вы не отправили список картинок'
     }
   }
+}
+
+export interface OrderSingleProductList {
+  _id: Types.ObjectId,
+  cost: number,
+  weight: number
+}
+
+export interface OrderVariantProductList {
+  _id: Types.ObjectId,
+  variants: {
+    _id: Types.ObjectId,
+    cost: number,
+    weight: number
+  }[]
 }

@@ -86,7 +86,7 @@ interface ProductConfig {
 interface OrderConfig {
   discount: {
     withoutDelivery: number,
-    weekday: 15
+    weekday: number
   }
 }
 

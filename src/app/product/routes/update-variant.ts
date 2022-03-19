@@ -3,7 +3,7 @@ import {ProductService} from '@app/product/ProductService'
 import * as schemas from '@app/product/schemas'
 import * as variantSchemas from '@app/product/packages/variant/schemas'
 import {BadRequest, Created, NotFound} from '@common/schemas/response'
-import {ProductDoesNotExist} from '@app/product/product-error'
+import {ProductDoesNotExistError} from '@app/product/product-error'
 import {VariantDoesNotExist} from '@app/product/packages/variant/variant-error'
 
 

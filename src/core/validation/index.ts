@@ -32,7 +32,6 @@ export function errorFormatter(error: Record<string, any>) {
         error.params.errors[0].message = error.message
         error = error.params.errors[0]
     }
-
     return new JsonSchemaValidationError({
         message: error.message,
         keyword: error.keyword,

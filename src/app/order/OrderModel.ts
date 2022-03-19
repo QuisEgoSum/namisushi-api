@@ -3,31 +3,34 @@ import {OrderCondition} from '@app/order/OrderCondition'
 import {OrderDiscount} from '@app/order/OrderDiscount'
 
 
+export interface IOrderProduct {
+  productId: Types.ObjectId
+  number: number
+  cost: number
+  weight: number
+  variantId?: Types.ObjectId
+}
+
 export interface IOrder {
   _id: Types.ObjectId
   number: number,
-  clientId: Types.ObjectId
+  clientId: Types.ObjectId | null
   phone: string
-  address: string
-  cost: string
+  address?: string
+  cost: number
   weight: number
   username: string
   condition: OrderCondition,
   delivery: boolean
-  deliveryCost?: number
+  deliveryCost?: number | null
   discount?: {
-    type: OrderDiscount
-  }
+    type: OrderDiscount,
+    percent: number
+  } | null
   additionalInformation?: string
-  deliveryCalculateManually: boolean
-  time?: number
-  products: {
-    productId: Types.ObjectId
-    number: number
-    cost: number
-    weight: number
-    variantId?: Types.ObjectId
-  }[]
+  deliveryCalculateManually: boolean | null
+  time?: number | null
+  products: IOrderProduct[]
   isTestOrder: boolean
   createdAt: number
   updatedAt: number
@@ -47,14 +50,17 @@ const OrderSchema = new Schema<IOrder>(
     username: String,
     deliveryCost: Number,
     condition: {
-      type: Number,
-      enum: Object.values(OrderCondition)
+      type: Number
+      //TODO: Validation
     },
     delivery: Boolean,
     discount: {
       type: {
         type: String,
         enum: Object.values(OrderDiscount)
+      },
+      percent: {
+        type: Number
       }
     },
     additionalInformation: String,

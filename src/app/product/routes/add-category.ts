@@ -3,7 +3,7 @@ import * as categorySchemas from '@app/product/packages/category/schemas'
 import {BadRequest, NotFound, Ok} from '@common/schemas/response'
 import type {FastifyInstance} from 'fastify'
 import type {ProductService} from '@app/product/ProductService'
-import {ProductDoesNotExist} from '@app/product/product-error'
+import {ProductDoesNotExistError} from '@app/product/product-error'
 import {CategoryDoesNotExistError, ProductAlreadyInCategoryError} from '@app/product/packages/category/category-error'
 
 
@@ -31,7 +31,7 @@ export async function addCategory(fastify: FastifyInstance, service: ProductServ
           response: {
             [200]: Ok.fromEntity(categorySchemas.entities.BaseCategory, 'category'),
             [400]: new BadRequest(ProductAlreadyInCategoryError.schema()).paramsErrors(),
-            [404]: new NotFound(ProductDoesNotExist.schema(), CategoryDoesNotExistError.schema())
+            [404]: new NotFound(ProductDoesNotExistError.schema(), CategoryDoesNotExistError.schema())
           }
         },
         security: {

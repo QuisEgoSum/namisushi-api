@@ -4,7 +4,7 @@ import type {FastifyInstance} from 'fastify'
 import type {MultipartFile} from 'fastify-multipart'
 import {BadRequest, NotFound, Ok} from '@common/schemas/response'
 import {ProductService} from '@app/product/ProductService'
-import {ProductDoesNotExist} from '@app/product/product-error'
+import {ProductDoesNotExistError} from '@app/product/product-error'
 
 
 interface AttachImagesRequest {
@@ -69,7 +69,7 @@ export async function attachImages(fastify: FastifyInstance, service: ProductSer
           response: {
             [200]: Ok.fromEntity(schemas.properties.images, 'images'),
             [400]: new BadRequest().bodyErrors(),
-            [404]: new NotFound(ProductDoesNotExist.schema())
+            [404]: new NotFound(ProductDoesNotExistError.schema())
           }
         },
         security: {

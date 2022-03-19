@@ -44,7 +44,7 @@ const mongoose = require('mongoose')
         )
     )
   )
-  //TODO: orders deliveryCost, number, discount
+  //TODO: orders deliveryCost, number, discount, (products.cost & weight / number), discount percent
 })()
   .catch(console.error)
   .finally(() => mongoose.disconnect())

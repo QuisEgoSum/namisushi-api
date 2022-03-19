@@ -2,7 +2,7 @@ import * as schemas from '../schemas'
 import type {FastifyInstance} from 'fastify'
 import type {ProductService} from '@app/product/ProductService'
 import {BadRequest, NotFound, Ok} from '@common/schemas/response'
-import {ProductDoesNotExist} from '@app/product/product-error'
+import {ProductDoesNotExistError} from '@app/product/product-error'
 
 
 interface UpdateProductVariantRequest {
@@ -29,7 +29,7 @@ export async function updateProductVariant(fastify: FastifyInstance, service: Pr
           response: {
             [200]: Ok.fromEntity(schemas.entities.VariantProduct, 'product'),
             [400]: new BadRequest().bodyErrors().updateError(),
-            [404]: new NotFound(ProductDoesNotExist.schema())
+            [404]: new NotFound(ProductDoesNotExistError.schema())
           }
         },
         security: {

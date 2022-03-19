@@ -1,6 +1,11 @@
 import {IProduct, ISingleProduct, ProductModel} from '@app/product/ProductModel'
 import {GenericRepository} from '@core/repository/GenericRepository'
-import {UpdateSingleProduct, UpdateVariantProduct, VariantProduct} from '@app/product/schemas/entities'
+import {
+  OrderSingleProductList, OrderVariantProductList,
+  UpdateSingleProduct,
+  UpdateVariantProduct,
+  VariantProduct
+} from '@app/product/schemas/entities'
 import {Types} from 'mongoose'
 import {ProductType} from '@app/product/ProductType'
 
@@ -112,5 +117,66 @@ export class ProductRepository extends GenericRepository<IProduct> {
         }
       }
     ])
+  }
+
+  async findOrderSingleVisibleByIds(ids: string[]): Promise<OrderSingleProductList[]> {
+    if (!ids.length) {
+      return []
+    }
+    return this.find<ISingleProduct>(
+      {
+        _id: {$in: ids.map(id => new Types.ObjectId(id))},
+        type: ProductType.SINGLE,
+        visible: true
+      },
+      {
+        cost: 1,
+        weight: 1
+      }
+    )
+  }
+
+  async findOrderVariantVisibleByIds(ids: string[], variantIds: string[]): Promise<OrderVariantProductList[]> {
+    if (!ids.length) {
+      return []
+    }
+    return this.Model.aggregate<OrderVariantProductList>([
+      {
+        $match: {
+          _id: {
+            $in: ids.map(id => new Types.ObjectId(id))
+          },
+          type: ProductType.VARIANT,
+          visible: true
+        }
+      },
+      {
+        $lookup: {
+          from: 'product_variants',
+          let: {productId: '$_id'},
+          pipeline: [
+            {
+              $match: {
+                _id: {$in: variantIds.map(id => new Types.ObjectId(id))},
+                visible: true,
+                $expr: {
+                    productId: '$$productId',
+                }
+              }
+            },
+            {
+              $project: {
+                cost: 1,
+                weight: 1
+              }
+            }
+          ],
+          as: 'variants'
+        }
+      },
+      {
+        $project: {variants: 1}
+      }
+    ]).exec()
   }
 }

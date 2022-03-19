@@ -3,7 +3,7 @@ import {
   address, client, condition,
   cost, createdAt, delivery,
   deliveryCalculateManually,
-  deliveryCost, discountType, isTestOrder,
+  deliveryCost, discountPercent, discountType, isTestOrder,
   numberOfProducts, phone, productCost,
   productId, productWeight, updatedAt,
   username, variantId, weight
@@ -11,12 +11,13 @@ import {
 
 
 export const discount = {
-  type: 'object',
+  type: ['object', 'null'],
   properties: {
-    type: discountType
+    type: discountType,
+    percent: discountPercent
   },
   additionalProperties: false,
-  required: ['type']
+  required: ['type', 'percent']
 }
 
 export const OrderedProductList = {
@@ -101,7 +102,6 @@ export const BaseOrder = {
     '_id',
     'client',
     'phone',
-    'address',
     'cost',
     'weight',
     'username',
@@ -114,20 +114,27 @@ export const BaseOrder = {
   ]
 }
 
+export interface CreateOrderSingleProduct {
+  productId: string
+  number: number
+}
+
+export interface CreateOrderVariantProduct {
+  productId: string
+  number: number
+  variantId: string
+}
+
+export type CreateOrderProduct = CreateOrderSingleProduct | CreateOrderVariantProduct
+
 export interface CreateOrder {
   phone: string,
   address: string
-  cost: number
-  weight: number
   username: string
   delivery: boolean
   deliveryCost?: number | null
   additionalInformation?: string
-  products: {
-    product: string
-    number: string
-    variant?: string
-  }[]
+  products: CreateOrderProduct[]
   isTestOrder: boolean
 }
 
@@ -155,7 +162,6 @@ export const CreateOrder = {
   errorMessage: {
     required: {
       phone: 'Укажите номер телефона',
-      address: 'Укажите адрес',
       username: 'Укажите имя',
       delivery: 'Выберите доставку или самовывоз',
       products: 'Выберите список продуктов'

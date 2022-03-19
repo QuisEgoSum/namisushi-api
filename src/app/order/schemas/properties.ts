@@ -5,7 +5,7 @@ import {OrderDiscount} from '@app/order/OrderDiscount'
 
 
 export const _id = new ObjectId({errorMessage: 'Невалидный идентификатор заказа'})
-export const client = new ObjectId({errorMessage: 'Невалидный идентификатор пользователя'})
+export const client = new ObjectId({errorMessage: 'Невалидный идентификатор пользователя', null: true})
 export const productId = new ObjectId({errorMessage: 'Невалидный идентификатор продукта'})
 export const variantId = new ObjectId({errorMessage: 'Невалидный идентификатор варианта продукта'})
 export const number = {
@@ -87,6 +87,10 @@ export const discountType = {
   type: 'string',
   enum: Object.values(OrderDiscount)
 }
+export const discountPercent = {
+  description: 'Процент скидки от заказа',
+  type: 'number'
+}
 export const additionalInformation = {
   description: 'Дополнительная информация',
   type: 'string',
@@ -98,7 +102,7 @@ export const additionalInformation = {
 }
 export const deliveryCalculateManually = {
   description: 'Флаг отвечающий за ручное определение стоимости доставки',
-  type: 'boolean',
+  type: ['boolean', 'null'],
   errorMessage: {
     type: 'Флаг отвечающий за ручное определение стоимости доставки должен быть логическим значением'
   }

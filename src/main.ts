@@ -4,6 +4,7 @@ import {createConnection} from '@core/database'
 import {initDocs} from '@app/docs'
 import {initUser} from '@app/user'
 import {initProduct} from '@app/product'
+import {initOrder} from '@app/order'
 import {promisify} from 'util'
 import {config} from '@config'
 import {logger} from '@logger'
@@ -15,13 +16,15 @@ import {logger} from '@logger'
   const docs = await initDocs()
   const user = await initUser()
   const product = await initProduct()
+  const order = await initOrder(product.service)
 
   const httpServer = await createHttpServer(
     {
       routers: [
         docs.router,
         user.router,
-        product.router
+        product.router,
+        order.router
       ],
       swagger: docs.swagger,
       securityOptions: {
