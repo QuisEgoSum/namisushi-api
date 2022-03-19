@@ -8,18 +8,22 @@ import {ProductService} from '@app/product/ProductService'
 import {OrderDiscount} from '@app/order/OrderDiscount'
 import {config} from '@config'
 import {OrderCondition} from '@app/order/OrderCondition'
+import {CounterService} from '@app/order/packages/counter/CounterService'
 
 
 export class OrderService extends BaseService<IOrder, OrderRepository> {
-  private productService: ProductService
-  private discounts: {[key in OrderDiscount]: number}
+  private readonly productService: ProductService
+  private readonly discounts: {[key in OrderDiscount]: number}
+  private readonly counterService: CounterService
   constructor(
     repository: OrderRepository,
-    productService: ProductService
+    productService: ProductService,
+    counterService: CounterService
   ) {
     super(repository)
 
     this.productService = productService
+    this.counterService = counterService
 
     this.Error.EntityNotExistsError = OrderDoesNotExistError
 
@@ -78,7 +82,7 @@ export class OrderService extends BaseService<IOrder, OrderRepository> {
     }
     order.discount = discounts
       .sort((a, b) =>  a.percent > b.percent ? -1 : 1)[0] || null
-    //TODO: Order number
+    order.number = await this.counterService.inc()
     const savedOrder = await this.repository.create(order)
     //TODO: Event
     return savedOrder

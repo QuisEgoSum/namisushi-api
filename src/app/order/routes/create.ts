@@ -41,7 +41,7 @@ export async function create(fastify: FastifyInstance, service: OrderService) {
           tags: ['Заказ'],
           body: schemas.entities.CreateOrder,
           response: {
-            // [201]: new Created(schemas.entities.BaseOrder, 'order'),
+            [201]: new Created(schemas.entities.BaseOrder, 'order'),
             [400]: new BadRequest(OrderCannotBeCanceledError.schema()).bodyErrors(),
             [404]: new NotFound(ProductsDoNotExistError.schema(), ProductVariantsDoNotExistError.schema())
           }

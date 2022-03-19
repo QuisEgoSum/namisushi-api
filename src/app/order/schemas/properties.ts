@@ -5,7 +5,7 @@ import {OrderDiscount} from '@app/order/OrderDiscount'
 
 
 export const _id = new ObjectId({errorMessage: 'Невалидный идентификатор заказа'})
-export const client = new ObjectId({errorMessage: 'Невалидный идентификатор пользователя', null: true})
+export const clientId = new ObjectId({errorMessage: 'Невалидный идентификатор пользователя', null: true})
 export const productId = new ObjectId({errorMessage: 'Невалидный идентификатор продукта'})
 export const variantId = new ObjectId({errorMessage: 'Невалидный идентификатор варианта продукта'})
 export const number = {

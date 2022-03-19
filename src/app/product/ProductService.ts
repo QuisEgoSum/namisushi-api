@@ -178,7 +178,7 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
     array.push(...expectedSet)
   }
 
-  async findAndCalculateProducts(sourceProducts: CreateOrderProduct[])/*: Promise<IOrderProduct>*/ {
+  async findAndCalculateProducts(sourceProducts: CreateOrderProduct[]): Promise<IOrderProduct[]> {
     const sourceSingleProductsMap: Map<string, CreateOrderSingleProduct> = new Map()
     const sourceVariantProductsMap: Map<string, Map<string, CreateOrderVariantProduct>> = new Map()
     const singleProductsMap: Map<string, {cost: number, weight: number}> = new Map()
@@ -269,70 +269,5 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
       })
     }
     return products
-
-    // const expectSingleProductIds: Set<string> = new Set()
-    // const expectVariantProductIds: Set<string> = new Set()
-    // const expectVariantIds: Set<string> = new Set()
-    // const orderVariantProducts: CreateOrderVariantProduct[] = []
-    // products.forEach(product => {
-    //   if ('variantId' in product) {
-    //     expectVariantProductIds.add(product.productId)
-    //     expectVariantIds.add(product.variantId)
-    //     orderVariantProducts.push(product)
-    //   } else {
-    //     expectSingleProductIds.add(product.productId)
-    //   }
-    // })
-    // const [singleProducts, variantProducts] = await Promise.all([
-    //   this.repository.findOrderSingleVisibleByIds(Array.from(expectSingleProductIds)),
-    //   this.repository.findOrderVariantVisibleByIds(Array.from(expectVariantProductIds), Array.from(expectVariantIds))
-    // ])
-    // const notExistProductIds: string[] = []
-    // if (expectSingleProductIds.size !== singleProducts.length) {
-    //   const singleNotExistsIds = new Set(expectSingleProductIds)
-    //   singleProducts.forEach(product => singleNotExistsIds.delete(String(product._id)))
-    //   notExistProductIds.push(...singleNotExistsIds)
-    // }
-    // if (expectVariantProductIds.size !== variantProducts.length) {
-    //   const variantNotExistsIds = new Set(expectVariantProductIds)
-    //   variantProducts.forEach(product => variantNotExistsIds.delete(String(product._id)))
-    //   notExistProductIds.push(...variantNotExistsIds)
-    // }
-    // if (notExistProductIds.length) {
-    //   throw new ProductsDoNotExistError({productIds: notExistProductIds})
-    // }
-    // const notExistVariants: {productId: string, variantId: string}[] = []
-    // const existVariantIds = new Set(
-    //   variantProducts
-    //     .map(product => product.variants.map(variant => String(variant._id)))
-    //     .flat()
-    // )
-    // if (existVariantIds.size != expectVariantIds.size) {
-    //   const foundVariantsMap: Map<string, Set<string>> = new Map(
-    //     variantProducts
-    //       .map(product => [String(product._id), new Set(product.variants.map(variant => String(variant._id)))])
-    //   )
-    //   for (const product of orderVariantProducts) {
-    //     //@ts-ignore - проверка существования была выше
-    //     if (!foundVariantsMap.get(product.productId).has(product.variantId)) {
-    //       notExistVariants.push({
-    //         productId: product.productId,
-    //         variantId: product.variantId
-    //       })
-    //     }
-    //   }
-    // }
-    // if (notExistVariants.length) {
-    //   throw new ProductVariantsDoNotExistError({variants: notExistVariants})
-    // }
-    // return {
-    //   single: new Map(singleProducts.map(product => [String(product._id), {cost: product.cost, weight: product.weight}])) as OrderSingleProductMap,
-    //   variant: new Map(variantProducts
-    //     .map(product => [
-    //       String(product._id),
-    //       new Map(product.variants.map(variant => [String(variant._id), {cost: variant.cost, weight: variant.weight}]))
-    //     ])
-    //   ) as OrderVariantProductMap
-    // }
   }
 }
