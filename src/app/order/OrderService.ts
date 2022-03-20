@@ -15,6 +15,21 @@ export class OrderService extends BaseService<IOrder, OrderRepository> {
   private readonly productService: ProductService
   private readonly discounts: {[key in OrderDiscount]: number}
   private readonly counterService: CounterService
+
+  /**
+   * @summary С понедельника по четверг с 11:00 до 16:00
+   */
+  private static isWeekday(): boolean {
+    const date = new Date()
+    const day = date.getDay()
+    const isRequiredDay = day >= 1 && day <= 4
+    if (!isRequiredDay) {
+      return false
+    }
+    const time = date.getHours() * 60 + date.getMinutes()
+    return  time >= 660 && time < 960
+  }
+
   constructor(
     repository: OrderRepository,
     productService: ProductService,
@@ -31,20 +46,6 @@ export class OrderService extends BaseService<IOrder, OrderRepository> {
       [OrderDiscount.WEEKDAY]: config.order.discount.weekday,
       [OrderDiscount.WITHOUT_DELIVERY]: config.order.discount.withoutDelivery
     }
-  }
-
-  /**
-   * @summary С понедельника по четверг с 11:00 до 16:00
-   */
-  isWeekday(): boolean {
-    const date = new Date()
-    const day = date.getDay()
-    const isRequiredDay = day >= 1 && day <= 4
-    if (!isRequiredDay) {
-      return false
-    }
-    const time = date.getHours() * 60 + date.getMinutes()
-    return  time >= 660 && time < 960
   }
 
   async createOrder(createOrder: CreateOrder, userId: Types.ObjectId | null) {
@@ -78,7 +79,7 @@ export class OrderService extends BaseService<IOrder, OrderRepository> {
     if (!createOrder.delivery) {
       discounts.push({type: OrderDiscount.WITHOUT_DELIVERY, percent: this.discounts[OrderDiscount.WITHOUT_DELIVERY]})
     }
-    if (this.isWeekday()) {
+    if (OrderService.isWeekday()) {
       discounts.push({type: OrderDiscount.WEEKDAY, percent: this.discounts[OrderDiscount.WEEKDAY]})
     }
     order.discount = discounts
