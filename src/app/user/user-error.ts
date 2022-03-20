@@ -14,7 +14,7 @@ export const UserRightsError = AccessError.extends(
   {
     error: 'UserRightsError',
     code: 2001,
-    message: 'You don\'t have enough permissions to perform this action'
+    message: 'Вы не можете выполнить это действие'
   }
 )
 
@@ -23,7 +23,7 @@ export const IncorrectUserCredentials = InvalidDataError.extends(
   {
     error: 'IncorrectUserCredentials',
     code: 2002,
-    message: 'Invalid login or password'
+    message: 'Неверный логин или пароль'
   }
 )
 
@@ -32,7 +32,7 @@ export const UserNotExistsError = EntityDoesNotExistError.extends(
   {
     error: 'UserNotExistsError',
     code: 2003,
-    message: 'User not found'
+    message: 'Пользователь не найден'
   }
 )
 

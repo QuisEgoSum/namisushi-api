@@ -81,6 +81,7 @@ const OrderSchema = new Schema<IOrder>(
         ref: 'ProductVariant'
       }
     }],
+    isTestOrder: Boolean,
     createdAt: Number,
     updatedAt: Number
   },

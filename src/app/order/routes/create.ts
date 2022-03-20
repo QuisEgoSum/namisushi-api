@@ -8,6 +8,8 @@ import {
   ProductsDoNotExistError,
   ProductVariantsDoNotExistError
 } from '@app/product/product-error'
+import {UserRole} from '../../user'
+import {UserRightsError} from '../../user/user-error'
 
 
 interface CreateRequest {
@@ -52,6 +54,9 @@ export async function create(fastify: FastifyInstance, service: OrderService) {
         preHandler: async function validation(request) {
           if (request.body.delivery && !request.body.address) {
             throw MISSING_ADDRESS_ERROR
+          }
+          if (request.body.isTestOrder && request.optionalSession.userRole !== UserRole.ADMIN) {
+            throw new UserRightsError({message: 'Создать тестовый заказ может только администратор'})
           }
         },
         handler: async function(request, reply) {
