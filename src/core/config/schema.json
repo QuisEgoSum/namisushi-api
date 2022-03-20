@@ -77,30 +77,38 @@
         "telegram": {
           "type": "object",
           "properties": {
-            "enable": {
-              "type": "boolean"
-            },
             "token": {
               "type": "string"
             },
-            "port": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 65353
+            "enableWebhook": {
+              "type": "boolean"
             },
-            "path": {
-              "type": "string"
-            },
-            "host": {
-              "type": "string"
+            "webhook": {
+              "type": "object",
+              "properties": {
+                "port": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 65353
+                },
+                "hookPath": {
+                  "type": "string"
+                },
+                "domain": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "port",
+                "hookPath",
+                "domain"
+              ]
             }
           },
           "required": [
-            "enable",
             "token",
-            "port",
-            "path",
-            "host"
+            "enableWebhook",
+            "webhook"
           ],
           "additionalProperties": false
         }

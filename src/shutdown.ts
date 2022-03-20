@@ -9,10 +9,10 @@ const logger = defaultLogger.child({label: 'shutdown'})
 export async function shutdown(
   event: string,
   http: FastifyInstance,
-  bot: Telegraf | null
+  bot: Telegraf
 ) {
   logger.info({mgs: 'Shutdown start', event})
-  if (bot) bot.stop()
+  bot.stop()
   await http.close()
   logger.info({msg: 'Shutdown end', event})
 }

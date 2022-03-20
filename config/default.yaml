@@ -43,13 +43,12 @@ server:
         "data:"
       ]
   telegram:
-    enable: false
     token: 0000000000:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-    port: 9000
-    path: /api/telegram
-    host: localhost:9000
-
-
+    enableWebhook: false
+    webhook:
+      port: 9000
+      hookPath: /api/telegram
+      domain: localhost:9000
 
 logger:
   # Recommended false for production

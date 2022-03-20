@@ -31,11 +31,13 @@ interface ConfigServer {
     }
   }
   readonly telegram: {
-    enable: boolean
     token: string
-    port: number
-    path: string
-    host: string
+    enableWebhook: boolean
+    webhook: {
+      port: number
+      hookPath: string
+      domain: string
+    }
   }
 }
 

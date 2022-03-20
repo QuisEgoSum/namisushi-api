@@ -1,28 +1,17 @@
-import {Telegraf} from 'telegraf'
+import {Telegraf, Context} from 'telegraf'
 import {config} from '@config'
 import {logger as defaultLogger} from '@logger'
 
 
 
-export async function createTelegramBot(): Promise<Telegraf | null> {
-  if (!config.server.telegram.enable) {
-    return null
+export async function createTelegramBot(): Promise<Telegraf> {
+  let telegrafOptions = {}
+  if (config.server.telegram.enableWebhook) {
+    telegrafOptions = config.server.telegram.webhook
   }
   const logger = defaultLogger.child({label: 'telegram'})
-
   const bot = new Telegraf(config.server.telegram.token)
-
-  await bot.launch({
-    webhook: {
-      domain: config.server.telegram.host,
-      port: config.server.telegram.port,
-      hookPath: config.server.telegram.path
-    }
-  })
-
-  bot.on('message', ctx => {
-    logger.info({msg: ctx.editedMessage, chat: ctx.message.chat.id})
-  })
-
+  await bot.launch(telegrafOptions)
+  bot.on('message', (ctx: Context) => logger.info({evt: 'message', msg: ctx.message}))
   return bot
 }
