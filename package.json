@@ -11,7 +11,8 @@
     "lint": "eslint . --ext .ts",
     "prepublishOnly": "npm run build",
     "dev": "npm run removeBuild && nodemon --watch './**/*.ts' --exec 'ts-node' src/main.ts",
-    "checkConfig": "npm run build && node -r module-alias/register tools/pre-commit/config.js && npm run removeBuild"
+    "checkConfig": "npm run build && node -r module-alias/register tools/pre-commit/config.js && npm run removeBuild",
+    "start": "npm run build && node src/main.js"
   },
   "author": "QuisEgoSum",
   "license": "MIT",

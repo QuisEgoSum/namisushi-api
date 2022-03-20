@@ -8,6 +8,7 @@ import {initOrder} from '@app/order'
 import {promisify} from 'util'
 import {config} from '@config'
 import {logger} from '@logger'
+import {shutdown} from './shutdown'
 
 
 (async function main() {
@@ -36,6 +37,9 @@ import {logger} from '@logger'
   await promisify(httpServer.ready)()
 
   await httpServer.listen(config.server.http.port, config.server.http.address)
+
+  ;['SIGINT', 'SIGTERM']
+    .forEach(event => process.once(event, () => shutdown(event, httpServer)))
 })()
   .catch(error => {
     logger.fatal(error)
