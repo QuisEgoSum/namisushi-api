@@ -127,6 +127,10 @@ export const productCost = {
   description: 'Стоимость продукта на момент выполнения заказа',
   type: 'integer'
 }
+export const productsSum = {
+  description: 'Суммарная стоимость продуктов без учёта скидки',
+  type: 'integer'
+}
 export const productWeight = {
   description: 'Стоимость продукта на момент выполнения заказа',
   type: 'integer'

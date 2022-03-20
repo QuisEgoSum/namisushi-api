@@ -30,6 +30,7 @@ export interface IOrder {
   additionalInformation?: string
   deliveryCalculateManually: boolean | null
   time?: number | null
+  productsSum: number
   products: IOrderProduct[]
   isTestOrder: boolean
   createdAt: number
@@ -66,6 +67,7 @@ const OrderSchema = new Schema<IOrder>(
     additionalInformation: String,
     deliveryCalculateManually: Boolean,
     time: Number,
+    productsSum: Number,
     products: [{
       productId: {
         type: Schema.Types.ObjectId,

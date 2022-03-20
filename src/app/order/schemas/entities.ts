@@ -5,7 +5,7 @@ import {
   deliveryCalculateManually,
   deliveryCost, discountPercent, discountType, isTestOrder, number,
   numberOfProducts, phone, productCost,
-  productId, productWeight, updatedAt,
+  productId, productsSum, productWeight, updatedAt,
   username, variantId, weight
 } from '@app/order/schemas/properties'
 
@@ -93,6 +93,7 @@ export const BaseOrder = {
     discount,
     additionalInformation,
     clientId,
+    productsSum,
     products: OrderedProductList,
     isTestOrder,
     createdAt,

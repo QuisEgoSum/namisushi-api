@@ -48,7 +48,7 @@ export class OrderService extends BaseService<IOrder, OrderRepository> {
   }
 
   async createOrder(createOrder: CreateOrder, userId: Types.ObjectId | null) {
-    const order: Partial<IOrder> & {cost: number, weight: number} = {
+    const order: Partial<IOrder> & {productsSum: number, weight: number} = {
       username: createOrder.username,
       phone: createOrder.phone,
       delivery: createOrder.delivery,
@@ -56,6 +56,7 @@ export class OrderService extends BaseService<IOrder, OrderRepository> {
       address: createOrder.address,
       additionalInformation: createOrder.additionalInformation,
       cost: 0,
+      productsSum: 0,
       weight: 0,
       clientId: userId,
       condition: OrderCondition.NEW,
@@ -70,7 +71,7 @@ export class OrderService extends BaseService<IOrder, OrderRepository> {
     }
     order.products = await this.productService.findAndCalculateProducts(createOrder.products)
     for (const product of order.products) {
-      order.cost += product.cost * product.number
+      order.productsSum += product.cost * product.number
       order.weight += product.weight * product.number
     }
     const discounts: {type: OrderDiscount, percent: number}[] = []
@@ -82,6 +83,11 @@ export class OrderService extends BaseService<IOrder, OrderRepository> {
     }
     order.discount = discounts
       .sort((a, b) =>  a.percent > b.percent ? -1 : 1)[0] || null
+    if (order.discount) {
+      order.cost = Math.floor(order.productsSum * (100 - order.discount.percent) / 100)
+    } else {
+      order.cost = order.productsSum
+    }
     order.number = await this.counterService.inc()
     const savedOrder = await this.repository.create(order)
     //TODO: Event
