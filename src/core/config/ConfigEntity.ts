@@ -30,6 +30,13 @@ interface ConfigServer {
       [key: string]: string[] | any
     }
   }
+  readonly telegram: {
+    enable: boolean
+    token: string
+    port: number
+    path: string
+    host: string
+  }
 }
 
 interface LoggerConfig {
@@ -68,10 +75,6 @@ interface DatabaseConfig {
   }
 }
 
-interface TelegramConfig {
-  token: string
-}
-
 interface ProductConfig {
   image: {
     maximum: number
@@ -102,7 +105,6 @@ export class ConfigEntity {
   public readonly logger: LoggerConfig
   public readonly user: UserConfig
   public readonly database: DatabaseConfig
-  public readonly telegram: TelegramConfig
   public readonly product: ProductConfig
   public readonly order: OrderConfig
 
@@ -114,7 +116,6 @@ export class ConfigEntity {
     this.logger = defaultConfig.logger
     this.user = defaultConfig.user
     this.database = defaultConfig.database
-    this.telegram = defaultConfig.telegram
     this.product = defaultConfig.product
     this.order = defaultConfig.order
 

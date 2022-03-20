@@ -11,10 +11,11 @@ database:
 
 server:
   http:
-    protocol: http
     address: 127.0.0.1
-    host: localhost:8080/api
     port: 8080
+    #docs. TODO: rename
+    host: localhost:8080/api
+    protocol: http
   cors:
     allowedOrigins:
       - http://localhost:8000
@@ -41,6 +42,13 @@ server:
         "blob:",
         "data:"
       ]
+  telegram:
+    enable: false
+    token: 0000000000:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+    port: 9000
+    path: /api/telegram
+    host: localhost:9000
+
 
 
 logger:
@@ -65,10 +73,6 @@ user:
     username: admin
     email: admin@nowhere.org
     password: SuperSecretPassword
-
-
-telegram:
-  token: 0000000000:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
 product:
   image:

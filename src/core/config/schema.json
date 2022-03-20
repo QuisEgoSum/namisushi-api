@@ -73,13 +73,44 @@
             }
           },
           "additionalProperties": true
+        },
+        "telegram": {
+          "type": "object",
+          "properties": {
+            "enable": {
+              "type": "boolean"
+            },
+            "token": {
+              "type": "string"
+            },
+            "port": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 65353
+            },
+            "path": {
+              "type": "string"
+            },
+            "host": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "enable",
+            "token",
+            "port",
+            "path",
+            "host"
+          ],
+          "additionalProperties": false
         }
       },
       "additionalProperties": false,
       "required": [
         "http",
         "cors",
-        "csp"
+        "csp",
+        "telegram"
       ]
     },
     "logger": {
@@ -223,16 +254,6 @@
         "options"
       ]
     },
-    "telegram": {
-      "type": "object",
-      "properties": {
-        "token": {
-          "type": "string"
-        }
-      },
-      "required": ["token"],
-      "additionalProperties": false
-    },
     "product": {
       "type": "object",
       "properties": {
@@ -297,7 +318,6 @@
     "logger",
     "user",
     "database",
-    "telegram",
     "product",
     "order"
   ]

@@ -5,10 +5,9 @@ import {initDocs} from '@app/docs'
 import {initUser} from '@app/user'
 import {initProduct} from '@app/product'
 import {initOrder} from '@app/order'
-import {promisify} from 'util'
-import {config} from '@config'
 import {logger} from '@logger'
 import {shutdown} from './shutdown'
+import {createTelegramBot} from './servers/telegram'
 
 
 (async function main() {
@@ -34,12 +33,12 @@ import {shutdown} from './shutdown'
     }
   )
 
-  await promisify(httpServer.ready)()
+  const telegramBot = await createTelegramBot()
 
-  await httpServer.listen(config.server.http.port, config.server.http.address)
-
-  ;['SIGINT', 'SIGTERM']
-    .forEach(event => process.once(event, () => shutdown(event, httpServer)))
+  {
+    ['SIGINT', 'SIGTERM']
+      .forEach(event => process.once(event, () => shutdown(event, httpServer, telegramBot)))
+  }
 })()
   .catch(error => {
     logger.fatal(error)
