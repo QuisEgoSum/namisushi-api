@@ -1,4 +1,4 @@
-import {EntityDoesNotExistError, InvalidDataError} from '@error'
+import {EntityDoesNotExistError, InternalError, InvalidDataError} from '@error'
 
 
 export const OrderDoesNotExistError = EntityDoesNotExistError.extends(
@@ -17,4 +17,9 @@ export const OrderCannotBeCanceledError = InvalidDataError.extends(
     message: 'Вы не можете отменить этот заказ',
     code: 6001
   }
+)
+
+export const CreatedOrderDoesNotExistError = InternalError.extends(
+  {},
+  {code: 6002}
 )

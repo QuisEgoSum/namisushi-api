@@ -1,14 +1,15 @@
 import {BaseService} from '@core/service'
-import {IOrder} from '@app/order/OrderModel'
-import {OrderRepository} from '@app/order/OrderRepository'
-import {OrderDoesNotExistError} from '@app/order/order-error'
-import {CreateOrder} from '@app/order/schemas/entities'
-import {Types} from 'mongoose'
-import {ProductService} from '@app/product/ProductService'
+import {rawPopulatedTransform} from '@app/order/order-transform'
+import {CreatedOrderDoesNotExistError, OrderDoesNotExistError} from '@app/order/order-error'
 import {OrderDiscount} from '@app/order/OrderDiscount'
-import {config} from '@config'
 import {OrderCondition} from '@app/order/OrderCondition'
-import {CounterService} from '@app/order/packages/counter/CounterService'
+import {config} from '@config'
+import {Types} from 'mongoose'
+import type {IOrder} from '@app/order/OrderModel'
+import type {OrderRepository} from '@app/order/OrderRepository'
+import type {CreateOrder} from '@app/order/schemas/entities'
+import type {ProductService} from '@app/product/ProductService'
+import type {CounterService} from '@app/order/packages/counter/CounterService'
 
 
 export class OrderService extends BaseService<IOrder, OrderRepository> {
@@ -91,7 +92,10 @@ export class OrderService extends BaseService<IOrder, OrderRepository> {
     }
     order.number = await this.counterService.inc(order.isTestOrder)
     const savedOrder = await this.repository.create(order)
+    const rawPopulatedOrder = await this.repository.findPopulatedOrderById(savedOrder._id)
+    if (!rawPopulatedOrder) throw new CreatedOrderDoesNotExistError()
+    const populatedOrder = rawPopulatedTransform(rawPopulatedOrder)
     //TODO: Event
-    return savedOrder
+    return populatedOrder
   }
 }

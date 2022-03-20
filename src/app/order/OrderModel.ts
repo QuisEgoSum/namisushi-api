@@ -8,7 +8,7 @@ export interface IOrderProduct {
   number: number
   cost: number
   weight: number
-  variantId?: Types.ObjectId
+  variantId: Types.ObjectId | null
 }
 
 export interface IOrder {

@@ -265,7 +265,8 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
         productId: new Types.ObjectId(productId),
         cost: product.cost,
         weight: product.weight,
-        number: sourceProduct.number
+        number: sourceProduct.number,
+        variantId: null
       })
     }
     return products
