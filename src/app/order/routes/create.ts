@@ -1,15 +1,12 @@
 import * as schemas from '../schemas'
-import {FastifyInstance} from 'fastify'
-import {OrderService} from '@app/order/OrderService'
-import {BadRequest, Created, NotFound} from '@common/schemas/response'
 import {OrderCannotBeCanceledError} from '../order-error'
+import {ProductsDoNotExistError, ProductVariantsDoNotExistError} from '@app/product/product-error'
+import {UserRole} from '@app/user'
+import {UserRightsError} from '@app/user/user-error'
 import {JsonSchemaValidationError, JsonSchemaValidationErrors} from '@error'
-import {
-  ProductsDoNotExistError,
-  ProductVariantsDoNotExistError
-} from '@app/product/product-error'
-import {UserRole} from '../../user'
-import {UserRightsError} from '../../user/user-error'
+import {BadRequest, Created, NotFound} from '@common/schemas/response'
+import type {OrderService} from '@app/order/OrderService'
+import type {FastifyInstance} from 'fastify'
 
 
 interface CreateRequest {
