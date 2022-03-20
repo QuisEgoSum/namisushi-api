@@ -90,7 +90,7 @@ const OrderSchema = new Schema<IOrder>(
     timestamps: true
   }
 )
-  .index({number: 1}, {unique: true})
+  .index({number: 1, isTestOrder: 1}, {unique: true})
   .index({client: 1})
   .index({createdAt: 1})
   .index({phone: 1})

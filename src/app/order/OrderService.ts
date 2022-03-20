@@ -89,7 +89,7 @@ export class OrderService extends BaseService<IOrder, OrderRepository> {
     } else {
       order.cost = order.productsSum
     }
-    order.number = await this.counterService.inc()
+    order.number = await this.counterService.inc(order.isTestOrder)
     const savedOrder = await this.repository.create(order)
     //TODO: Event
     return savedOrder

@@ -3,12 +3,12 @@ import type {ICounter} from '@app/order/packages/counter/CounterModel'
 
 
 export class CounterRepository extends BaseRepository<ICounter> {
-  async upsert() {
-    await this.Model.updateOne({}, {$setOnInsert: {number: 0}})
+  async upsert(isTest: boolean) {
+    await this.Model.updateOne({isTest}, {$setOnInsert: {number: 0}})
   }
 
-  async inc(): Promise<number> {
-    return await this.Model.findOneAndUpdate({}, {$inc: {number: 1}}, {upsert: true, new: true})
+  async inc(isTest: boolean): Promise<number> {
+    return await this.Model.findOneAndUpdate({isTest}, {$inc: {number: 1}}, {upsert: true, new: true})
       .then(doc => doc.number)
   }
 }

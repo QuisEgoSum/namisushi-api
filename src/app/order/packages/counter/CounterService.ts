@@ -5,10 +5,13 @@ import type {CounterRepository} from '@app/order/packages/counter/CounterReposit
 
 export class CounterService extends BaseService<ICounter, CounterRepository> {
   async upsert() {
-    await this.repository.upsert()
+    await Promise.all([
+      this.repository.upsert(true),
+      this.repository.upsert(false)
+    ])
   }
 
-  async inc() {
-    return await this.repository.inc()
+  async inc(isTest = true) {
+    return await this.repository.inc(isTest)
   }
 }
