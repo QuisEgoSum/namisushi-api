@@ -7,7 +7,6 @@ import {initUser} from '@app/user'
 import {initProduct} from '@app/product'
 import {initOrder} from '@app/order'
 import {initNotification} from '@app/notification'
-import {shutdown} from './shutdown'
 import {logger} from '@logger'
 import {config} from '@config'
 import {promisify} from 'util'
@@ -75,4 +74,16 @@ async function listen(
   } else {
     logger.child({label: 'telegram'}).info(`Telegram webhook client started`)
   }
+}
+
+async function shutdown(
+  event: string,
+  http: FastifyInstance,
+  bot: Telegraf
+) {
+  const sLogger = logger.child({label: 'shutdown'})
+  sLogger.info({mgs: 'Shutdown start', event})
+  bot.stop()
+  await http.close()
+  sLogger.info({msg: 'Shutdown end', event})
 }
