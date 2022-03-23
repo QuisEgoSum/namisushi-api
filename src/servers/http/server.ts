@@ -52,9 +52,5 @@ export async function createHttpServer(options: CreateHttpServerOptions) {
 
   options.routers.forEach(router => fastifyInstance.register(router, {prefix: '/api'}))
 
-  await promisify(fastifyInstance.ready)()
-
-  await fastifyInstance.listen(config.server.http.port, config.server.http.address)
-
   return fastifyInstance
 }

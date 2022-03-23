@@ -1,20 +1,23 @@
 import 'module-alias/register'
 import {createHttpServer} from './servers/http'
+import {createTelegramBot} from './servers/telegram'
 import {createConnection} from '@core/database'
 import {initDocs} from '@app/docs'
 import {initUser} from '@app/user'
 import {initProduct} from '@app/product'
 import {initOrder} from '@app/order'
-import {logger} from '@logger'
-import {shutdown} from './shutdown'
-import {createTelegramBot} from './servers/telegram'
 import {initNotification} from '@app/notification'
+import {shutdown} from './shutdown'
+import {logger} from '@logger'
+import {config} from '@config'
+import {promisify} from 'util'
+import type {FastifyInstance} from 'fastify'
+import type {Telegraf} from 'telegraf'
 
 
 (async function main() {
   await createConnection()
 
-  //TODO: launch after init app packages
   const telegramBot = await createTelegramBot()
 
   const docs = await initDocs()
@@ -38,6 +41,8 @@ import {initNotification} from '@app/notification'
     }
   )
 
+  await listen(httpServer, telegramBot)
+
   {
     ['SIGINT', 'SIGTERM']
       .forEach(event => process.once(event, () => shutdown(event, httpServer, telegramBot)))
@@ -47,3 +52,27 @@ import {initNotification} from '@app/notification'
     logger.fatal(error)
     process.exit(1)
   })
+
+
+async function listen(
+  http: FastifyInstance,
+  bot: Telegraf
+) {
+  await promisify(http.ready)()
+  await http.listen(config.server.http.port, config.server.http.address)
+  let telegrafOptions = {}
+  if (config.server.telegram.enableWebhook) {
+    telegrafOptions = config.server.telegram.webhook
+  }
+  await bot.launch(telegrafOptions)
+  if (config.server.telegram.enableWebhook) {
+    logger.child({label: 'telegram'}).info(
+      `Telegram webhook server listen http://localhost:${
+      config.server.telegram.webhook.port} for domain ${
+      config.server.telegram.webhook.domain} at path ${
+      config.server.telegram.webhook.hookPath}`
+    )
+  } else {
+    logger.child({label: 'telegram'}).info(`Telegram webhook client started`)
+  }
+}
