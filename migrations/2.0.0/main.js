@@ -44,7 +44,9 @@ const mongoose = require('mongoose')
         )
     )
   )
+  await mongoose.connection.collection('users').updateMany({telegramId: {$exists: false}}, {$set: {telegramId: null}})
   //TODO: orders deliveryCost, number, discount, (products.cost & weight / number), discount percent
+  //TODO: order.cost + order.deliveryCost
 })()
   .catch(console.error)
   .finally(() => mongoose.disconnect())

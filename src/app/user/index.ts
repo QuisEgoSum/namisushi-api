@@ -12,8 +12,8 @@ import type {Session} from './packages/session'
 
 
 class User {
-  private readonly service: UserService
-  private readonly session: Session
+  public readonly session: Session
+  public readonly service: UserService
   public readonly UserRole: typeof UserRoleEnum
   public readonly error: typeof import('./user-error')
   public readonly schemas: typeof import('./schemas')

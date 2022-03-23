@@ -1,6 +1,6 @@
 import {BaseRepository} from '@core/repository/BaseRepository'
-import type {UserModel} from './UserModel'
-import type {IUser} from './UserModel'
+import type {IUser, UserModel} from './UserModel'
+import {UserRole} from '@app/user/UserRole'
 
 
 export class UserRepository extends BaseRepository<IUser> {
@@ -26,5 +26,9 @@ export class UserRepository extends BaseRepository<IUser> {
           updatedAt: 1
         }
       )
+  }
+
+  distinctAdminTelegramIds(): Promise<number[]> {
+    return this.Model.distinct('telegramId', {role: {$ne: UserRole.USER}}) as unknown as Promise<number[]>
   }
 }

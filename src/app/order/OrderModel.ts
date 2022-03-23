@@ -16,14 +16,14 @@ export interface IOrder {
   number: number,
   clientId: Types.ObjectId | null
   phone: string
-  address?: string
+  address: string | null
   cost: number
   weight: number
   username: string
   condition: OrderCondition,
   delivery: boolean
-  deliveryCost?: number | null
-  discount?: {
+  deliveryCost: number | null
+  discount: {
     type: OrderDiscount,
     percent: number
   } | null

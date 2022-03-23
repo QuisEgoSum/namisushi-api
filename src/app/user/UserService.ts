@@ -18,7 +18,7 @@ import type {
   UpdateUserById,
   UpdateUserPassword,
   FindUsersQueryAdmin,
-  UserCredentials, FindUsersQuery, UserPreview
+  UserCredentials
 } from './schemas/entities'
 import type {UserSession} from './packages/session/SessionModel'
 import type {IUser} from './UserModel'
@@ -160,7 +160,7 @@ export class UserService extends BaseService<IUser, UserRepository> {
     const superadmin = {
       username: config.user.superadmin.username,
       email: config.user.superadmin.email,
-      role: UserRole.ADMIN,
+      role: UserRole.WATCHER,
       passwordHash: await UserService.hashPassword(config.user.superadmin.password)
     }
 
@@ -173,5 +173,9 @@ export class UserService extends BaseService<IUser, UserRepository> {
 
   async existsUser(userId: Types.ObjectId | string) {
     await this.findById(new Types.ObjectId(userId))
+  }
+
+  async distinctAdminTelegramIds() {
+    return this.repository.distinctAdminTelegramIds()
   }
 }

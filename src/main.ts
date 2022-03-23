@@ -8,15 +8,20 @@ import {initOrder} from '@app/order'
 import {logger} from '@logger'
 import {shutdown} from './shutdown'
 import {createTelegramBot} from './servers/telegram'
+import {initNotification} from '@app/notification'
 
 
 (async function main() {
   await createConnection()
 
+  //TODO: launch after init app packages
+  const telegramBot = await createTelegramBot()
+
   const docs = await initDocs()
   const user = await initUser()
   const product = await initProduct()
-  const order = await initOrder(product.service)
+  const notification = await initNotification(telegramBot, user)
+  const order = await initOrder(product, notification)
 
   const httpServer = await createHttpServer(
     {
@@ -32,8 +37,6 @@ import {createTelegramBot} from './servers/telegram'
       }
     }
   )
-
-  const telegramBot = await createTelegramBot()
 
   {
     ['SIGINT', 'SIGTERM']

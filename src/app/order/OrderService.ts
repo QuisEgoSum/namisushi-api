@@ -10,12 +10,11 @@ import type {OrderRepository} from '@app/order/OrderRepository'
 import type {CreateOrder} from '@app/order/schemas/entities'
 import type {ProductService} from '@app/product/ProductService'
 import type {CounterService} from '@app/order/packages/counter/CounterService'
+import {INotificationEventEmitter, NotificationEvents} from '@app/notification'
 
 
 export class OrderService extends BaseService<IOrder, OrderRepository> {
-  private readonly productService: ProductService
   private readonly discounts: {[key in OrderDiscount]: number}
-  private readonly counterService: CounterService
 
   /**
    * @summary С понедельника по четверг с 11:00 до 16:00
@@ -33,13 +32,11 @@ export class OrderService extends BaseService<IOrder, OrderRepository> {
 
   constructor(
     repository: OrderRepository,
-    productService: ProductService,
-    counterService: CounterService
+    private readonly productService: ProductService,
+    private readonly counterService: CounterService,
+    private readonly notificationEmitter: INotificationEventEmitter
   ) {
     super(repository)
-
-    this.productService = productService
-    this.counterService = counterService
 
     this.Error.EntityNotExistsError = OrderDoesNotExistError
 
@@ -71,6 +68,10 @@ export class OrderService extends BaseService<IOrder, OrderRepository> {
     } else {
       order.deliveryCalculateManually = null
     }
+    if (!createOrder.delivery) {
+      order.deliveryCost = null
+      order.address = null
+    }
     order.products = await this.productService.findAndCalculateProducts(createOrder.products)
     for (const product of order.products) {
       order.productsSum += product.cost * product.number
@@ -90,12 +91,15 @@ export class OrderService extends BaseService<IOrder, OrderRepository> {
     } else {
       order.cost = order.productsSum
     }
+    if (typeof order.deliveryCost === 'number') {
+      order.cost += order.deliveryCost
+    }
     order.number = await this.counterService.inc(order.isTestOrder)
     const savedOrder = await this.repository.create(order)
     const rawPopulatedOrder = await this.repository.findPopulatedOrderById(savedOrder._id)
     if (!rawPopulatedOrder) throw new CreatedOrderDoesNotExistError()
     const populatedOrder = rawPopulatedTransform(rawPopulatedOrder)
-    //TODO: Event
+    this.notificationEmitter.emit(NotificationEvents.NEW_ORDER, populatedOrder)
     return populatedOrder
   }
 }

@@ -170,14 +170,14 @@ export interface PopulatedOrder {
   //nullable Types.ObjectId ajv преобразовывает в null при наличии значения
   clientId: string | null
   phone: string
-  address?: string
+  address: string | null
   cost: number
   weight: number
   username: string
   condition: OrderCondition,
   delivery: boolean
-  deliveryCost?: number | null
-  discount?: {
+  deliveryCost: number | null
+  discount: {
     type: OrderDiscount,
     percent: number
   } | null

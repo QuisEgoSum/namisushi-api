@@ -10,6 +10,7 @@ export interface IUser {
   role: UserRole,
   avatar: string,
   passwordHash: string | null,
+  telegramId: number | null,
   createdAt: number,
   updatedAt: number
 }
@@ -36,6 +37,10 @@ const UserSchema = new Schema<IUser>(
       select: false,
       default: null
     },
+    telegramId: {
+      type: Number,
+      default: null
+    },
     createdAt: {
       type: Number
     },
@@ -48,6 +53,7 @@ const UserSchema = new Schema<IUser>(
     timestamps: true
   }
 )
+  .index({role: 1})
   .index({email: 1}, {unique: true})
   .index({username: 1}, {unique: true})
   .index({createdAt: 1})

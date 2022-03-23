@@ -29,7 +29,7 @@ export const address = {
   }
 }
 export const cost = {
-  description: 'Стоимость заказа без учёта доставки',
+  description: 'Стоимость заказа c учётом скидки и доставки',
   type: 'integer',
   minimum: 0,
   errorMessage: {

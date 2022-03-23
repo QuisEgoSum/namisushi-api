@@ -8,6 +8,8 @@ import {Counter, initCounter} from '@app/order/packages/counter'
 import type {FastifyInstance} from 'fastify'
 import type {ProductService} from '@app/product/ProductService'
 import {CounterService} from '@app/order/packages/counter/CounterService'
+import {Product} from '@app/product'
+import {Notification} from '@app/notification'
 
 
 class Order {
@@ -32,9 +34,12 @@ class Order {
   }
 }
 
-export async function initOrder(productService: ProductService) {
+export async function initOrder(
+  product: Product,
+  notification: Notification
+) {
   const counter = await initCounter()
-  return new Order(new OrderService(new OrderRepository(OrderModel), productService, counter.service), counter)
+  return new Order(new OrderService(new OrderRepository(OrderModel), product.service, counter.service, notification.emitter), counter)
 }
 
 export type {

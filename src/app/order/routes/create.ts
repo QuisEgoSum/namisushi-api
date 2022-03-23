@@ -52,7 +52,7 @@ export async function create(fastify: FastifyInstance, service: OrderService) {
           if (request.body.delivery && !request.body.address) {
             throw MISSING_ADDRESS_ERROR
           }
-          if (request.body.isTestOrder && request.optionalSession.userRole !== UserRole.ADMIN) {
+          if (request.body.isTestOrder && request.optionalSession.userRole !== UserRole.ADMIN && request.optionalSession.userRole !== UserRole.WATCHER) {
             throw new UserRightsError({message: 'Создать тестовый заказ может только администратор'})
           }
         },
