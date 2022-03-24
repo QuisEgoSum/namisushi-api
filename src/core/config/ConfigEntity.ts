@@ -32,6 +32,7 @@ interface ConfigServer {
   }
   readonly telegram: {
     token: string
+    enableBot: boolean
     enableWebhook: boolean
     webhook: {
       port: number

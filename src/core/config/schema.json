@@ -80,6 +80,9 @@
             "token": {
               "type": "string"
             },
+            "enableBot": {
+              "type": "boolean"
+            },
             "enableWebhook": {
               "type": "boolean"
             },
@@ -107,6 +110,7 @@
           },
           "required": [
             "token",
+            "enableBot",
             "enableWebhook",
             "webhook"
           ],

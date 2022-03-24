@@ -7,13 +7,15 @@ import {NotificationTelegramAgent} from '@app/notification/NotificationTelegramA
 export class NotificationEventListener {
   constructor(
     private readonly emitter: INotificationEventEmitter,
-    private readonly telegram: NotificationTelegramAgent
+    private readonly telegram: NotificationTelegramAgent | null
   ) {
     this.emitter
       .on(NotificationEvents.NEW_ORDER, this.newOrderHandler.bind(this))
   }
 
   private async newOrderHandler(order: PopulatedOrder): Promise<void> {
-    await this.telegram.newOrderHandler(order)
+    if (this.telegram) {
+      await this.telegram.newOrderHandler(order)
+    }
   }
 }

@@ -1,6 +1,6 @@
 import 'module-alias/register'
 import {createHttpServer} from './servers/http'
-import {createTelegramBot} from './servers/telegram'
+import {createTelegramBot, TelegramBot} from './servers/telegram'
 import {createConnection} from '@core/database'
 import {initDocs} from '@app/docs'
 import {initUser} from '@app/user'
@@ -11,7 +11,6 @@ import {logger} from '@logger'
 import {config} from '@config'
 import {promisify} from 'util'
 import type {FastifyInstance} from 'fastify'
-import type {Telegraf} from 'telegraf'
 
 
 (async function main() {
@@ -55,35 +54,39 @@ import type {Telegraf} from 'telegraf'
 
 async function listen(
   http: FastifyInstance,
-  bot: Telegraf
+  bot: TelegramBot
 ) {
   await promisify(http.ready)()
   await http.listen(config.server.http.port, config.server.http.address)
-  let telegrafOptions = {}
-  if (config.server.telegram.enableWebhook) {
-    telegrafOptions = config.server.telegram.webhook
-  }
-  await bot.launch(telegrafOptions)
-  if (config.server.telegram.enableWebhook) {
-    logger.child({label: 'telegram'}).info(
-      `Telegram webhook server listen http://localhost:${
-      config.server.telegram.webhook.port} for domain ${
-      config.server.telegram.webhook.domain} at path ${
-      config.server.telegram.webhook.hookPath}`
-    )
-  } else {
-    logger.child({label: 'telegram'}).info(`Telegram webhook client started`)
+  if (bot) {
+    let telegrafOptions = {}
+    if (config.server.telegram.enableWebhook) {
+      telegrafOptions = config.server.telegram.webhook
+    }
+    await bot.launch(telegrafOptions)
+    if (config.server.telegram.enableWebhook) {
+      logger.child({label: 'telegram'}).info(
+        `Telegram webhook server listen http://localhost:${
+          config.server.telegram.webhook.port} for domain ${
+          config.server.telegram.webhook.domain} at path ${
+          config.server.telegram.webhook.hookPath}`
+      )
+    } else {
+      logger.child({label: 'telegram'}).info(`Telegram webhook client started`)
+    }
   }
 }
 
 async function shutdown(
   event: string,
   http: FastifyInstance,
-  bot: Telegraf
+  bot: TelegramBot
 ) {
   const sLogger = logger.child({label: 'shutdown'})
   sLogger.info({mgs: 'Shutdown start', event})
-  bot.stop()
+  if (bot) {
+    bot.stop()
+  }
   await http.close()
   sLogger.info({msg: 'Shutdown end', event})
 }

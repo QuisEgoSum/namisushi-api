@@ -1,9 +1,9 @@
-import type {Telegraf} from 'telegraf'
 import {NotificationEventEmitter, INotificationEventEmitter} from '@app/notification/NotificationEventEmitter'
 import {NotificationEventListener} from './NotificationEventListener'
 import {NotificationTelegramAgent} from './NotificationTelegramAgent'
 import {NotificationEvents} from './NotificationEvents'
 import {User} from '../user'
+import type {TelegramBot} from '../../servers/telegram'
 
 
 class Notification {
@@ -14,10 +14,13 @@ class Notification {
 }
 
 export async function initNotification(
-  bot: Telegraf,
+  bot: TelegramBot,
   user: User
 ): Promise<Notification> {
-  const telegram = new NotificationTelegramAgent(bot, user.service)
+  let telegram: NotificationTelegramAgent | null = null
+  if (bot) {
+    telegram = new NotificationTelegramAgent(bot, user.service)
+  }
   const emitter = new NotificationEventEmitter()
   const listener = new NotificationEventListener(emitter, telegram)
   return new Notification(emitter, listener)
