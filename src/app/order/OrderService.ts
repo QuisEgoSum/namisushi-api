@@ -51,8 +51,8 @@ export class OrderService extends BaseService<IOrder, OrderRepository> {
       username: createOrder.username,
       phone: createOrder.phone,
       delivery: createOrder.delivery,
-      deliveryCost: createOrder.deliveryCost,
-      address: createOrder.address,
+      deliveryCost: createOrder.deliveryCost || null,
+      address: createOrder.address || null,
       additionalInformation: createOrder.additionalInformation,
       cost: 0,
       productsSum: 0,
@@ -61,16 +61,12 @@ export class OrderService extends BaseService<IOrder, OrderRepository> {
       condition: OrderCondition.NEW,
       isTestOrder: createOrder.isTestOrder
     }
-    if (createOrder.delivery && createOrder.deliveryCost === null) {
+    if (createOrder.delivery && (createOrder.deliveryCost === null || createOrder.deliveryCost === undefined)) {
       order.deliveryCalculateManually = true
     } else if (order.delivery) {
       order.deliveryCalculateManually = false
     } else {
       order.deliveryCalculateManually = null
-    }
-    if (!createOrder.delivery) {
-      order.deliveryCost = null
-      order.address = null
     }
     order.products = await this.productService.findAndCalculateProducts(createOrder.products)
     for (const product of order.products) {

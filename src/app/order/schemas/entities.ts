@@ -181,9 +181,9 @@ export interface PopulatedOrder {
     type: OrderDiscount,
     percent: number
   } | null
-  additionalInformation?: string
+  additionalInformation: string | null
   deliveryCalculateManually: boolean | null
-  time?: number | null
+  time: number | null
   productsSum: number
   products: PopulateOrderedProduct[]
   isTestOrder: boolean
@@ -219,13 +219,19 @@ export const PopulatedOrder = {
   required: [
     '_id',
     'number',
-    'clientId',
+    'address',
     'phone',
+    'username',
+    'delivery',
+    'deliveryCost',
+    'deliveryCalculateManually',
     'cost',
     'weight',
-    'username',
     'condition',
-    'delivery',
+    'discount',
+    'additionalInformation',
+    'clientId',
+    'productsSum',
     'products',
     'isTestOrder',
     'createdAt',

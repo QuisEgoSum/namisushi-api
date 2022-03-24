@@ -62,10 +62,15 @@ export class NotificationTelegramAgent {
   }
 
   public async newOrderHandler(order: PopulatedOrder) {
-    const orderTexts = [
-      '*Новый заказ!*\n',
-      `Имя: ${order.username}\n`,
-    ]
+    const orderTexts = []
+
+    if (order.isTestOrder) {
+      orderTexts.push(`*ТЕСТОВЫЙ ЗАКАЗ! №${order.number}*\n`)
+    } else {
+      orderTexts.push(`*Новый заказ! №${order.number}*\n`)
+    }
+
+    orderTexts.push(`Имя: ${order.username}\n`,)
     if (order.delivery) {
       orderTexts.push(`Адрес доставки: \`${order.address}\`\n`)
     } else {

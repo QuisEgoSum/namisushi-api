@@ -83,7 +83,7 @@ export const delivery = {
   }
 }
 export const discountType = {
-  description: 'Идентификатор скидки, примененной к заказу',
+  description: 'Тип скидки, примененной к заказу',
   type: 'string',
   enum: Object.values(OrderDiscount)
 }

@@ -20,16 +20,16 @@ export interface IOrder {
   cost: number
   weight: number
   username: string
-  condition: OrderCondition,
+  condition: OrderCondition
   delivery: boolean
   deliveryCost: number | null
   discount: {
     type: OrderDiscount,
     percent: number
   } | null
-  additionalInformation?: string
+  additionalInformation: string | null
   deliveryCalculateManually: boolean | null
-  time?: number | null
+  time: number | null
   productsSum: number
   products: IOrderProduct[]
   isTestOrder: boolean
@@ -42,46 +42,92 @@ const OrderSchema = new Schema<IOrder>(
     number: Number,
     clientId: {
       type: Schema.Types.ObjectId,
-      ref: 'User'
+      ref: 'User',
+      default: null
     },
-    phone: String,
-    address: String,
-    cost: Number,
-    weight: Number,
-    username: String,
+    phone: {
+      type: String,
+      required: true
+    },
+    address: {
+      type: String,
+      default: null
+    },
+    cost: {
+      type: Number,
+      required: true
+    },
+    weight: {
+      type: Number,
+      required: true
+    },
+    username: {
+      type: String,
+      required: true
+    },
     deliveryCost: Number,
     condition: {
-      type: Number
-      //TODO: Validation
+      type: Number,
+      default: OrderCondition.NEW
     },
-    delivery: Boolean,
-    discount: {
-      type: {
-        type: String,
-        enum: Object.values(OrderDiscount)
-      },
-      percent: {
-        type: Number
+    delivery: {
+      type: Boolean
+    },
+    discount: new Schema(
+      {
+        type: {
+          type: String,
+          enum: Object.values(OrderDiscount)
+        },
+        percent: {
+          type: Number
+        }
       }
+    ),
+    additionalInformation: {
+      type: String,
+      default: null
     },
-    additionalInformation: String,
-    deliveryCalculateManually: Boolean,
-    time: Number,
-    productsSum: Number,
-    products: [{
+    deliveryCalculateManually: {
+      type: Boolean,
+      default: null
+    },
+    time: {
+      type: Number,
+      default: null
+    },
+    productsSum: {
+      type: Number,
+      required: true
+    },
+    products: [new Schema({
       productId: {
         type: Schema.Types.ObjectId,
-        ref: 'Product'
+        ref: 'Product',
+        required: true
       },
-      number: Number,
-      cost: Number,
-      weight: Number,
+      number: {
+        type: Number,
+        required: true
+      },
+      cost: {
+        type: Number,
+        required: true
+      },
+      weight: {
+        type: Number,
+        required: true
+      },
       variantId: {
         type: Schema.Types.ObjectId,
-        ref: 'ProductVariant'
+        ref: 'ProductVariant',
+        default: null
       }
-    }],
-    isTestOrder: Boolean,
+    })],
+    isTestOrder: {
+      type: Boolean,
+      default: false
+    },
     createdAt: Number,
     updatedAt: Number
   },
