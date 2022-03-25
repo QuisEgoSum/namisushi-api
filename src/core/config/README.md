@@ -7,6 +7,12 @@
 | NAMISUSHI_API_SERVER_HTTP_ADDRESS                    |             | string          |                                 |
 | NAMISUSHI_API_SERVER_HTTP_HOST                       |             | string          |                                 |
 | NAMISUSHI_API_SERVER_HTTP_PORT                       |             | integer         | Range: 1...65353                |
+| NAMISUSHI_API_SERVER_TELEGRAM_TOKEN                  |             | string          |                                 |
+| NAMISUSHI_API_SERVER_TELEGRAM_ENABLE_BOT             |             | boolean         |                                 |
+| NAMISUSHI_API_SERVER_TELEGRAM_ENABLE_WEBHOOK         |             | boolean         |                                 |
+| NAMISUSHI_API_SERVER_TELEGRAM_WEBHOOK_PORT           |             | integer         | Range: 1...65353                |
+| NAMISUSHI_API_SERVER_TELEGRAM_WEBHOOK_HOOK_PATH      |             | string          |                                 |
+| NAMISUSHI_API_SERVER_TELEGRAM_WEBHOOK_DOMAIN         |             | string          |                                 |
 | NAMISUSHI_API_LOGGER_PRETTY                          |             | boolean         |                                 |
 | NAMISUSHI_API_LOGGER_ISO_TIME                        |             | boolean         |                                 |
 | NAMISUSHI_API_LOGGER_TIME                            |             | boolean         |                                 |
@@ -24,7 +30,8 @@
 | NAMISUSHI_API_DATABASE_OPTIONS_USE_UNIFIED_TOPOLOGY  |             | boolean         |                                 |
 | NAMISUSHI_API_DATABASE_OPTIONS_IGNORE_UNDEFINED      |             | boolean         |                                 |
 | NAMISUSHI_API_DATABASE_OPTIONS_KEEP_ALIVE            |             | boolean         |                                 |
-| NAMISUSHI_API_TELEGRAM_TOKEN                         |             | string          |                                 |
+| NAMISUSHI_API_PRODUCT_IMAGE_MAXIMUM                  |             | integer         |                                 |
 | NAMISUSHI_API_PRODUCT_IMAGE_FILE_MAXIMUM_SIZE        |             | integer         |                                 |
+| NAMISUSHI_API_PRODUCT_IMAGE_FILE_DESTINATION         |             | string          |                                 |
 | NAMISUSHI_API_ORDER_DISCOUNT_WITHOUT_DELIVERY        |             | integer         |                                 |
 | NAMISUSHI_API_ORDER_DISCOUNT_WEEKDAY                 |             | integer         |                                 |
