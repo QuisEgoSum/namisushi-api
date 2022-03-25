@@ -5,7 +5,7 @@ import {v4} from 'uuid'
 
 export interface IUser {
   _id: Types.ObjectId,
-  username: string,
+  username: string | null,
   email: string,
   role: UserRole,
   avatar: string,
@@ -19,7 +19,8 @@ export interface IUser {
 const UserSchema = new Schema<IUser>(
   {
     username: {
-      type: String
+      type: String,
+      default: null
     },
     email: {
       type: String
@@ -39,7 +40,8 @@ const UserSchema = new Schema<IUser>(
     },
     telegramId: {
       type: Number,
-      default: null
+      default: null,
+      select: false
     },
     createdAt: {
       type: Number
