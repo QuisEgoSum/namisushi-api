@@ -5,7 +5,7 @@ export function orderTests(options: TestOptions) {
   return function() {
     it('Без доставки, минимум указанных полей', async function() {
       const response = await options.fastify.inject({
-        url: '/api/order',
+        url: '/order',
         method: 'POST',
         payload: {
           phone: '+38(071)-000-00-00',

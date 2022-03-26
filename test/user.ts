@@ -6,7 +6,7 @@ export function userTests(options: TestOptions) {
   return function() {
     it('Авторизация админом', async function() {
       const response = await options.fastify.inject({
-        url: '/api/user/signin',
+        url: '/user/signin',
         method: 'POST',
         payload: {
           login: config.user.superadmin.email,

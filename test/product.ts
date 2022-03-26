@@ -3,9 +3,32 @@ import {TestOptions} from './main'
 
 export function productTests(options: TestOptions) {
   return function() {
-    it('Продукты для заказа', async function() {
+    it('Создание SINGLE продукта', async function() {
+      const payload = {
+        title: 'SINGLE',
+        description: 'SINGLE',
+        ingredients: [],
+        visible: true,
+        cost: 100,
+        weight: 100
+      }
+      const response = await options.fastify.inject({
+        url: '/admin/product/SINGLE',
+        method: 'POST',
+        payload: payload,
+        cookies: {sessionId: options.sessions.admin}
+      })
+      expect(response.statusCode).toEqual(201)
+      expect(response.json()).toMatchObject({
+        product: {
+          ...payload,
+          type: 'SINGLE'
+        }
+      })
+    })
+    it('Создание продуктов для заказа', async function() {
       const response1 = await options.fastify.inject({
-        url: '/api/admin/product/SINGLE',
+        url: '/admin/product/SINGLE',
         method: 'POST',
         payload: {
           title: 'SINGLE',
@@ -19,7 +42,7 @@ export function productTests(options: TestOptions) {
       })
       expect(response1.statusCode).toEqual(201)
       const response2 = await options.fastify.inject({
-        url: '/api/admin/product/VARIANT',
+        url: '/admin/product/VARIANT',
         method: 'POST',
         payload: {
           title: 'VARIANT',
@@ -31,7 +54,7 @@ export function productTests(options: TestOptions) {
       })
       expect(response2.statusCode).toEqual(201)
       const response3 = await options.fastify.inject({
-        url: `/api/admin/product/VARIANT/${response2.json<{product: {_id: string}}>().product._id}/variant`,
+        url: `/admin/product/VARIANT/${response2.json<{product: {_id: string}}>().product._id}/variant`,
         method: 'POST',
         payload: {
           title: 'VARIANT 1',

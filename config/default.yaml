@@ -14,7 +14,7 @@ server:
     address: 127.0.0.1
     port: 8080
     #docs. TODO: rename
-    host: localhost:8080/api
+    host: localhost:8080
     protocol: http
   cors:
     allowedOrigins:
