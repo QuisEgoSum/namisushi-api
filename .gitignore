@@ -2,8 +2,10 @@
 node_modules
 build
 src/**/*.js
+test/**/*.js
 *.log
 *.png
 *.jpg
 image/
 package-lock.json
+!jest-environment-fail-fast.js

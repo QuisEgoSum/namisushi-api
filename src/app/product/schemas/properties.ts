@@ -67,6 +67,8 @@ export const cost = {
     maximum: 'Цена продукта не может превышать 100000'
   }
 }
+export const nullCost = {type: 'null'}
+export const nullableCost = {type: ['integer', 'null']}
 export const weight = {
   description: 'Вес в граммах',
   type: 'integer',
@@ -78,6 +80,8 @@ export const weight = {
     maximum: 'Вес продукта не может превышать 100000'
   }
 }
+export const nullWeight = {type: 'null'}
+export const nullableWeight = {type: ['integer', 'null']}
 export const images = {
   type: 'array',
   items: {type: 'string'}

@@ -18,6 +18,6 @@
       "@error": ["core/error"]
     }
   },
-  "include": ["src"],
+  "include": ["src", "test"],
   "exclude": ["node_modules", "build", "tools"]
 }

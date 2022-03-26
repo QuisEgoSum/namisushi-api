@@ -13,7 +13,6 @@ import {schemaErrorFormatter, ajv} from '@core/validation'
 import {createSecurityHook, CreateSecurityHookOptions} from './modules/security'
 import {createDocsHook} from './modules/docs'
 import type {FastifyInstance} from 'fastify'
-import {promisify} from 'util'
 
 
 export interface CreateHttpServerOptions {

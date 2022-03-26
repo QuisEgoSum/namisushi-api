@@ -6,7 +6,7 @@ import {
   visible,
   title,
   typeSingle, typeVariant,
-  updatedAt, weight, images
+  updatedAt, weight, images, nullCost, nullWeight, type, nullableCost, nullableWeight
 } from '@app/product/schemas/properties'
 import {BaseVariant} from '@app/product/packages/variant/schemas/entities'
 import {Types} from 'mongoose'
@@ -71,6 +71,8 @@ export const VariantProduct = {
     images,
     visible,
     type: typeVariant,
+    cost: nullCost,
+    weight: nullWeight,
     variants: {
       type: 'array',
       items: BaseVariant,
@@ -88,6 +90,8 @@ export const VariantProduct = {
     'images',
     'visible',
     'type',
+    'cost',
+    'weight',
     'variants',
     'createdAt',
     'updatedAt'

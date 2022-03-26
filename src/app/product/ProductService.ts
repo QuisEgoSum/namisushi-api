@@ -60,7 +60,9 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
       title: product.title,
       description: product.description,
       visible: product.visible,
-      ingredients: product.ingredients
+      ingredients: product.ingredients,
+      cost: null,
+      weight: null
     })
   }
 

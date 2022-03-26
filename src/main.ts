@@ -1,12 +1,6 @@
 import 'module-alias/register'
-import {createHttpServer} from './servers/http'
-import {createTelegramBot, TelegramBot} from './servers/telegram'
-import {createConnection} from '@core/database'
-import {initDocs} from '@app/docs'
-import {initUser} from '@app/user'
-import {initProduct} from '@app/product'
-import {initOrder} from '@app/order'
-import {initNotification} from '@app/notification'
+import {initApp} from './init'
+import {TelegramBot} from './servers/telegram'
 import {logger} from '@logger'
 import {config} from '@config'
 import {promisify} from 'util'
@@ -14,36 +8,13 @@ import type {FastifyInstance} from 'fastify'
 
 
 (async function main() {
-  await createConnection()
+  const {http, bot} = await initApp()
 
-  const telegramBot = await createTelegramBot()
-
-  const docs = await initDocs()
-  const user = await initUser()
-  const product = await initProduct()
-  const notification = await initNotification(telegramBot, user)
-  const order = await initOrder(product, notification)
-
-  const httpServer = await createHttpServer(
-    {
-      routers: [
-        docs.router,
-        user.router,
-        product.router,
-        order.router
-      ],
-      swagger: docs.swagger,
-      securityOptions: {
-        user: user
-      }
-    }
-  )
-
-  await listen(httpServer, telegramBot)
+  await listen(http, bot)
 
   {
     ['SIGINT', 'SIGTERM']
-      .forEach(event => process.once(event, () => shutdown(event, httpServer, telegramBot)))
+      .forEach(event => process.once(event, () => shutdown(event, http, bot)))
   }
 })()
   .catch(error => {

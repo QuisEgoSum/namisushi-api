@@ -25,7 +25,7 @@ export async function update(fastify: FastifyInstance, service: CategoryService)
           params: {
             categoryId: schemas.properties._id
           },
-          body: schemas.entities.CreateCategory,
+          body: schemas.entities.UpdateCategory,
           response: {
             [200]: Ok.fromEntity(schemas.entities.BaseCategory, 'category'),
             [400]: new BadRequest(CategoryExistsError.schema()).bodyErrors().updateError(),

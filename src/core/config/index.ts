@@ -7,10 +7,9 @@ import {validation} from './validation'
 import {assignEnvValues, createEnvListBySchema} from './env'
 
 
-function readConfig(): ConfigEntity {
+function readConfig(configPath = process.argv.find(arg => arg.startsWith('--config='))?.replace('--config=', '')): ConfigEntity {
   const pkgJsonPath = path.resolve(__dirname, '../../../package.json')
   const defaultConfigPath = path.resolve(__dirname, '../../../config/default.yaml')
-  const configPath = process.argv.find(arg => arg.startsWith('--config='))?.replace('--config=', '')
 
   const pkgJson = JSON.parse(fs.readFileSync(pkgJsonPath, {encoding: 'utf-8'}))
 
@@ -40,3 +39,8 @@ function readConfig(): ConfigEntity {
 
 
 export const config = new ConfigEntity(readConfig())
+
+export async function reloadConfigByPath(path: string) {
+  const _config = readConfig(path)
+  Object.assign(config, _config)
+}

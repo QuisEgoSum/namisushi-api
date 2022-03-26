@@ -23,7 +23,8 @@
     "@typescript-eslint/no-explicit-any": "off"
   },
   "plugins": [
-    "@typescript-eslint"
+    "@typescript-eslint",
+    "jest"
   ],
   "extends": [
     "eslint:recommended",

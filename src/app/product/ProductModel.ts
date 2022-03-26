@@ -21,6 +21,8 @@ export interface ISingleProduct extends ProductCommon {
 
 export interface IVariantProduct extends ProductCommon {
   type: ProductType.VARIANT
+  cost: null
+  weight: null
 }
 
 export type IProduct = ISingleProduct | IVariantProduct

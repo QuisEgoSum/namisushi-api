@@ -82,6 +82,9 @@ const OrderSchema = new Schema<IOrder>(
         percent: {
           type: Number
         }
+      },
+      {
+        _id: false
       }
     ),
     additionalInformation: {
