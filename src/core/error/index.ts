@@ -222,6 +222,7 @@ export const WaitingTimeExceededError = InternalError.extends(
 
 export const RouteNotFoundError = OpenapiError.compile(
   {
+    httpCode: 404,
     properties: {
       method: {
         type: 'string',

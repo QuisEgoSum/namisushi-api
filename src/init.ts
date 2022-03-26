@@ -6,6 +6,7 @@ import {initUser} from '@app/user'
 import {initProduct} from '@app/product'
 import {initNotification} from '@app/notification'
 import {initOrder} from '@app/order'
+import {initFile} from '@app/file'
 
 
 export async function initApp() {
@@ -13,6 +14,7 @@ export async function initApp() {
 
   const telegramBot = await createTelegramBot()
 
+  const file = await initFile()
   const docs = await initDocs()
   const user = await initUser()
   const product = await initProduct()
@@ -25,7 +27,8 @@ export async function initApp() {
         docs.router,
         user.router,
         product.router,
-        order.router
+        order.router,
+        file.router
       ],
       swagger: docs.swagger,
       securityOptions: {

@@ -49,7 +49,7 @@ export async function createHttpServer(options: CreateHttpServerOptions) {
     .register(fastifyStatic, {root: config.paths.shareStatic})
 
 
-  options.routers.forEach(router => fastifyInstance.register(router, {prefix: '/api'}))
+  options.routers.forEach(router => fastifyInstance.register(router))
 
   return fastifyInstance
 }
