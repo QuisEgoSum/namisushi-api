@@ -39,7 +39,7 @@ export async function createHttpServer(options: CreateHttpServerOptions) {
     .register(fastifyCors, {
       allowedHeaders: config.server.cors.allowedHeaders,
       origin: config.server.cors.allowedOrigins,
-      methods: ['GET', 'PUT', 'POST', 'DELETE']
+      methods: ['GET', 'PUT', 'POST', 'DELETE', 'PATCH']
     })
     .register(fastifyHelmet, {
       contentSecurityPolicy: config.server.csp
