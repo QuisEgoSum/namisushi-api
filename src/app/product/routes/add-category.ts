@@ -23,7 +23,7 @@ export async function addCategory(fastify: FastifyInstance, service: ProductServ
         url: '/admin/product/:productId/category/:categoryId',
         schema: {
           summary: 'Добавить продукт в категорию',
-          tags: ['Управление продуктами'],
+          tags: ['Управление категориями'],
           params: {
             productId: schemas.properties._id,
             categoryId: categorySchemas.properties._id
