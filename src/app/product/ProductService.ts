@@ -125,13 +125,13 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
     return updatedProduct.images
   }
 
-  async deleteImage(productId: string, imageName: string) {
-    const result = await this.repository.pullImage(productId, imageName)
+  async deleteImage(productId: string, filename: string) {
+    const result = await this.repository.pullImage(productId, filename)
     if (result.matchedCount == 0) {
       await this.existsById(productId)
       throw new ProductImageDoesNotExist()
     }
-    await deleteFile(config.product.image.file.destination, imageName)
+    await deleteFile(config.product.image.file.destination, filename)
   }
 
   async updateOrderImages(productId: string, images: string[]) {

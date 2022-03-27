@@ -66,8 +66,8 @@ export class ProductRepository extends GenericRepository<IProduct> {
     )
   }
 
-  async pullImage(productId: string, imageName: string) {
-    return this.updateOne({_id: new Types.ObjectId(productId), images: imageName}, {$pull: {images: imageName}})
+  async pullImage(productId: string, filename: string) {
+    return this.updateOne({_id: new Types.ObjectId(productId), images: filename}, {$pull: {images: filename}})
   }
 
   async updateOrderImages(productId: string, images: string[], oldImages: string[]) {

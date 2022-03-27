@@ -8,7 +8,7 @@ import {ProductDoesNotExistError, ProductImageDoesNotExist} from '@app/product/p
 export interface DetachImageRequest {
   Params: {
     productId: string,
-    imageName: string
+    filename: string
   }
 }
 
@@ -18,13 +18,13 @@ export async function detachImage(fastify: FastifyInstance, service: ProductServ
     .route<DetachImageRequest>(
       {
         method: 'DELETE',
-        url: '/admin/product/:productId/image/:imageName',
+        url: '/admin/product/:productId/image/:filename',
         schema: {
-          summary: 'Удалить картинку у продукта',
+          summary: 'Удалить картинку продукта',
           tags: ['Управление продуктами'],
           params: {
             productId: schemas.properties._id,
-            imageName: schemas.properties.images.items
+            filename: schemas.properties.images.items
           },
           response: {
             [200]: new MessageResponse('Картинка удалена'),
@@ -37,7 +37,7 @@ export async function detachImage(fastify: FastifyInstance, service: ProductServ
           admin: true
         },
         handler: async function(request, reply) {
-          await service.deleteImage(request.params.productId, request.params.imageName)
+          await service.deleteImage(request.params.productId, request.params.filename)
 
           reply
             .code(200)
