@@ -16,6 +16,7 @@ export const BaseCategory = {
   required: [
     '_id',
     'title',
+    'visible',
     'productIds',
     'createdAt',
     'updatedAt'

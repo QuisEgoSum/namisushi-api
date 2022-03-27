@@ -66,7 +66,6 @@ export function productTests(options: TestOptions) {
         cookies: {sessionId: options.sessions.admin}
       })
       expect(response3.statusCode).toEqual(201)
-      console.log(response1.json())
       options.stateId.set('PRODUCT_SINGLE', response1.json().product._id)
       options.stateId.set('PRODUCT_VARIANT', response2.json().product._id)
       options.stateId.set('PRODUCT_VARIANT_1', response3.json().variant._id)
