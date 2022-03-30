@@ -50,6 +50,6 @@ async function recursiveFindFilesByRegex(dirPath: string, regex: RegExp, result:
 export async function loadModels(): Promise<Model<any>[]> {
   const files: string[] = []
   await recursiveFindFilesByRegex(path.resolve(config.paths.root, './src/app'), /Model/, files)
-  const models: {[key: string]: Model<any>}[] = await Promise.all(files.map(filepath => import(filepath)))
+  const models: {[key: string]: Model<any>}[] = await Promise.all(files.map(filepath => import(filepath.replace('.ts', ''))))
   return models.map(model => Object.values(model)).flat()
 }
