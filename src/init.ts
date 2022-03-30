@@ -7,9 +7,17 @@ import {initProduct} from '@app/product'
 import {initNotification} from '@app/notification'
 import {initOrder} from '@app/order'
 import {initFile} from '@app/file'
+import {loadModels} from '@utils/loader'
+import {logger} from '@logger'
 
 
 export async function initApp() {
+  const models = await loadModels()
+
+  models.forEach(
+    model => model.once('index', error => error && logger.child({label: 'db'}).error(error))
+  )
+
   await createConnection()
 
   const telegramBot = await createTelegramBot()

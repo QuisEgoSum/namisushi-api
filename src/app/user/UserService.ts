@@ -166,7 +166,7 @@ export class UserService extends BaseService<IUser, UserRepository> {
 
     await this.repository.updateById(
       new Types.ObjectId(UserService.superadminId),
-      superadmin,
+      {$set: superadmin, $setOnInsert: {name: 'Admin', phone: null, telegramId: null}},
       {upsert: true}
     )
   }

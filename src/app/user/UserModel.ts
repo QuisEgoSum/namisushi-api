@@ -4,14 +4,16 @@ import {v4} from 'uuid'
 
 
 export interface IUser {
-  _id: Types.ObjectId,
-  username: string | null,
-  email: string,
-  role: UserRole,
-  avatar: string,
-  passwordHash: string | null,
-  telegramId: number | null,
-  createdAt: number,
+  _id: Types.ObjectId
+  username: string | null
+  name: string
+  email: string | null
+  phone: string | null
+  role: UserRole
+  avatar: string
+  passwordHash: string | null
+  telegramId: number | null
+  createdAt: number
   updatedAt: number
 }
 
@@ -22,8 +24,12 @@ const UserSchema = new Schema<IUser>(
       type: String,
       default: null
     },
-    email: {
+    name: {
       type: String
+    },
+    email: {
+      type: String,
+      default: null
     },
     role: {
       type: String,
@@ -56,8 +62,8 @@ const UserSchema = new Schema<IUser>(
   }
 )
   .index({role: 1})
-  .index({email: 1}, {unique: true})
-  .index({username: 1}, {unique: true})
+  .index({email: 1}, {unique: true, partialFilterExpression: {email: {$type: 'string'}}})
+  .index({username: 1}, {unique: true, partialFilterExpression: {username: {$type: 'string'}}})
   .index({createdAt: 1})
 
 
