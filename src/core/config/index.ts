@@ -7,7 +7,10 @@ import {validation} from './validation'
 import {assignEnvValues, createEnvListBySchema} from './env'
 
 
-function readConfig(configPath = process.argv.find(arg => arg.startsWith('--config='))?.replace('--config=', '')): ConfigEntity {
+function readConfig(
+  configPath = process.argv.find(arg => arg.startsWith('--config='))?.replace('--config=', '')
+    || process.env.NAMISUSHI_API_CONFIG
+): ConfigEntity {
   const pkgJsonPath = path.resolve(__dirname, '../../../package.json')
   const defaultConfigPath = path.resolve(__dirname, '../../../config/default.yaml')
 

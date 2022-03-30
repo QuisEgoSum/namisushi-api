@@ -42,12 +42,12 @@ function createTableEnvRow(name, schema) {
     {
       table: {
         headers: ['name', 'description', 'type', 'valid'],
-        rows: configEnv.createEnvListBySchema(pkgJson.name, schema).map(
+        rows: [['NAMISUSHI_API_CONFIG', 'Path to the yml file', 'string', '']].concat(configEnv.createEnvListBySchema(pkgJson.name, schema).map(
           (env) => createTableEnvRow(
             env.name,
             env.dataPath.reduce((acc, key) => acc.properties[key], schema)
           )
-        )
+        ))
       }
     }
   ]

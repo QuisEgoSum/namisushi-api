@@ -9,7 +9,7 @@
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "eslint . --ext .ts",
     "prepublishOnly": "npm run build",
-    "dev": "npm run removeBuild && nodemon --watch './**/*.ts' --exec 'ts-node' src/main.ts",
+    "dev": "nodemon --watch './**/*.ts' --exec 'ts-node' src/main.ts",
     "checkConfig": "npm run build && node -r module-alias/register tools/pre-commit/config.js && npm run removeBuild",
     "start": "npm run build && node src/main.js",
     "test": "jest main.ts"
