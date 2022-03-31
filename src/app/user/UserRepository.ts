@@ -13,7 +13,8 @@ export class UserRepository extends BaseRepository<IUser> {
         {
           $or: [
             {username: login},
-            {email: login}
+            {email: login},
+            {phone: login}
           ]
         },
         {

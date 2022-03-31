@@ -1,8 +1,19 @@
-import {_id, avatar, createdAt, email, mEmail, fEmail, mUsername, password, role, updatedAt, username} from './properties'
+import {
+  _id,
+  avatar,
+  createdAt,
+  email,
+  mEmail,
+  mUsername,
+  password,
+  role,
+  updatedAt,
+  username,
+  savedUsername, savedEmail, savedPhone, name, telegramId, phone
+} from './properties'
 import {UserRole} from '../UserRole'
 import {QueryPageLimit, QueryPageNumber, QuerySortDirection} from '@common/schemas/query'
 import type {SortDirection} from 'mongodb'
-import {Types} from 'mongoose'
 
 
 export interface UserCredentials {
@@ -15,6 +26,7 @@ export const UserCredentials = {
   type: 'object',
   properties: {
     login: {
+      description: 'username, email или phone',
       type: 'string'
     },
     password: {
@@ -32,35 +44,15 @@ export const UserCredentials = {
   }
 }
 
-export interface UserPreview {
-  _id: Types.ObjectId,
-  username: string,
-  avatar: string
-}
-
-export const UserPreview = {
-  title: 'UserPreview',
-  type: 'object',
-  properties: {
-    _id,
-    username,
-    avatar
-  },
-  additionalProperties: false,
-  required: [
-    '_id',
-    'username',
-    'avatar'
-  ]
-}
-
 export const UserBase = {
   title: 'UserBase',
   type: 'object',
   properties: {
     _id: _id,
-    username: username,
-    email: email,
+    username: savedUsername,
+    name: name,
+    email: savedEmail,
+    phone: savedPhone,
     role: role,
     avatar: avatar,
     createdAt: createdAt,
@@ -71,7 +63,38 @@ export const UserBase = {
     '_id',
     'username',
     'email',
+    'phone',
     'role',
+    'avatar',
+    'createdAt',
+    'updatedAt'
+  ]
+}
+
+export const UserExpand = {
+  title: 'UserExpand',
+  type: 'object',
+  properties: {
+    _id: _id,
+    username: savedUsername,
+    name: name,
+    email: savedEmail,
+    phone: savedPhone,
+    role: role,
+    avatar: avatar,
+    telegramId: telegramId,
+    createdAt: createdAt,
+    updatedAt: updatedAt
+  },
+  additionalProperties: false,
+  required: [
+    '_id',
+    'username',
+    'email',
+    'phone',
+    'role',
+    'avatar',
+    'telegramId',
     'createdAt',
     'updatedAt'
   ]
@@ -88,41 +111,21 @@ export const CreateUser = {
   title: 'CreateUser',
   type: 'object',
   properties: {
+    name: name,
     username: username,
     email: email,
+    phone: phone,
     role: role,
     password: password
   },
   additionalProperties: false,
-  required: ['username', 'email', 'role', 'password'],
+  required: ['role', 'password'],
   errorMessage: {
     required: {
-      username: 'Введите имя',
-      email: 'Введите email',
       role: 'Выберите роль',
       password: 'Введите пароль'
     }
   }
-}
-
-export interface FindUsersQuery {
-  mUsername: string,
-  fEmail: string,
-  page: number,
-  limit: number
-}
-
-export const FindUsersQuery = {
-  title: 'FindUsersQuery',
-  type: 'object',
-  properties: {
-    mUsername,
-    fEmail,
-    page: new QueryPageNumber().setDefault(1),
-    limit: new QueryPageLimit().setDefault(10)
-  },
-  additionalProperties: false,
-  required: ['page', 'limit']
 }
 
 export interface FindUsersQueryAdmin {
@@ -149,9 +152,11 @@ export const FindUsersQueryAdmin = {
 }
 
 export interface UpdateUserById {
-  email?: string,
-  username?: string,
-  password?: string,
+  name?: string
+  email?: string
+  username?: string
+  phone?: string
+  password?: string
   role?: UserRole
 }
 
@@ -159,8 +164,10 @@ export const UpdateUserById = {
   title: 'UpdateUserById',
   type: 'object',
   properties: {
+    name: name,
     email: email,
     username: username,
+    phone: phone,
     password: password,
     role: role
   },
@@ -168,14 +175,18 @@ export const UpdateUserById = {
 }
 
 export interface UpdateUser {
+  name?: string
   username?: string
+  email?: string
 }
 
 export const UpdateUser = {
   title: 'UpdateUser',
   type: 'object',
   properties: {
-    username: username
+    name: name,
+    username: username,
+    email: email
   },
   additionalProperties: false
 }
