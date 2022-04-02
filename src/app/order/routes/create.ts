@@ -6,6 +6,7 @@ import {UserRightsError} from '@app/user/user-error'
 import {JsonSchemaValidationError, JsonSchemaValidationErrors} from '@error'
 import {BadRequest, Created, NotFound} from '@common/schemas/response'
 import type {OrderService} from '@app/order/OrderService'
+import type {UserService} from '@app/user/UserService'
 import type {FastifyInstance} from 'fastify'
 
 
@@ -29,7 +30,7 @@ const MISSING_ADDRESS_ERROR = new JsonSchemaValidationErrors({
 })
 
 
-export async function create(fastify: FastifyInstance, service: OrderService) {
+export async function create(fastify: FastifyInstance, service: OrderService, userService: UserService) {
   return fastify
     .route<CreateRequest>(
       {
@@ -55,9 +56,14 @@ export async function create(fastify: FastifyInstance, service: OrderService) {
           if (request.body.isTestOrder && request.optionalSession.userRole !== UserRole.ADMIN && request.optionalSession.userRole !== UserRole.WATCHER) {
             throw new UserRightsError({message: 'Создать тестовый заказ может только администратор'})
           }
+          if (!request.body.isTestOrder) {
+            request.body.clientId = await userService.upsertByPhone(request.body.phone, request.body.username)
+          } else {
+            request.body.clientId = null
+          }
         },
         handler: async function(request, reply) {
-          const order = await service.createOrder(request.body, request.optionalSession.userId)
+          const order = await service.createOrder(request.body)
 
           reply
             .code(201)

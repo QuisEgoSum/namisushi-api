@@ -261,6 +261,7 @@ export interface CreateOrder {
   additionalInformation?: string
   products: CreateOrderProduct[]
   isTestOrder: boolean
+  clientId: Types.ObjectId | null
 }
 
 export const CreateOrder = {

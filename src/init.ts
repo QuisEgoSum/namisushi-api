@@ -27,7 +27,7 @@ export async function initApp() {
   const user = await initUser()
   const product = await initProduct()
   const notification = await initNotification(telegramBot, user)
-  const order = await initOrder(product, notification)
+  const order = await initOrder(product, notification, user)
 
   const httpServer = await createHttpServer(
     {

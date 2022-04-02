@@ -18,10 +18,12 @@ export class UserRepository extends BaseRepository<IUser> {
           ]
         },
         {
-          _id: 1,
           username: 1,
+          name: 1,
           email: 1,
+          phone: 1,
           role: 1,
+          avatar: 1,
           passwordHash: 1,
           createdAt: 1,
           updatedAt: 1
@@ -30,6 +32,18 @@ export class UserRepository extends BaseRepository<IUser> {
   }
 
   distinctAdminTelegramIds(): Promise<number[]> {
-    return this.Model.distinct('telegramId', {role: {$ne: UserRole.USER}}) as unknown as Promise<number[]>
+    return this.Model
+      .distinct(
+        'telegramId',
+        {telegramId: {$ne: null}, role: {$in: [UserRole.ADMIN, UserRole.WATCHER]}}
+      ) as unknown as Promise<number[]>
+  }
+
+  async upsertCustomerByPhone(phone: string, name: string): Promise<IUser> {
+    return await this.findOneAndUpdate(
+      {phone},
+      {$setOnInsert: {name}},
+      {new: true, upsert: true}
+    ) as unknown as Promise<IUser> //upsert
   }
 }

@@ -41,7 +41,6 @@ interface ObjectIdParams extends SchemaHelperParams {
 
 export class ObjectId extends SchemaHelper {
   static type = 'string'
-  static description = 'Unique id'
   static descriptionPattern = 'Unique {{stub}} ID'
   static errorPattern = 'Invalid unique {{stub}} ID'
 
@@ -53,7 +52,7 @@ export class ObjectId extends SchemaHelper {
       ? params.description
       : params.entity
         ? ObjectId.descriptionPattern.replace('{{stub}}', params.entity)
-        : ObjectId.description
+        : ''
     super(params, ObjectId)
     this.pattern = '^[0-9a-fA-F]{24}$'
     this.errorMessage.pattern = params.entity

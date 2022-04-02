@@ -58,11 +58,18 @@ export const mEmail = {
     maxLength: 'Email address cannot be longer than 1024 characters'
   }
 }
+export const allowedChangeRole = {
+  type: 'string',
+  enum: [UserRole.USER, UserRole.ADMIN, UserRole.WATCHER],
+  errorMessage: {
+    enum: `Допустимые роли: ${[UserRole.USER, UserRole.ADMIN, UserRole.WATCHER].join(', ')}`
+  }
+}
 export const role = {
   type: 'string',
   enum: Object.values(UserRole),
   errorMessage: {
-    enum: `Acceptable user role values: ${Object.values(UserRole).join(', ')}`
+    enum: `Допустимые роли: ${Object.values(UserRole).join(', ')}`
   }
 }
 export const password = {
@@ -85,6 +92,15 @@ export const phone = {
 export const savedPhone = {
   type: ['string', 'null'],
   pattern: phonePattern
+}
+export const savedName = {
+  type: ['string', 'null'],
+  minLength: 1,
+  maxLength: 128,
+  errorMessage: {
+    minLength: 'Имя должно содержать как минимум 1 символ',
+    maxLength: 'Имя не должно содержать больше 128 символов'
+  }
 }
 export const name = {
   type: 'string',

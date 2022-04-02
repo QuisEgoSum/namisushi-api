@@ -1,12 +1,12 @@
-import {Schema, model, Types} from 'mongoose'
+import {model, Schema, Types} from 'mongoose'
 import {UserRole} from './UserRole'
 import {v4} from 'uuid'
 
 
 export interface IUser {
   _id: Types.ObjectId
+  name: string | null
   username: string | null
-  name: string
   email: string | null
   phone: string | null
   role: UserRole
@@ -20,12 +20,13 @@ export interface IUser {
 
 const UserSchema = new Schema<IUser>(
   {
-    username: {
+    name: {
       type: String,
       default: null
     },
-    name: {
-      type: String
+    username: {
+      type: String,
+      default: null
     },
     email: {
       type: String,
@@ -37,7 +38,8 @@ const UserSchema = new Schema<IUser>(
     },
     role: {
       type: String,
-      enum: Object.values(UserRole)
+      enum: Object.values(UserRole),
+      default: UserRole.CUSTOMER
     },
     avatar: {
       type: String,

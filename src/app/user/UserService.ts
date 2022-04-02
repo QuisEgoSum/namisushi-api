@@ -178,4 +178,9 @@ export class UserService extends BaseService<IUser, UserRepository> {
   async distinctAdminTelegramIds() {
     return this.repository.distinctAdminTelegramIds()
   }
+
+  async upsertByPhone(phone: string, name: string): Promise<Types.ObjectId> {
+    const user = await this.repository.upsertCustomerByPhone(phone, name)
+    return user._id
+  }
 }

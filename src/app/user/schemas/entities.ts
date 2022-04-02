@@ -9,7 +9,7 @@ import {
   role,
   updatedAt,
   username,
-  savedUsername, savedEmail, savedPhone, name, telegramId, phone
+  savedUsername, savedEmail, savedPhone, name, telegramId, phone, allowedChangeRole, savedName
 } from './properties'
 import {UserRole} from '../UserRole'
 import {QueryPageLimit, QueryPageNumber, QuerySortDirection} from '@common/schemas/query'
@@ -49,8 +49,8 @@ export const UserBase = {
   type: 'object',
   properties: {
     _id: _id,
+    name: savedName,
     username: savedUsername,
-    name: name,
     email: savedEmail,
     phone: savedPhone,
     role: role,
@@ -62,6 +62,7 @@ export const UserBase = {
   required: [
     '_id',
     'username',
+    'name',
     'email',
     'phone',
     'role',
@@ -76,8 +77,8 @@ export const UserExpand = {
   type: 'object',
   properties: {
     _id: _id,
+    name: savedName,
     username: savedUsername,
-    name: name,
     email: savedEmail,
     phone: savedPhone,
     role: role,
@@ -89,6 +90,7 @@ export const UserExpand = {
   additionalProperties: false,
   required: [
     '_id',
+    'name',
     'username',
     'email',
     'phone',
@@ -101,9 +103,10 @@ export const UserExpand = {
 }
 
 export interface CreateUser {
-  username: string,
-  email: string,
-  role: UserRole,
+  name: string
+  username: string
+  email: string
+  role: UserRole
   password: string
 }
 
@@ -115,13 +118,14 @@ export const CreateUser = {
     username: username,
     email: email,
     phone: phone,
-    role: role,
+    role: allowedChangeRole,
     password: password
   },
   additionalProperties: false,
-  required: ['role', 'password'],
+  required: ['name', 'role', 'password'],
   errorMessage: {
     required: {
+      name: 'Введите имя пользователя',
       role: 'Выберите роль',
       password: 'Введите пароль'
     }
@@ -169,7 +173,7 @@ export const UpdateUserById = {
     username: username,
     phone: phone,
     password: password,
-    role: role
+    role: allowedChangeRole
   },
   additionalProperties: false
 }

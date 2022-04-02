@@ -68,7 +68,7 @@ export const deliveryCost = {
 }
 export const condition = {
   description: 'Статус заказа',
-  type: 'integer',
+  type: 'string',
   enum: Object.values(OrderCondition),
   errorMessage: {
     type: `Допустимые значения для фильтрации по статусам заказа: ${Object.values(OrderCondition)}`,

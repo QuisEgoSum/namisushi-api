@@ -4,7 +4,6 @@ import {CreatedOrderDoesNotExistError, OrderDoesNotExistError} from '@app/order/
 import {OrderDiscount} from '@app/order/OrderDiscount'
 import {OrderCondition} from '@app/order/OrderCondition'
 import {config} from '@config'
-import {Types} from 'mongoose'
 import type {IOrder} from '@app/order/OrderModel'
 import type {OrderRepository} from '@app/order/OrderRepository'
 import type {CreateOrder} from '@app/order/schemas/entities'
@@ -46,7 +45,7 @@ export class OrderService extends BaseService<IOrder, OrderRepository> {
     }
   }
 
-  async createOrder(createOrder: CreateOrder, userId: Types.ObjectId | null) {
+  async createOrder(createOrder: CreateOrder) {
     const order: Partial<IOrder> & {productsSum: number, weight: number} = {
       username: createOrder.username,
       phone: createOrder.phone,
@@ -57,7 +56,7 @@ export class OrderService extends BaseService<IOrder, OrderRepository> {
       cost: 0,
       productsSum: 0,
       weight: 0,
-      clientId: userId,
+      clientId: createOrder.clientId,
       condition: OrderCondition.NEW,
       isTestOrder: createOrder.isTestOrder
     }

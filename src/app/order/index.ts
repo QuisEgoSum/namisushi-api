@@ -6,23 +6,19 @@ import {OrderCondition} from './OrderCondition'
 import {OrderDiscount} from './OrderDiscount'
 import {Counter, initCounter} from '@app/order/packages/counter'
 import type {FastifyInstance} from 'fastify'
-import type {ProductService} from '@app/product/ProductService'
-import {CounterService} from '@app/order/packages/counter/CounterService'
-import {Product} from '@app/product'
-import {Notification} from '@app/notification'
+import type {Product} from '@app/product'
+import type {Notification} from '@app/notification'
+import type {User} from '@app/user'
 
 
 class Order {
-  public readonly service: OrderService
-  public readonly counter: Counter
   public readonly OrderCondition: typeof OrderCondition
   public readonly OrderDiscount: typeof OrderDiscount
   constructor(
-    service: OrderService,
-    counter: Counter
+    public readonly service: OrderService,
+    public readonly counter: Counter,
+    public readonly user: User
   ) {
-    this.service = service
-    this.counter = counter
     this.OrderCondition = OrderCondition
     this.OrderDiscount = OrderDiscount
 
@@ -30,16 +26,18 @@ class Order {
   }
 
   async router(fastify: FastifyInstance) {
-    await routes(fastify, this.service)
+    await routes(fastify, this.service, this.user.service)
   }
 }
 
 export async function initOrder(
   product: Product,
-  notification: Notification
+  notification: Notification,
+  user: User
 ) {
   const counter = await initCounter()
-  return new Order(new OrderService(new OrderRepository(OrderModel), product.service, counter.service, notification.emitter), counter)
+  const service = new OrderService(new OrderRepository(OrderModel), product.service, counter.service, notification.emitter)
+  return new Order(service, counter, user)
 }
 
 export type {
