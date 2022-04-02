@@ -46,4 +46,8 @@ export class UserRepository extends BaseRepository<IUser> {
       {new: true, upsert: true}
     ) as unknown as Promise<IUser> //upsert
   }
+
+  findRoleByPhone(phone: string) {
+    return this.findOne({phone}, {role: 1})
+  }
 }

@@ -14,10 +14,10 @@ import {
 } from './user-error'
 import type {
   CreateUser,
+  FindUsersQueryAdmin,
   UpdateUser,
   UpdateUserById,
   UpdateUserPassword,
-  FindUsersQueryAdmin,
   UserCredentials
 } from './schemas/entities'
 import type {UserSession} from './packages/session/SessionModel'
@@ -25,6 +25,7 @@ import type {IUser} from './UserModel'
 import type {UserRepository} from './UserRepository'
 import type {DataList} from '@common/data'
 import type {SessionService} from './packages/session/SessionService'
+import {UserStatus} from '@app/user/UserStatus'
 
 
 export class UserService extends BaseService<IUser, UserRepository> {
@@ -182,5 +183,14 @@ export class UserService extends BaseService<IUser, UserRepository> {
   async upsertByPhone(phone: string, name: string): Promise<Types.ObjectId> {
     const user = await this.repository.upsertCustomerByPhone(phone, name)
     return user._id
+  }
+
+  async getStatusByPhone(phone: string): Promise<UserStatus> {
+    const user = await this.repository.findRoleByPhone(phone)
+    if (user == null || user.role === UserRole.CUSTOMER) {
+      return UserStatus.SIGN_UP
+    } else {
+      return UserStatus.SIGN_IN
+    }
   }
 }

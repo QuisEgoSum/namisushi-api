@@ -2,6 +2,7 @@ import {ObjectId, Timestamp} from '@common/schemas/helpers'
 import {UserRole} from '../UserRole'
 import {v4} from 'uuid'
 import {phonePattern} from '@common/schemas/pattern'
+import {UserStatus} from '@app/user/UserStatus'
 
 
 export const _id = new ObjectId({entity: 'user'})
@@ -113,6 +114,10 @@ export const name = {
 }
 export const telegramId = {
   type: ['string', 'null']
+}
+export const status = {
+  type: 'string',
+  enum: Object.values(UserStatus)
 }
 export const createdAt = new Timestamp({description: 'Timestamp of user creation'})
 export const updatedAt = new Timestamp({description: 'User update timestamp'})
