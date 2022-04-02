@@ -1,9 +1,10 @@
 
 
 export enum OrderCondition {
-  NEW = 0,
-  IN_PROGRESS = 10,
-  IN_THE_WAY = 20,
-  IS_DELIVERED = 30,
-  REJECT = 40
+  NEW = 'NEW',
+  IN_PROGRESS = 'IN_PROGRESS',
+  IN_THE_WAY = 'IN_THE_WAY',
+  IS_DELIVERED = 'IS_DELIVERED',
+  DONE = 'DONE',
+  REJECT = 'REJECT'
 }

@@ -67,8 +67,9 @@ const OrderSchema = new Schema<IOrder>(
     },
     deliveryCost: Number,
     condition: {
-      type: Number,
-      default: OrderCondition.NEW
+      type: String,
+      default: OrderCondition.NEW,
+      enum: Object.values(OrderCondition)
     },
     delivery: {
       type: Boolean
