@@ -218,3 +218,17 @@ export const UpdateUserPassword = {
     }
   }
 }
+
+export interface SendSignupOtp {
+  phone: string
+}
+
+export const SendSignupOtp = {
+  title: 'SendSignupOtp',
+  type: 'object',
+  properties: {
+    phone
+  },
+  additionalProperties: false,
+  required: ['phone']
+}

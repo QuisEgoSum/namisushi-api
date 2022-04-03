@@ -25,6 +25,7 @@ class LoggerErrorEmitter extends EventEmitter implements LoggerErrorEmitter {
 
 export const emitter: LoggerErrorEmitter = new LoggerErrorEmitter()
 
+//TODO: what's wrong with the debug logs?
 export const logger = pino(
   {
     customLevels: {

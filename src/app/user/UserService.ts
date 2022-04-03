@@ -1,10 +1,8 @@
 import {BaseService} from '@core/service'
 import {BaseRepositoryError} from '@core/repository'
 import {UserRole} from './UserRole'
-import {escapeStringRegexp} from '@libs/alg/string'
-import bcrypt from 'bcrypt'
-import {FilterQuery, Types} from 'mongoose'
-import {config} from '@config'
+import {UserStatus} from '@app/user/UserStatus'
+import {OtpTarget} from '@app/user/packages/otp'
 import {
   IncorrectUserCredentials,
   InvalidPasswordError,
@@ -20,12 +18,16 @@ import type {
   UpdateUserPassword,
   UserCredentials
 } from './schemas/entities'
+import {escapeStringRegexp} from '@libs/alg/string'
+import {config} from '@config'
+import {FilterQuery, Types} from 'mongoose'
+import bcrypt from 'bcrypt'
 import type {UserSession} from './packages/session/SessionModel'
 import type {IUser} from './UserModel'
 import type {UserRepository} from './UserRepository'
 import type {DataList} from '@common/data'
 import type {SessionService} from './packages/session/SessionService'
-import {UserStatus} from '@app/user/UserStatus'
+import type {OtpService} from '@app/user/packages/otp/OtpService'
 
 
 export class UserService extends BaseService<IUser, UserRepository> {
@@ -40,12 +42,13 @@ export class UserService extends BaseService<IUser, UserRepository> {
     return bcrypt.compare(password, hash)
   }
 
-  private sessionService: SessionService
-
-  constructor(userRepository: UserRepository, sessionService: SessionService) {
+  constructor(
+    userRepository: UserRepository,
+    private readonly sessionService: SessionService,
+    private readonly otpService: OtpService
+  ) {
     super(userRepository)
 
-    this.sessionService = sessionService
     this.Error.EntityNotExistsError = UserNotExistsError
   }
 
@@ -196,5 +199,12 @@ export class UserService extends BaseService<IUser, UserRepository> {
     } else {
       return UserStatus.SIGN_IN
     }
+  }
+
+  async sendSignupOtp(phone: string) {
+    //TODO: check user exists
+    //TODO: check send code timeout
+    //TODO: send code
+    return await this.otpService.createCode(phone, OtpTarget.SIGN_UP)
   }
 }
