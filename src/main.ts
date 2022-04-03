@@ -1,20 +1,24 @@
 import 'module-alias/register'
 import {initApp} from './init'
-import {TelegramBot} from './servers/telegram'
 import {logger} from '@logger'
 import {config} from '@config'
+import mongoose from 'mongoose'
 import {promisify} from 'util'
 import type {FastifyInstance} from 'fastify'
+import type {TelegramBot} from './servers/telegram'
+import type {NotificationEventListener} from '@app/notification'
 
 
 (async function main() {
-  const {http, bot} = await initApp()
+  const {http, bot, notification} = await initApp()
 
   await listen(http, bot)
 
+  await notification.listener.startApplication()
+
   {
     ['SIGINT', 'SIGTERM']
-      .forEach(event => process.once(event, () => shutdown(event, http, bot)))
+      .forEach(event => process.once(event, () => shutdown(event, http, bot, notification.listener)))
   }
 })()
   .catch(error => {
@@ -51,13 +55,17 @@ async function listen(
 async function shutdown(
   event: string,
   http: FastifyInstance,
-  bot: TelegramBot
+  bot: TelegramBot,
+  notification: NotificationEventListener
 ) {
   const sLogger = logger.child({label: 'shutdown'})
   sLogger.info({mgs: 'Shutdown start', event})
+  await notification.shutdownApplication(event)
   if (bot) {
     bot.stop()
   }
   await http.close()
+  await mongoose.disconnect()
   sLogger.info({msg: 'Shutdown end', event})
+  process.exit(0)
 }

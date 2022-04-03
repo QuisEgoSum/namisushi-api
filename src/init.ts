@@ -47,6 +47,7 @@ export async function initApp() {
 
   return {
     http: httpServer,
-    bot: telegramBot
+    bot: telegramBot,
+    notification: notification
   }
 }

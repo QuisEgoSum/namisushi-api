@@ -1,7 +1,6 @@
 import {EventEmitter} from 'events'
 import {NotificationEvents} from '@app/notification/NotificationEvents'
 import {PopulatedOrder} from '@app/order/schemas/entities'
-import {logger} from '@logger'
 
 
 export interface INotificationEventEmitter {

@@ -39,6 +39,15 @@ export class UserRepository extends BaseRepository<IUser> {
       ) as unknown as Promise<number[]>
   }
 
+
+  distinctWatcherTelegramIds() {
+    return this.Model
+      .distinct(
+        'telegramId',
+        {telegramId: {$ne: null}, role: UserRole.WATCHER}
+      ) as unknown as Promise<number[]>
+  }
+
   async upsertCustomerByPhone(phone: string, name: string): Promise<IUser> {
     return await this.findOneAndUpdate(
       {phone},

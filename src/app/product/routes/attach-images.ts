@@ -84,8 +84,6 @@ export async function attachImages(fastify: FastifyInstance, service: ProductSer
           }
         },
         handler: async function(request, reply) {
-          console.log(request.body)
-
           const images = await service.attachImage(request.params.productId, request.body)
 
           reply
