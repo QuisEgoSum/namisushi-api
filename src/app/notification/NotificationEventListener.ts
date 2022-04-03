@@ -9,7 +9,7 @@ import {NotificationMessageUtils} from '@app/notification/NotificationMessageUti
 export class NotificationEventListener {
 
   static errorHandler(error: Error): void {
-    logger.fatal(error)
+    logger.error(error)
   }
 
   constructor(
@@ -37,7 +37,7 @@ export class NotificationEventListener {
         )
       }
     } catch (error) {
-      logger.fatal(error)
+      logger.error(error)
     }
   }
 
@@ -49,7 +49,7 @@ export class NotificationEventListener {
         )
       }
     } catch (error) {
-      logger.fatal(error)
+      logger.error(error)
     }
   }
 
