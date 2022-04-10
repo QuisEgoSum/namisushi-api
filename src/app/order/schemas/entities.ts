@@ -280,7 +280,6 @@ export const CreateOrder = {
   additionalProperties: false,
   required: [
     'phone',
-    'address',
     'username',
     'delivery',
     'products'
