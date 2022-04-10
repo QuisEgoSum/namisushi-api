@@ -57,7 +57,7 @@ export async function create(fastify: FastifyInstance, service: OrderService, us
             throw new UserRightsError({message: 'Создать тестовый заказ может только администратор'})
           }
           if (!request.body.isTestOrder) {
-            request.body.clientId = await userService.upsertByPhone(request.body.phone, request.body.username)
+            request.body.clientId = request.optionalSession.userId || await userService.upsertByPhone(request.body.phone, request.body.username)
           } else {
             request.body.clientId = request.optionalSession.userId
           }
