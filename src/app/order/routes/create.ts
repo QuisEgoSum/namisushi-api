@@ -59,7 +59,7 @@ export async function create(fastify: FastifyInstance, service: OrderService, us
           if (!request.body.isTestOrder) {
             request.body.clientId = await userService.upsertByPhone(request.body.phone, request.body.username)
           } else {
-            request.body.clientId = null
+            request.body.clientId = request.optionalSession.userId
           }
         },
         handler: async function(request, reply) {
