@@ -4,7 +4,7 @@ import type {ICounter} from '@app/order/packages/counter/CounterModel'
 
 export class CounterRepository extends BaseRepository<ICounter> {
   async upsert(isTest: boolean) {
-    await this.Model.updateOne({isTest}, {$setOnInsert: {number: 0}})
+    await this.Model.updateOne({isTest}, {$setOnInsert: {number: 0}}, {upsert: true})
   }
 
   async inc(isTest: boolean): Promise<number> {
