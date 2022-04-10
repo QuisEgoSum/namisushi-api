@@ -37,7 +37,13 @@ export async function moveFile(from: string, to: string) {
 export async function deleteFile(dir: string, filename: string) {
   try {
     await fs.promises.rm(path.resolve(dir, filename))
+    return true
   } catch(error) {
     logger.error(error)
+    return false
   }
+}
+
+export async function readDir(dir: string): Promise<string[]> {
+  return await fs.promises.readdir(dir)
 }

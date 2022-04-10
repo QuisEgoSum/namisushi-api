@@ -8,8 +8,9 @@ interface PkgJson {
 }
 
 interface ConfigPaths {
-  readonly shareStatic: string,
+  readonly shareStatic: string
   readonly root: string
+  readonly variantIcon: string
 }
 
 interface ConfigServer {
@@ -130,7 +131,8 @@ export class ConfigEntity {
 
     this.paths = {
       root: rootDir,
-      shareStatic: path.resolve(rootDir, 'static/share')
+      shareStatic: path.resolve(rootDir, 'static/share'),
+      variantIcon: path.resolve(rootDir, 'image/variant-icon')
     }
   }
 

@@ -1,11 +1,12 @@
 .idea
 node_modules
 build
+.vscode
 src/**/*.js
 test/**/*.js
 *.log
 *.png
 *.jpg
-image/
+*.jpeg
 package-lock.json
 !jest-environment-fail-fast.js
