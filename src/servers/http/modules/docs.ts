@@ -1,22 +1,25 @@
 import type {RouteOptions} from 'fastify'
-import {ErrorResponse, Unauthorized, BadRequest, Forbidden} from '@common/schemas/response'
+import {ErrorResponse, Unauthorized, BadRequest, Forbidden, Ok, Created} from '@common/schemas/response'
 import {RequestHandlingError} from '@error'
 
 
 declare module 'fastify' {
   interface RouteOptions {
     schema?: {
+      summary?: string
+      tags?: string[]
       response?: {
-        [200]?: any,
-        [201]?: any,
-        [400]?: ErrorResponse,
-        [401]?: ErrorResponse,
-        [403]?: Forbidden,
-        [404]?: ErrorResponse,
+        //TODO: remove any
+        [200]?: Ok | any
+        [201]?: Created | any
+        [400]?: ErrorResponse
+        [401]?: ErrorResponse
+        [403]?: Forbidden
+        [404]?: ErrorResponse
         [key: string]: any
       },
-      security?: Array<{[key: string]: []}>,
-      params?: Record<string, any>,
+      security?: Array<{[key: string]: []}>
+      params?: Record<string, any>
       [key: string]: any
     }
   }

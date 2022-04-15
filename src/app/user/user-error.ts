@@ -1,4 +1,11 @@
-import {AccessError, AuthorizationError, EntityExistsError, EntityDoesNotExistError, InvalidDataError} from '@core/error'
+import {
+  AccessError,
+  AuthorizationError,
+  EntityExistsError,
+  EntityDoesNotExistError,
+  InvalidDataError,
+  TooEarlyError
+} from '@core/error'
 
 
 export const UserAuthorizationError = AuthorizationError.extends(
@@ -42,10 +49,10 @@ export const UserExistsError = EntityExistsError.extends(
       message: {
         type: 'string',
         default: undefined,
-        example: 'User with this email address already exists',
+        example: 'Пользователь с таким адресом электронной почты уже существует',
         enum: [
-          'User with this email address already exists',
-          'User with this username already exists'
+          'Пользователь с таким никнеймом уже существует',
+          'Пользователь с таким адресом электронной почты уже существует'
         ]
       },
       key: {
@@ -65,6 +72,43 @@ export const InvalidPasswordError = InvalidDataError.extends(
   {
     error: 'InvalidPasswordError',
     code: 2005,
-    message: 'Invalid password'
+    message: 'Неверный пароль'
+  }
+)
+
+export const UserRegisteredError = InvalidDataError.extends(
+  {},
+  {
+    error: 'UserRegisteredError',
+    code: 2006,
+    message: 'Пользователь с этим номером телефона уже зарегистрирован'
+  }
+)
+
+export const SendOtpTimeoutError = TooEarlyError.extends(
+  {
+    properties: {
+      message: {
+        type: 'string',
+        default: 'Интервал между отправкой сообщений должен быть 60 секунд',
+        enum: [
+          'Интервал между отправкой сообщений должен быть 60 секунд',
+          'Интервал между отправкой сообщений должен быть 60 секунд. Подождите ещё {number}'
+        ]
+      }
+    }
+  },
+  {
+    error: 'SendOtpTimeoutError',
+    code: 2007
+  }
+)
+
+export const InvalidOtpCodeError = InvalidDataError.extends(
+  {},
+  {
+    error: 'InvalidOtpCodeError',
+    code: 2008,
+    message: 'Неверный код или время жизни кода истекло'
   }
 )

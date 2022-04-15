@@ -48,6 +48,11 @@ export class Created extends Response {
   }
 }
 
+export class NoContent {
+  private type = 'null'
+  private description = 'No Content'
+}
+
 export class MessageResponse {
   private type: string
   private properties: Record<any, any>

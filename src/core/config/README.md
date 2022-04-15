@@ -18,6 +18,7 @@
 | NAMISUSHI_API_LOGGER_ISO_TIME                        |                      | boolean         |                                 |
 | NAMISUSHI_API_LOGGER_TIME                            |                      | boolean         |                                 |
 | NAMISUSHI_API_LOGGER_LEVEL                           |                      | string          | enum: <br />-info;<br />-debug. |
+| NAMISUSHI_API_USER_OTP_DEBUG                         |                      | boolean         |                                 |
 | NAMISUSHI_API_USER_SESSION_MAXIMUM                   |                      | integer         | Range: 1...                     |
 | NAMISUSHI_API_USER_SESSION_COOKIE_PATH               |                      | string          |                                 |
 | NAMISUSHI_API_USER_SESSION_COOKIE_DOMAIN             |                      | string          |                                 |
@@ -34,5 +35,7 @@
 | NAMISUSHI_API_PRODUCT_IMAGE_MAXIMUM                  |                      | integer         |                                 |
 | NAMISUSHI_API_PRODUCT_IMAGE_FILE_MAXIMUM_SIZE        |                      | integer         |                                 |
 | NAMISUSHI_API_PRODUCT_IMAGE_FILE_DESTINATION         |                      | string          |                                 |
+| NAMISUSHI_API_PRODUCT_VARIANT_ICON_DESTINATION       |                      | string          |                                 |
+| NAMISUSHI_API_PRODUCT_VARIANT_ICON_MAXIMUM_SIZE      |                      | integer         | Range: 1...                     |
 | NAMISUSHI_API_ORDER_DISCOUNT_WITHOUT_DELIVERY        |                      | integer         |                                 |
 | NAMISUSHI_API_ORDER_DISCOUNT_WEEKDAY                 |                      | integer         |                                 |

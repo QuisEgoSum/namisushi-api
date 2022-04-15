@@ -1,11 +1,20 @@
 import {EntityDoesNotExistError} from '@error'
 
 
-export const VariantDoesNotExist = EntityDoesNotExistError.extends(
+export const VariantDoesNotExistError = EntityDoesNotExistError.extends(
   {},
   {
-    error: 'VariantDoesNotExist',
+    error: 'VariantDoesNotExistError',
     message: 'Вариант продукта не найден',
     code: 4000
+  }
+)
+
+export const VariantIconDoesNotExistError = EntityDoesNotExistError.extends(
+  {},
+  {
+    error: 'VariantIconDoesNotExistError',
+    message: 'Иконка не найдена',
+    code: 4001
   }
 )

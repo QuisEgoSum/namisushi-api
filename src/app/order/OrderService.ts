@@ -37,7 +37,7 @@ export class OrderService extends BaseService<IOrder, OrderRepository> {
   ) {
     super(repository)
 
-    this.Error.EntityNotExistsError = OrderDoesNotExistError
+    this.Error.EntityDoesNotExistError = OrderDoesNotExistError
 
     this.discounts = {
       [OrderDiscount.WEEKDAY]: config.order.discount.weekday,

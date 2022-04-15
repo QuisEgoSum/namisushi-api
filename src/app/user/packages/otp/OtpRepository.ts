@@ -8,7 +8,11 @@ export class OtpRepository extends BaseRepository<IOtp> {
     return await this.findOne({phone, code, target}, {_id: 1})
   }
 
-  async isExistsAndDelete(phone: string, code: string, target: OtpTarget) {
-    return await this.findOneAndDelete({phone, code, target}, {projection: {_id: 1}})
+  async deleteOtp(phone: string, code: string, target: OtpTarget) {
+    return await this.deleteOne({phone, code, target})
+  }
+
+  async findLastCreatedAt(phone: string, target: OtpTarget.SIGN_UP) {
+    return this.findOne({phone, target}, {createdAt: 1}, {sort: {createdAt: -1}})
   }
 }

@@ -8,15 +8,13 @@ import type {
   ReturnsNewDoc,
   UpdateWithAggregationPipeline
 } from 'mongoose'
-import { IGenericRepository } from '@core/repository/IGenericRepository'
+import {IGenericRepository} from '@core/repository/IGenericRepository'
 import {IGenericService} from '@core/service/IGenericService'
+import type {ServiceError} from '@core/service/index'
 
 
 export class GenericService<T, R extends IGenericRepository<T>> implements IGenericService<T, R> {
-  public Error: {
-    EntityExistsError: typeof EntityExistsError,
-    EntityDoesNotExistError: typeof EntityDoesNotExistError
-  }
+  public Error: ServiceError
 
   public repository: R
 

@@ -119,5 +119,12 @@ export const status = {
   type: 'string',
   enum: Object.values(UserStatus)
 }
+export const otpCode = {
+  type: 'string',
+  pattern: '^[0-9]{6}$',
+  errorMessage: {
+    pattern: 'OTP код должен состоять из 6 цифр'
+  }
+}
 export const createdAt = new Timestamp({description: 'Timestamp of user creation'})
 export const updatedAt = new Timestamp({description: 'User update timestamp'})

@@ -1,23 +1,10 @@
-import {BaseService} from '@core/service'
+import {BaseService, ServiceError} from '@core/service'
 import {BaseRepositoryError} from '@core/repository'
-import {UserRole} from './UserRole'
+import {UserRole} from '@app/user/UserRole'
 import {UserStatus} from '@app/user/UserStatus'
 import {OtpTarget} from '@app/user/packages/otp'
-import {
-  IncorrectUserCredentials,
-  InvalidPasswordError,
-  UserAuthorizationError,
-  UserExistsError,
-  UserNotExistsError
-} from './user-error'
-import type {
-  CreateUser,
-  FindUsersQueryAdmin,
-  UpdateUser,
-  UpdateUserById,
-  UpdateUserPassword,
-  UserCredentials
-} from './schemas/entities'
+import * as error from './user-error'
+import type * as entities from './schemas/entities'
 import {escapeStringRegexp} from '@libs/alg/string'
 import {config} from '@config'
 import {FilterQuery, Types} from 'mongoose'
@@ -28,6 +15,7 @@ import type {UserRepository} from './UserRepository'
 import type {DataList} from '@common/data'
 import type {SessionService} from './packages/session/SessionService'
 import type {OtpService} from '@app/user/packages/otp/OtpService'
+import {password} from '@app/user/schemas/properties'
 
 
 export class UserService extends BaseService<IUser, UserRepository> {
@@ -42,6 +30,8 @@ export class UserService extends BaseService<IUser, UserRepository> {
     return bcrypt.compare(password, hash)
   }
 
+  public Error: ServiceError & typeof error
+
   constructor(
     userRepository: UserRepository,
     private readonly sessionService: SessionService,
@@ -49,15 +39,19 @@ export class UserService extends BaseService<IUser, UserRepository> {
   ) {
     super(userRepository)
 
-    this.Error.EntityNotExistsError = UserNotExistsError
+    this.Error = {
+      EntityExistsError: error.UserExistsError,
+      EntityDoesNotExistError: error.UserNotExistsError,
+      ...error
+    }
   }
 
   errorHandler<T>(error: Error | BaseRepositoryError): T {
     if (error instanceof BaseRepositoryError.UniqueKeyError) {
       if (error.key === 'username') {
-        throw new UserExistsError({message: 'User with this username already exists'})
+        throw new this.Error.UserExistsError({message: 'Пользователь с таким никнеймом уже существует'})
       } else {
-        throw new UserExistsError({message: 'User with this email address already exists'})
+        throw new this.Error.UserExistsError({message: 'Пользователь с таким адресом электронной почты уже существует'})
       }
     } else {
       throw error
@@ -66,11 +60,11 @@ export class UserService extends BaseService<IUser, UserRepository> {
 
   async authorization(sessionId?: string): Promise<UserSession> {
     if (!sessionId) {
-      throw new UserAuthorizationError()
+      throw new this.Error.UserAuthorizationError()
     }
     const session = await this.sessionService.findSessionById(sessionId)
     if (session === null || session.user === null) {
-      throw new UserAuthorizationError()
+      throw new this.Error.UserAuthorizationError()
     }
     return {
       sessionId: session._id,
@@ -79,13 +73,13 @@ export class UserService extends BaseService<IUser, UserRepository> {
     }
   }
 
-  async signin(credentials: UserCredentials): Promise<{user: IUser, sessionId: string}> {
+  async signin(credentials: entities.UserCredentials): Promise<{user: IUser, sessionId: string}> {
     const user = await this.repository.findByLogin(credentials.login)
     if (!user || user.passwordHash === null) {
-      throw new IncorrectUserCredentials()
+      throw new this.Error.IncorrectUserCredentials()
     }
     if (!await UserService.compareHashPassword(credentials.password, user.passwordHash)) {
-      throw new IncorrectUserCredentials()
+      throw new this.Error.IncorrectUserCredentials()
     }
     const session = await this.sessionService.createForUser(user._id)
     return {
@@ -103,7 +97,7 @@ export class UserService extends BaseService<IUser, UserRepository> {
       .then(result => result.deletedCount)
   }
 
-  async create(user: CreateUser) {
+  async create(user: entities.CreateUser) {
     const createUser = {
       username: user.username,
       email: user.email,
@@ -113,7 +107,7 @@ export class UserService extends BaseService<IUser, UserRepository> {
     return super.create(createUser)
   }
 
-  async findPage(query: FindUsersQueryAdmin): Promise<DataList<IUser>> {
+  async findPage(query: entities.FindUsersQueryAdmin): Promise<DataList<IUser>> {
     const filter: FilterQuery<IUser> = {}
     if ('fRole' in query) {
       filter.role = query.fRole
@@ -139,7 +133,7 @@ export class UserService extends BaseService<IUser, UserRepository> {
     )
   }
 
-  async findByIdAndUpdate(id: string | Types.ObjectId, data: UpdateUserById | UpdateUser): Promise<IUser> {
+  async findByIdAndUpdate(id: string | Types.ObjectId, data: entities.UpdateUserById | entities.UpdateUser): Promise<IUser> {
     let update: Partial<IUser> = {}
     if ('password' in data && data.password) {
       update.passwordHash = await UserService.hashPassword(data.password)
@@ -149,13 +143,13 @@ export class UserService extends BaseService<IUser, UserRepository> {
     return super.findByIdAndUpdate(id, update)
   }
 
-  async updateUserPassword(userId: string | Types.ObjectId, data: UpdateUserPassword): Promise<IUser> {
+  async updateUserPassword(userId: string | Types.ObjectId, data: entities.UpdateUserPassword): Promise<IUser> {
     const user = await this.findById(userId, {passwordHash: 1})
     if (!user) {
-      throw new this.Error.EntityNotExistsError()
+      throw new this.Error.EntityDoesNotExistError()
     }
     if (user.passwordHash && !await UserService.compareHashPassword(data.oldPassword, user.passwordHash)) {
-      throw new InvalidPasswordError()
+      throw new this.Error.InvalidPasswordError()
     }
     return this.findByIdAndUpdate(userId, {password: data.password})
   }
@@ -194,7 +188,7 @@ export class UserService extends BaseService<IUser, UserRepository> {
 
   async getStatusByPhone(phone: string): Promise<UserStatus> {
     const user = await this.repository.findRoleByPhone(phone)
-    if (user == null || user.role === UserRole.CUSTOMER) {
+    if (user === null || user.role === UserRole.CUSTOMER) {
       return UserStatus.SIGN_UP
     } else {
       return UserStatus.SIGN_IN
@@ -202,9 +196,36 @@ export class UserService extends BaseService<IUser, UserRepository> {
   }
 
   async sendSignupOtp(phone: string) {
-    //TODO: check user exists
-    //TODO: check send code timeout
+    const status = await this.getStatusByPhone(phone)
+    if (status === UserStatus.SIGN_IN) {
+      throw new this.Error.UserRegisteredError()
+    }
+    const lastTimestamp = await this.otpService.findLastTimestamp(phone, OtpTarget.SIGN_UP)
+    const sendDif = lastTimestamp && Math.ceil((Date.now() - lastTimestamp) / 1000)
+    if (sendDif && sendDif < 60) {
+      throw new this.Error.SendOtpTimeoutError({message: `Интервал между отправкой сообщений должен быть 60 секунд. Подождите ещё ${60 - sendDif || 1}`})
+    }
     //TODO: send code
     return await this.otpService.createCode(phone, OtpTarget.SIGN_UP)
+  }
+
+  async verifyOtp(data: entities.VerifyOtp) {
+    if (!await this.otpService.isExists(data.phone, data.code, OtpTarget.SIGN_UP)) {
+      throw new this.Error.InvalidOtpCodeError()
+    }
+  }
+
+  async signup(signup: entities.Signup) {
+    await this.verifyOtp(signup)
+    const user = await this.repository.upsertUser({
+      name: signup.name,
+      phone: signup.phone,
+      username: signup.username || null,
+      email: signup.email || null,
+      role: UserRole.USER,
+      passwordHash: await UserService.hashPassword(signup.password)
+    })
+    await this.otpService.deleteOtp(signup.phone, signup.code, OtpTarget.SIGN_UP)
+    return user
   }
 }

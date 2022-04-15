@@ -8,5 +8,6 @@ test/**/*.js
 *.png
 *.jpg
 *.jpeg
+*.svg
 package-lock.json
 !jest-environment-fail-fast.js

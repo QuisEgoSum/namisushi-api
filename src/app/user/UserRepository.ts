@@ -1,6 +1,7 @@
 import {BaseRepository} from '@core/repository/BaseRepository'
 import type {IUser, UserModel} from './UserModel'
 import {UserRole} from '@app/user/UserRole'
+import {v4} from 'uuid'
 
 
 export class UserRepository extends BaseRepository<IUser> {
@@ -58,5 +59,19 @@ export class UserRepository extends BaseRepository<IUser> {
 
   findRoleByPhone(phone: string) {
     return this.findOne({phone}, {role: 1})
+  }
+
+  async upsertUser(user: Partial<IUser>) {
+    return await this.findOneAndUpdate(
+      {phone: user.phone},
+      {
+        $set: user,
+        $setOnInsert: {
+          avatar: `#=${v4()}`,
+          telegramId: null
+        }
+      },
+      {upsert: true, new: true}
+    )
   }
 }

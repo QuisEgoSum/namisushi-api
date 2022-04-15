@@ -8,13 +8,11 @@ import type {
   QueryOptions,
   ReturnsNewDoc
 } from 'mongoose'
+import type {ServiceError} from '@core/service/index'
 
 
 export class BaseService<T, R extends BaseRepository<T>> implements IBaseService<T, R> {
-  public Error: {
-    EntityExistsError: typeof EntityExistsError,
-    EntityNotExistsError: typeof EntityDoesNotExistError
-  }
+  public Error: ServiceError
 
   public repository: R
 
@@ -22,7 +20,7 @@ export class BaseService<T, R extends BaseRepository<T>> implements IBaseService
     this.repository = repository
     this.Error = {
       EntityExistsError: EntityExistsError,
-      EntityNotExistsError: EntityDoesNotExistError
+      EntityDoesNotExistError: EntityDoesNotExistError
     }
   }
 
@@ -49,7 +47,7 @@ export class BaseService<T, R extends BaseRepository<T>> implements IBaseService
     const isDeleted = await this.repository.deleteById(id)
 
     if (!isDeleted) {
-      throw new this.Error.EntityNotExistsError()
+      throw new this.Error.EntityDoesNotExistError()
     }
   }
 
@@ -57,7 +55,7 @@ export class BaseService<T, R extends BaseRepository<T>> implements IBaseService
     const document = await this.repository.findById(id, projection, options)
 
     if (document === null) {
-      throw new this.Error.EntityNotExistsError()
+      throw new this.Error.EntityDoesNotExistError()
     }
 
     return document
@@ -67,7 +65,7 @@ export class BaseService<T, R extends BaseRepository<T>> implements IBaseService
     const document = await this.repository.findByIdAndDelete(id)
 
     if (document === null) {
-      throw new this.Error.EntityNotExistsError()
+      throw new this.Error.EntityDoesNotExistError()
     }
 
     return document
@@ -79,7 +77,7 @@ export class BaseService<T, R extends BaseRepository<T>> implements IBaseService
       .catch(error => this.errorHandler(error))
 
     if (document === null) {
-      throw new this.Error.EntityNotExistsError()
+      throw new this.Error.EntityDoesNotExistError()
     }
 
     return document
@@ -89,7 +87,7 @@ export class BaseService<T, R extends BaseRepository<T>> implements IBaseService
     const document = await this.repository.findOne(filter, projection, options)
 
     if (document === null) {
-      throw new this.Error.EntityNotExistsError()
+      throw new this.Error.EntityDoesNotExistError()
     }
 
     return document
@@ -99,7 +97,7 @@ export class BaseService<T, R extends BaseRepository<T>> implements IBaseService
     const isDeleted = await this.repository.deleteOne(query)
 
     if (!isDeleted) {
-      throw new this.Error.EntityNotExistsError()
+      throw new this.Error.EntityDoesNotExistError()
     }
   }
 
@@ -109,7 +107,7 @@ export class BaseService<T, R extends BaseRepository<T>> implements IBaseService
       .catch(error => this.errorHandler(error))
 
     if (document === null) {
-      throw new this.Error.EntityNotExistsError()
+      throw new this.Error.EntityDoesNotExistError()
     }
 
     return document
@@ -119,7 +117,7 @@ export class BaseService<T, R extends BaseRepository<T>> implements IBaseService
     const document = await this.repository.findOneAndDelete(filter, options)
 
     if (document === null) {
-      throw new this.Error.EntityNotExistsError()
+      throw new this.Error.EntityDoesNotExistError()
     }
 
     return document
@@ -131,7 +129,7 @@ export class BaseService<T, R extends BaseRepository<T>> implements IBaseService
       .catch(error => this.errorHandler(error))
 
     if (result.matchedCount === 0) {
-      throw new this.Error.EntityNotExistsError()
+      throw new this.Error.EntityDoesNotExistError()
     }
   }
 
@@ -142,7 +140,7 @@ export class BaseService<T, R extends BaseRepository<T>> implements IBaseService
       .catch(error => this.errorHandler(error))
 
     if (result.matchedCount === 0) {
-      throw new this.Error.EntityNotExistsError()
+      throw new this.Error.EntityDoesNotExistError()
     }
   }
 

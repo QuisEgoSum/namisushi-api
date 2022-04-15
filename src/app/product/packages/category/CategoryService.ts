@@ -14,7 +14,7 @@ export class CategoryService extends BaseService<ICategory, CategoryRepository> 
   constructor(repository: CategoryRepository) {
     super(repository)
 
-    this.Error.EntityNotExistsError = CategoryDoesNotExistError
+    this.Error.EntityDoesNotExistError = CategoryDoesNotExistError
     this.Error.EntityExistsError = CategoryExistsError
   }
 

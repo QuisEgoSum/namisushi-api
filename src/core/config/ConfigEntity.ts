@@ -10,7 +10,6 @@ interface PkgJson {
 interface ConfigPaths {
   readonly shareStatic: string
   readonly root: string
-  readonly variantIcon: string
 }
 
 interface ConfigServer {
@@ -51,6 +50,9 @@ interface LoggerConfig {
 }
 
 interface UserConfig {
+  readonly otp: {
+    debug: boolean
+  }
   readonly session: {
     readonly maximum: number
     readonly cookie: {
@@ -80,12 +82,18 @@ interface DatabaseConfig {
 }
 
 interface ProductConfig {
-  image: {
-    maximum: number
-    file: {
-      destination: string,
-      allowedTypes: string[],
-      maximumSize: number
+  readonly variant: {
+    readonly icon: {
+      destination: string
+      readonly maximumSize: number
+    }
+  }
+  readonly image: {
+    readonly maximum: number
+    readonly file: {
+      destination: string
+      readonly allowedTypes: string[]
+      readonly maximumSize: number
     }
   }
 }
@@ -128,11 +136,13 @@ export class ConfigEntity {
     if (!this.product.image.file.destination) {
       this.product.image.file.destination = path.resolve(rootDir, 'image/product')
     }
+    if (!this.product.variant.icon.destination) {
+      this.product.variant.icon.destination = path.resolve(rootDir, 'image/variant-icon')
+    }
 
     this.paths = {
       root: rootDir,
-      shareStatic: path.resolve(rootDir, 'static/share'),
-      variantIcon: path.resolve(rootDir, 'image/variant-icon')
+      shareStatic: path.resolve(rootDir, 'static/share')
     }
   }
 

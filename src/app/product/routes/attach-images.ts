@@ -86,6 +86,8 @@ export async function attachImages(fastify: FastifyInstance, service: ProductSer
         handler: async function(request, reply) {
           const images = await service.attachImage(request.params.productId, request.body)
 
+          request.tmpUploads.length = 0
+
           reply
             .code(200)
             .type('application/json')

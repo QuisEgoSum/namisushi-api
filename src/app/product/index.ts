@@ -29,7 +29,8 @@ class Product {
   async router(fastify: FastifyInstance) {
     await Promise.all([
       routes(fastify, this.service),
-      this.category.router(fastify)
+      this.category.router(fastify),
+      this.variant.router(fastify)
     ])
   }
 }

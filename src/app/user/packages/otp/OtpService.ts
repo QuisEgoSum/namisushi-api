@@ -44,8 +44,12 @@ export class OtpService extends BaseService<IOtp, OtpRepository> {
     return doc !== null
   }
 
-  public async isExistsAndDelete(phone: string, code: string, target: OtpTarget): Promise<boolean> {
-    const doc = await this.repository.isExistsAndDelete(phone, code, target)
-    return doc !== null
+  public async deleteOtp(phone: string, code: string, target: OtpTarget) {
+    await this.repository.deleteOtp(phone, code, target)
+  }
+
+  async findLastTimestamp(phone: string, target: OtpTarget.SIGN_UP) {
+    const otp = await this.repository.findLastCreatedAt(phone, target)
+    return otp === null ? null : otp.createdAt.getTime()
   }
 }

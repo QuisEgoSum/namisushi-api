@@ -57,6 +57,9 @@ logger:
   level: debug
 
 user:
+  otp:
+    debug: false
+
   session:
     maximum: 10
 

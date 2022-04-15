@@ -60,6 +60,9 @@ logger:
   level: debug # debug | info
 
 user:
+  otp:
+    debug: false
+
   session:
     maximum: 10
 
@@ -75,6 +78,9 @@ user:
     password: SuperSecretPassword
 
 product:
+  variant:
+    icon:
+      maximumSize: 10485760
   image:
     maximum: 10
     file:

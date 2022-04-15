@@ -4,7 +4,7 @@ import * as schemas from '@app/product/schemas'
 import * as variantSchemas from '@app/product/packages/variant/schemas'
 import {BadRequest, Created, NotFound} from '@common/schemas/response'
 import {ProductDoesNotExistError} from '@app/product/product-error'
-import {VariantDoesNotExist} from '@app/product/packages/variant/variant-error'
+import {VariantDoesNotExistError} from '@app/product/packages/variant/variant-error'
 
 
 interface UpdateVariantRequest {
@@ -33,7 +33,7 @@ export async function updateVariant(fastify: FastifyInstance, service: ProductSe
           response: {
             [200]: new Created(variantSchemas.entities.BaseVariant, 'variant'),
             [400]: new BadRequest().bodyErrors().updateError(),
-            [404]: new NotFound(VariantDoesNotExist.schema())
+            [404]: new NotFound(VariantDoesNotExistError.schema())
           }
         },
         security: {

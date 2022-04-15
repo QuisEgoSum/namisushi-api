@@ -1,5 +1,6 @@
 import {routes} from './routes'
 import type {FastifyInstance} from 'fastify'
+import {DocsTags} from './DocsTags'
 
 
 class Docs {
@@ -19,4 +20,8 @@ class Docs {
 
 export async function initDocs(): Promise<Docs> {
   return new Docs((await import('./swagger')).swagger)
+}
+
+export {
+  DocsTags
 }

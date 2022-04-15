@@ -156,6 +156,16 @@
     "user": {
       "type": "object",
       "properties": {
+        "otp": {
+          "type": "object",
+          "properties": {
+            "debug": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false,
+          "required": ["debug"]
+        },
         "session": {
           "type": "object",
           "properties": {
@@ -222,6 +232,7 @@
       },
       "additionalProperties": false,
       "required": [
+        "otp",
         "session",
         "superadmin"
       ]
@@ -297,9 +308,30 @@
           },
           "required": ["maximum", "file"],
           "additionalProperties": false
+        },
+        "variant": {
+          "type": "object",
+          "properties": {
+            "icon": {
+              "type": "object",
+              "properties": {
+                "destination": {
+                  "type": "string"
+                },
+                "maximumSize": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": ["maximumSize"]
+            }
+          },
+          "additionalProperties": false,
+          "required": ["icon"]
         }
       },
-      "required": ["image"],
+      "required": ["image", "variant"],
       "additionalProperties": false
     },
     "order": {

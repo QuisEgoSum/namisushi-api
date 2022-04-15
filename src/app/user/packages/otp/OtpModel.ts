@@ -7,7 +7,7 @@ export interface IOtp {
   code: string
   phone: string
   target: OtpTarget
-  createdAt: number
+  createdAt: Date
 }
 
 const OtpSchema = new Schema<IOtp>(
@@ -25,7 +25,7 @@ const OtpSchema = new Schema<IOtp>(
       required: true,
       enum: Object.values(OtpTarget)
     },
-    createdAt: Number
+    createdAt: Date
   },
   {
     versionKey: false,
@@ -36,7 +36,7 @@ const OtpSchema = new Schema<IOtp>(
   }
 )
   .index({code: 1, phone: 1}, {unique: true})
-  .index({target: 1})
+  .index({phone: 1, target: 1})
   .index({createdAt: 1}, {expireAfterSeconds: 900})
 
 

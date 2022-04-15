@@ -18,6 +18,15 @@ async function validateFilepath(filepath: string): Promise<boolean> {
   }
 }
 
+export async function isExistFile(dir: string, filename: string) {
+  try {
+    await fs.promises.access(path.resolve(dir, filename))
+    return true
+  } catch {
+    return false
+  }
+}
+
 export async function createFilepath(dir: string, ext: string) {
   for (let i = 0; i < 5; i++) {
     const filename = v4() + '.' + ext

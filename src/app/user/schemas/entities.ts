@@ -9,7 +9,7 @@ import {
   role,
   updatedAt,
   username,
-  savedUsername, savedEmail, savedPhone, name, telegramId, phone, allowedChangeRole, savedName
+  savedUsername, savedEmail, savedPhone, name, telegramId, phone, allowedChangeRole, savedName, otpCode
 } from './properties'
 import {UserRole} from '../UserRole'
 import {QueryPageLimit, QueryPageNumber, QuerySortDirection} from '@common/schemas/query'
@@ -231,4 +231,42 @@ export const SendSignupOtp = {
   },
   additionalProperties: false,
   required: ['phone']
+}
+
+export interface VerifyOtp {
+  phone: string,
+  code: string
+}
+
+export const VerifyOtp = {
+  title: 'VerifyOtp',
+  type: 'object',
+  properties: {
+    phone,
+    code: otpCode
+  },
+  additionalProperties: false,
+  required: ['phone', 'code']
+}
+
+export interface Signup extends VerifyOtp {
+  username?: string
+  email?: string
+  name: string,
+  password: string
+}
+
+export const Signup = {
+  title: 'Signup',
+  type: 'object',
+  properties: {
+    phone,
+    code: otpCode,
+    username,
+    email,
+    name,
+    password
+  },
+  additionalProperties: false,
+  required: ['phone', 'code', 'name', 'password']
 }
