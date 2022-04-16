@@ -1,5 +1,9 @@
 import type {RouteOptions} from 'fastify'
-import {ErrorResponse, Unauthorized, BadRequest, Forbidden, Ok, Created} from '@common/schemas/response'
+import {
+  Unauthorized, BadRequest, Forbidden,
+  Ok, Created, DataList, MessageResponse,
+  OkBinaryString, NotFound
+} from '@common/schemas/response'
 import {RequestHandlingError} from '@error'
 
 
@@ -9,13 +13,12 @@ declare module 'fastify' {
       summary?: string
       tags?: string[]
       response?: {
-        //TODO: remove any
-        [200]?: Ok | any
-        [201]?: Created | any
-        [400]?: ErrorResponse
-        [401]?: ErrorResponse
+        [200]?: Ok | DataList | MessageResponse | OkBinaryString
+        [201]?: Created
+        [400]?: BadRequest
+        [401]?: Unauthorized
         [403]?: Forbidden
-        [404]?: ErrorResponse
+        [404]?: NotFound
         [key: string]: any
       },
       security?: Array<{[key: string]: []}>

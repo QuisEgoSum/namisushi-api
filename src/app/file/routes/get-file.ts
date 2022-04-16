@@ -1,4 +1,5 @@
 import {DocsTags} from '@app/docs'
+import {OkBinaryString} from '@common/schemas/response'
 import {config} from '@config'
 import type {FastifyInstance} from 'fastify'
 
@@ -33,11 +34,7 @@ export async function getFile(fastify: FastifyInstance) {
             }
           },
           response: {
-            [200]: {
-              description: 'Ok',
-              type: 'string',
-              format: 'binary'
-            }
+            [200]: new OkBinaryString()
           }
         },
         security: {

@@ -2,7 +2,7 @@ import {FastifyInstance} from 'fastify'
 import {ProductService} from '@app/product/ProductService'
 import * as schemas from '@app/product/schemas'
 import * as variantSchemas from '@app/product/packages/variant/schemas'
-import {BadRequest, Created, NotFound} from '@common/schemas/response'
+import {BadRequest, Created, NotFound, Ok} from '@common/schemas/response'
 import {VariantDoesNotExistError} from '@app/product/packages/variant/variant-error'
 
 
@@ -30,7 +30,7 @@ export async function updateVariant(fastify: FastifyInstance, service: ProductSe
           },
           body: variantSchemas.entities.UpdateVariant,
           response: {
-            [200]: Created.fromEntity(variantSchemas.entities.BaseVariant, 'variant'),
+            [200]: Ok.fromEntity(variantSchemas.entities.BaseVariant, 'variant'),
             [400]: new BadRequest().bodyErrors().updateError(),
             [404]: new NotFound(VariantDoesNotExistError.schema())
           }

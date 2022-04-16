@@ -207,3 +207,9 @@ export class DataList {
     }
   }
 }
+
+export class OkBinaryString {
+  private readonly description = 'Ok'
+  private readonly type = 'string'
+  private readonly format = 'binary'
+}
