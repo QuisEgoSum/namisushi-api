@@ -1,6 +1,8 @@
-import * as schemas from '../schemas'
-import type {FastifyInstance} from 'fastify'
+import * as schemas from '@app/user/schemas'
+import {DocsTags} from '@app/docs'
+import {Ok} from '@common/schemas/response'
 import type {UserService} from '@app/user/UserService'
+import type {FastifyInstance} from 'fastify'
 
 
 export async function getUser(fastify: FastifyInstance, service: UserService) {
@@ -11,17 +13,9 @@ export async function getUser(fastify: FastifyInstance, service: UserService) {
         method: 'GET',
         schema: {
           summary: 'Получить пользователя',
-          tags: ['Пользователь'],
+          tags: [DocsTags.USER],
           response: {
-            [200]: {
-              description: 'Пользователь',
-              type: 'object',
-              properties: {
-                user: schemas.entities.UserBase
-              },
-              additionalProperties: false,
-              required: ['user']
-            }
+            [200]: Ok.fromEntity(schemas.entities.UserBase, 'user')
           }
         },
         security: {

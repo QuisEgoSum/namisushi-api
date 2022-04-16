@@ -1,13 +1,15 @@
-import {BadRequest} from '@common/schemas/response'
-import {UserExistsError} from '../user-error'
-import * as schemas from '../schemas'
-import type {FastifyInstance} from 'fastify'
+import * as schemas from '@app/user/schemas'
+import {UserExistsError} from '@app/user/user-error'
+import {DocsTags} from '@app/docs'
+import {BadRequest, Created} from '@common/schemas/response'
 import type {UserService} from '@app/user/UserService'
+import type {FastifyInstance} from 'fastify'
 
 
 interface CreateUserRequest {
   Body: schemas.entities.CreateUser
 }
+
 
 export async function createUser(fastify: FastifyInstance, service: UserService) {
   return fastify
@@ -17,18 +19,10 @@ export async function createUser(fastify: FastifyInstance, service: UserService)
         method: 'POST',
         schema: {
           summary: 'Создать пользователя',
-          tags: ['Администратор'],
+          tags: [DocsTags.ADMIN],
           body: schemas.entities.CreateUser,
           response: {
-            [201]: {
-              description: 'Созданный пользователь',
-              type: 'object',
-              properties: {
-                user: schemas.entities.UserBase
-              },
-              additionalProperties: false,
-              required: ['user']
-            },
+            [201]: Created.fromEntity(schemas.entities.UserBase, 'user'),
             [400]: new BadRequest(UserExistsError.schema()).bodyErrors()
           }
         },

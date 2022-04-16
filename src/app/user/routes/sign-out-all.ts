@@ -1,9 +1,10 @@
+import {DocsTags} from '@app/docs'
 import {MessageResponse} from '@common/schemas/response'
-import type {FastifyInstance} from 'fastify'
 import type {UserService} from '@app/user/UserService'
+import type {FastifyInstance} from 'fastify'
 
 
-export async function signoutAll(fastify: FastifyInstance, service: UserService) {
+export async function signOutAll(fastify: FastifyInstance, service: UserService) {
   return fastify
     .route(
       {
@@ -11,7 +12,7 @@ export async function signoutAll(fastify: FastifyInstance, service: UserService)
         method: 'DELETE',
         schema: {
           summary: 'Выйти из всех сессий пользователя, кроме текущей',
-          tags: ['Пользователь'],
+          tags: [DocsTags.USER],
           response: {
             [200]: new MessageResponse('Вы завершили {N} сессий')
           }
@@ -20,7 +21,7 @@ export async function signoutAll(fastify: FastifyInstance, service: UserService)
           auth: true
         },
         handler: async function(request, reply) {
-          const numberOfSessions = await service.logoutAllExpect(request.session.userId, request.session.sessionId)
+          const numberOfSessions = await service.signOutAllExpect(request.session.userId, request.session.sessionId)
 
           reply
             .code(200)

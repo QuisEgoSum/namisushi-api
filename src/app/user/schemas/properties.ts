@@ -1,8 +1,8 @@
 import {ObjectId, Timestamp} from '@common/schemas/helpers'
-import {UserRole} from '../UserRole'
-import {v4} from 'uuid'
 import {phonePattern} from '@common/schemas/pattern'
+import {UserRole} from '@app/user/UserRole'
 import {UserStatus} from '@app/user/UserStatus'
+import {v4} from 'uuid'
 
 
 export const _id = new ObjectId({entity: 'user'})

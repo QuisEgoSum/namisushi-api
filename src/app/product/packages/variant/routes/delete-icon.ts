@@ -1,8 +1,8 @@
-import {FastifyInstance} from 'fastify'
-import {VariantService} from '@app/product/packages/variant/VariantService'
+import {VariantIconDoesNotExistError} from '@app/product/packages/variant/variant-error'
 import {DocsTags} from '@app/docs'
 import {MessageResponse, NotFound} from '@common/schemas/response'
-import {VariantIconDoesNotExistError} from '@app/product/packages/variant/variant-error'
+import type {VariantService} from '@app/product/packages/variant/VariantService'
+import type {FastifyInstance} from 'fastify'
 
 
 interface DeleteIconRequest {

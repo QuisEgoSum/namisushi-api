@@ -24,13 +24,10 @@ export class OtpService extends BaseService<IOtp, OtpRepository> {
         code: code
       })
     } catch (error) {
-      if (retry === 0) {
+      if (retry === 0 || !(error instanceof BaseRepositoryError.UniqueKeyError)) {
         throw error
       }
-      if (error instanceof BaseRepositoryError.UniqueKeyError) {
-        return await this.createOtp(phone, target, retry - 1)
-      }
-      throw error
+      return await this.createOtp(phone, target, retry - 1)
     }
   }
 
@@ -44,11 +41,11 @@ export class OtpService extends BaseService<IOtp, OtpRepository> {
     return doc !== null
   }
 
-  public async deleteOtp(phone: string, code: string, target: OtpTarget) {
+  public async deleteOtp(phone: string, code: string, target: OtpTarget): Promise<void> {
     await this.repository.deleteOtp(phone, code, target)
   }
 
-  async findLastTimestamp(phone: string, target: OtpTarget.SIGN_UP) {
+  async findLastTimestamp(phone: string, target: OtpTarget.SIGN_UP): Promise<number | null> {
     const otp = await this.repository.findLastCreatedAt(phone, target)
     return otp === null ? null : otp.createdAt.getTime()
   }

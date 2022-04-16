@@ -1,14 +1,11 @@
-import {IBaseRepository, PageOptions} from '@core/repository/IBaseRepository'
-import {
-  FilterQuery,
-  QueryOptions, ReturnsNewDoc,
-  Types,
-  UpdateQuery,
-  UpdateWithAggregationPipeline,
-  UpdateWriteOpResult
-} from 'mongoose'
 import {DataList} from '@common/data'
-import {AnyBulkWriteOperation, BulkWriteOptions, BulkWriteResult, DeleteResult} from 'mongodb'
+import {
+  FilterQuery, QueryOptions, ReturnsNewDoc, Types,
+  UpdateQuery, UpdateWithAggregationPipeline, UpdateWriteOpResult
+} from 'mongoose'
+import type {PageOptions} from '@core/repository'
+import type {IBaseRepository} from '@core/repository/IBaseRepository'
+import type {AnyBulkWriteOperation, BulkWriteOptions, BulkWriteResult, DeleteResult} from 'mongodb'
 
 
 export interface IGenericRepository<T> extends IBaseRepository<T> {

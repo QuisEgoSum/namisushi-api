@@ -1,24 +1,25 @@
+import * as schemas from '@app/user/schemas'
+import {DocsTags} from '@app/docs'
 import {Created} from '@common/schemas/response'
-import * as schemas from '../schemas'
-import type {FastifyInstance} from 'fastify'
 import type {UserService} from '@app/user/UserService'
+import type {FastifyInstance} from 'fastify'
 
 
-interface SignupRequest {
-  Body: schemas.entities.Signup
+interface SignUpRequest {
+  Body: schemas.entities.SignUp
 }
 
 
-export async function signup(fastify: FastifyInstance, service: UserService) {
+export async function signUp(fastify: FastifyInstance, service: UserService) {
   return fastify
-    .route<SignupRequest>(
+    .route<SignUpRequest>(
       {
         url: '/user/signup',
         method: 'POST',
         schema: {
           summary: 'Регистрация',
-          tags: ['Пользователь'],
-          body: schemas.entities.Signup,
+          tags: [DocsTags.USER],
+          body: schemas.entities.SignUp,
           response: {
             [201]: Created.fromEntity(schemas.entities.UserBase, 'user')
           }
@@ -27,7 +28,7 @@ export async function signup(fastify: FastifyInstance, service: UserService) {
           auth: true
         },
         handler: async function(request, reply) {
-          const user = await service.signup(request.body)
+          const user = await service.signUp(request.body)
 
           reply
             .code(201)

@@ -1,48 +1,40 @@
-import {GenericService} from '@core/service'
+import {GenericService, ServiceError} from '@core/service'
 import {ProductType} from '@app/product/ProductType'
-import {
-  MaximumImagesExceededError,
-  ProductDoesNotExistError,
-  ProductImageDoesNotExist,
-  ProductImagesNotCompatibleError, ProductsDoNotExistError, ProductVariantsDoNotExistError
-} from '@app/product/product-error'
-import {Types} from 'mongoose'
-import {createFilepath, deleteFile, moveFile} from '@utils/fs'
+import * as error from '@app/product/product-error'
+import * as fs from '@utils/fs'
+import {EntityExistsError} from '@error'
 import {config} from '@config'
-import type {IProduct, ISingleProduct, IVariantProduct} from './ProductModel'
+import {Types} from 'mongoose'
+import type {IProduct, ISingleProduct, IVariantProduct} from '@app/product/ProductModel'
 import type {ProductRepository} from '@app/product/ProductRepository'
-import type {
-  CreateSingleProduct,
-  CreateVariantProduct,
-  UpdateSingleProduct, UpdateVariantProduct,
-  VariantProduct
-} from '@app/product/schemas/entities'
+import type * as entities from '@app/product/schemas/entities'
 import type {BaseVariant, CreateVariant, UpdateVariant} from '@app/product/packages/variant/schemas/entities'
-import type {VariantService} from '@app/product/packages/variant/VariantService'
-import type {CategoryService} from '@app/product/packages/category/CategoryService'
-import type {ICategory} from '@app/product/packages/category/CategoryModel'
+import type {VariantService} from '@app/product/packages/variant'
+import type {CategoryService, ICategory} from '@app/product/packages/category'
 import type {CreateOrderProduct, CreateOrderSingleProduct, CreateOrderVariantProduct} from '@app/order/schemas/entities'
+import type {IOrderProduct} from '@app/order/OrderModel'
 import type {MultipartFile} from 'fastify-multipart'
-import {IOrderProduct} from '@app/order/OrderModel'
 
 
 export class ProductService extends GenericService<IProduct, ProductRepository> {
-  private variantService: VariantService
-  private categoryService: CategoryService
+
+  public readonly error: ServiceError & typeof error
+
   constructor(
     repository: ProductRepository,
-    variantService: VariantService,
-    categoryService: CategoryService
+    private readonly variantService: VariantService,
+    private readonly categoryService: CategoryService
   ) {
     super(repository)
 
-    this.variantService = variantService
-    this.categoryService = categoryService
-
-    this.Error.EntityDoesNotExistError = ProductDoesNotExistError
+    this.error = {
+      EntityExistsError: EntityExistsError,
+      EntityDoesNotExistError: error.ProductDoesNotExistError,
+      ...error
+    }
   }
 
-  async createSingle(product: CreateSingleProduct) {
+  async createSingle(product: entities.CreateSingleProduct) {
     return await this.create<ISingleProduct>({
       type: ProductType.SINGLE,
       title: product.title,
@@ -54,7 +46,7 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
     })
   }
 
-  async createVariant(product: CreateVariantProduct) {
+  async createVariant(product: entities.CreateVariantProduct) {
     return await this.create<IVariantProduct>({
       type: ProductType.VARIANT,
       title: product.title,
@@ -78,26 +70,26 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
     })
   }
 
-  async findVariantProductById(productId: string): Promise<VariantProduct> {
+  async findVariantProductById(productId: string): Promise<entities.VariantProduct> {
     const product = await this.repository.findVariantProductById(productId)
-    if (!product) throw new this.Error.EntityDoesNotExistError()
+    if (!product) throw new this.error.EntityDoesNotExistError()
     return product
   }
 
-  async findAndUpdateSingleProduct(productId: string, update: UpdateSingleProduct) {
+  async findAndUpdateSingleProduct(productId: string, update: entities.UpdateSingleProduct) {
     this.checkUpdateData(update)
     const product = await this.repository.findAndUpdateSingle(productId, update)
     if (!product) {
-      throw new this.Error.EntityDoesNotExistError()
+      throw new this.error.EntityDoesNotExistError()
     }
     return product
   }
 
-  async findAndUpdateVariantProduct(productId: string, update: UpdateVariantProduct) {
+  async findAndUpdateVariantProduct(productId: string, update: entities.UpdateVariantProduct) {
     this.checkUpdateData(update)
     const product = await this.repository.findAndUpdateVariant(productId, update)
     if (!product) {
-      throw new this.Error.EntityDoesNotExistError()
+      throw new this.error.EntityDoesNotExistError()
     }
     return await this.findVariantProductById(productId)
   }
@@ -109,19 +101,19 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
   async attachImage(productId: string, files: MultipartFile[]): Promise<string[]> {
     const product = await this.findById(productId, {images: 1})
     if (product.images.length + files.length > config.product.image.maximum) {
-      throw new MaximumImagesExceededError()
+      throw new this.error.MaximumImagesExceededError()
     }
     const images = await Promise.all(
       files
-        .map(file => createFilepath(config.product.image.file.destination, file.mimetype.split('/').pop() || 'png'))
+        .map(file => fs.createFilepath(config.product.image.file.destination, file.mimetype.split('/').pop() || 'png'))
         .map((promise, i) => promise.then(
-          file => moveFile(files[i].filepath, file.filepath).then(() => file.filename))
+          file => fs.moveFile(files[i].filepath, file.filepath).then(() => file.filename))
         )
     )
     const updatedProduct = await this.repository.addToSetImages(productId, images)
     if (!updatedProduct) {
-      await Promise.all(images.map(filename => deleteFile(config.product.image.file.destination, filename)))
-      throw new this.Error.EntityDoesNotExistError()
+      await Promise.all(images.map(filename => fs.deleteFile(config.product.image.file.destination, filename)))
+      throw new this.error.EntityDoesNotExistError()
     }
     return updatedProduct.images
   }
@@ -130,25 +122,25 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
     const result = await this.repository.pullImage(productId, filename)
     if (result.matchedCount == 0) {
       await this.existsById(productId)
-      throw new ProductImageDoesNotExist()
+      throw new this.error.ProductImageDoesNotExist()
     }
-    await deleteFile(config.product.image.file.destination, filename)
+    await fs.deleteFile(config.product.image.file.destination, filename)
   }
 
   async updateOrderImages(productId: string, images: string[]) {
     const product = await this.findById(productId, {images: 1})
     const oldImages = new Set(product.images)
     if (oldImages.size !== images.length) {
-      throw new ProductImagesNotCompatibleError()
+      throw new this.error.ProductImagesNotCompatibleError()
     }
     const oldImagesSize = oldImages.size
     images.forEach(filename => oldImages.add(filename))
     if (oldImages.size !== oldImagesSize) {
-      throw new ProductImagesNotCompatibleError()
+      throw new this.error.ProductImagesNotCompatibleError()
     }
     const result = await this.repository.updateOrderImages(productId, images, product.images)
     if (result.matchedCount === 0) {
-      throw new ProductImagesNotCompatibleError()
+      throw new this.error.ProductImagesNotCompatibleError()
     }
     return images
   }
@@ -162,7 +154,7 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
     return await this.categoryService.addProduct(categoryId, productId)
   }
 
-  async findVisible(): Promise<{categories: ICategory[], products: Array<ISingleProduct | VariantProduct>}> {
+  async findVisible(): Promise<{categories: ICategory[], products: Array<ISingleProduct | entities.VariantProduct>}> {
     const [categories, single, variant] = await Promise.all([
       this.categoryService.findVisible(),
       this.repository.findSingleVisible(),
@@ -226,7 +218,7 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
       this.addMissingProducts(notExistProductIds, sourceVariantProductsMap.keys(), variantProducts)
     }
     if (notExistProductIds.length) {
-      throw new ProductsDoNotExistError({productIds: notExistProductIds})
+      throw new this.error.ProductsDoNotExistError({productIds: notExistProductIds})
     }
     singleProducts.forEach(product => singleProductsMap.set(String(product._id), {cost: product.cost, weight: product.weight}))
     variantProducts.forEach(
@@ -239,7 +231,7 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
     for (const [productId, sourceVariantsMap] of sourceVariantProductsMap.entries()) {
       const variantsMap = variantProductsMap.get(productId)
       if (!variantsMap) {
-        throw new ProductsDoNotExistError({productIds: [productId]})
+        throw new this.error.ProductsDoNotExistError({productIds: [productId]})
       }
       for (const [variantId, sourceVariant] of sourceVariantsMap.entries()) {
         const variant = variantsMap.get(variantId)
@@ -257,12 +249,12 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
       }
     }
     if (notExistVariants.length) {
-      throw new ProductVariantsDoNotExistError({variants: notExistVariants})
+      throw new this.error.ProductVariantsDoNotExistError({variants: notExistVariants})
     }
     for (const [productId, sourceProduct] of sourceSingleProductsMap.entries()) {
       const product = singleProductsMap.get(productId)
       if (!product) {
-        throw new ProductsDoNotExistError({productIds: [productId]})
+        throw new this.error.ProductsDoNotExistError({productIds: [productId]})
       }
       products.push({
         productId: new Types.ObjectId(productId),

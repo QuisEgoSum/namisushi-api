@@ -1,6 +1,6 @@
-import {FastifyInstance} from 'fastify'
-import {config} from '@config'
 import {DocsTags} from '@app/docs'
+import {config} from '@config'
+import type {FastifyInstance} from 'fastify'
 
 
 export async function getFile(fastify: FastifyInstance) {

@@ -1,26 +1,18 @@
 import {BaseRepositoryError} from '@core/repository'
 import {EntityExistsError, EntityDoesNotExistError, NoDataForUpdatingError} from '@core/error'
-import type {
-  Types,
-  UpdateQuery,
-  FilterQuery,
-  QueryOptions,
-  ReturnsNewDoc,
-  UpdateWithAggregationPipeline
-} from 'mongoose'
-import {IGenericRepository} from '@core/repository/IGenericRepository'
-import {IGenericService} from '@core/service/IGenericService'
+import type {Types, UpdateQuery, FilterQuery, QueryOptions, ReturnsNewDoc, UpdateWithAggregationPipeline} from 'mongoose'
+import type {IGenericRepository} from '@core/repository/IGenericRepository'
+import type {IGenericService} from '@core/service/IGenericService'
 import type {ServiceError} from '@core/service/index'
 
 
 export class GenericService<T, R extends IGenericRepository<T>> implements IGenericService<T, R> {
-  public Error: ServiceError
+  public error: ServiceError
 
-  public repository: R
-
-  constructor(repository: R) {
-    this.repository = repository
-    this.Error = {
+  constructor(
+    public readonly repository: R
+  ) {
+    this.error = {
       EntityExistsError: EntityExistsError,
       EntityDoesNotExistError: EntityDoesNotExistError
     }
@@ -28,7 +20,7 @@ export class GenericService<T, R extends IGenericRepository<T>> implements IGene
 
   errorHandler<T>(error: Error | BaseRepositoryError): T {
     if (error instanceof BaseRepositoryError.UniqueKeyError) {
-      throw new this.Error.EntityExistsError(error)
+      throw new this.error.EntityExistsError(error)
     } else {
       throw error
     }
@@ -49,7 +41,7 @@ export class GenericService<T, R extends IGenericRepository<T>> implements IGene
     const isDeleted = await this.repository.deleteById(id)
 
     if (!isDeleted) {
-      throw new this.Error.EntityDoesNotExistError()
+      throw new this.error.EntityDoesNotExistError()
     }
   }
 
@@ -57,7 +49,7 @@ export class GenericService<T, R extends IGenericRepository<T>> implements IGene
     const document = await this.repository.findById<I>(id, projection, options)
 
     if (document === null) {
-      throw new this.Error.EntityDoesNotExistError()
+      throw new this.error.EntityDoesNotExistError()
     }
 
     return document
@@ -67,7 +59,7 @@ export class GenericService<T, R extends IGenericRepository<T>> implements IGene
     const document = await this.repository.findByIdAndDelete<I>(id)
 
     if (document === null) {
-      throw new this.Error.EntityDoesNotExistError()
+      throw new this.error.EntityDoesNotExistError()
     }
 
     return document
@@ -78,7 +70,7 @@ export class GenericService<T, R extends IGenericRepository<T>> implements IGene
     const document = await this.repository.findByIdAndUpdate<I>(id, update, {new: true})
 
     if (document === null) {
-      throw new this.Error.EntityDoesNotExistError()
+      throw new this.error.EntityDoesNotExistError()
     }
 
     return document
@@ -88,7 +80,7 @@ export class GenericService<T, R extends IGenericRepository<T>> implements IGene
     const document = await this.repository.findOne<I>(filter, projection, options)
 
     if (document === null) {
-      throw new this.Error.EntityDoesNotExistError()
+      throw new this.error.EntityDoesNotExistError()
     }
 
     return document
@@ -98,7 +90,7 @@ export class GenericService<T, R extends IGenericRepository<T>> implements IGene
     const isDeleted = await this.repository.deleteOne<I>(query)
 
     if (!isDeleted) {
-      throw new this.Error.EntityDoesNotExistError()
+      throw new this.error.EntityDoesNotExistError()
     }
   }
 
@@ -108,7 +100,7 @@ export class GenericService<T, R extends IGenericRepository<T>> implements IGene
       .catch(error => this.errorHandler(error))
 
     if (document === null) {
-      throw new this.Error.EntityDoesNotExistError()
+      throw new this.error.EntityDoesNotExistError()
     }
 
     return document
@@ -118,7 +110,7 @@ export class GenericService<T, R extends IGenericRepository<T>> implements IGene
     const document = await this.repository.findOneAndDelete<I>(filter, options)
 
     if (document === null) {
-      throw new this.Error.EntityDoesNotExistError()
+      throw new this.error.EntityDoesNotExistError()
     }
 
     return document
@@ -130,7 +122,7 @@ export class GenericService<T, R extends IGenericRepository<T>> implements IGene
       .catch(error => this.errorHandler(error))
 
     if (result.matchedCount === 0) {
-      throw new this.Error.EntityDoesNotExistError()
+      throw new this.error.EntityDoesNotExistError()
     }
   }
 
@@ -141,7 +133,7 @@ export class GenericService<T, R extends IGenericRepository<T>> implements IGene
       .catch(error => this.errorHandler(error))
 
     if (result.matchedCount === 0) {
-      throw new this.Error.EntityDoesNotExistError()
+      throw new this.error.EntityDoesNotExistError()
     }
   }
 

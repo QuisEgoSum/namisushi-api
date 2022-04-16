@@ -1,8 +1,9 @@
-import * as schemas from '../schemas'
+import * as schemas from '@app/product/packages/category/schemas'
+import {CategoryDoesNotExistError, CategoryExistsError} from '@app/product/packages/category/category-error'
+import {DocsTags} from '@app/docs'
 import {BadRequest, NotFound, Ok} from '@common/schemas/response'
 import type {FastifyInstance} from 'fastify'
 import type {CategoryService} from '@app/product/packages/category/CategoryService'
-import {CategoryDoesNotExistError, CategoryExistsError} from '@app/product/packages/category/category-error'
 
 
 interface UpdateRequest {
@@ -21,7 +22,7 @@ export async function update(fastify: FastifyInstance, service: CategoryService)
         url: '/admin/product/category/:categoryId',
         schema: {
           summary: 'Обновить категорию',
-          tags: ['Управление категориями'],
+          tags: [DocsTags.CATEGORY_ADMIN],
           params: {
             categoryId: schemas.properties._id
           },

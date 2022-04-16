@@ -70,6 +70,7 @@ const UserSchema = new Schema<IUser>(
   .index({role: 1})
   .index({email: 1}, {unique: true, partialFilterExpression: {email: {$type: 'string'}}})
   .index({username: 1}, {unique: true, partialFilterExpression: {username: {$type: 'string'}}})
+  .index({phone: 1}, {unique: true, partialFilterExpression: {phone: {$type: 'string'}}})
   .index({telegramId: 1})
   .index({createdAt: 1})
 

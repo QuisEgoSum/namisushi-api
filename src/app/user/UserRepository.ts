@@ -1,14 +1,10 @@
 import {BaseRepository} from '@core/repository/BaseRepository'
-import type {IUser, UserModel} from './UserModel'
 import {UserRole} from '@app/user/UserRole'
 import {v4} from 'uuid'
+import type {IUser} from '@app/user/UserModel'
 
 
 export class UserRepository extends BaseRepository<IUser> {
-  constructor(Model: typeof UserModel) {
-    super(Model)
-  }
-
   async findByLogin(login: string) {
     return this.findOne(
         {

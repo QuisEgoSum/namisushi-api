@@ -7,6 +7,7 @@ export interface ICounter {
   number: number
 }
 
+
 const CounterSchema = new Schema<ICounter>(
   {
     isTest: Boolean,

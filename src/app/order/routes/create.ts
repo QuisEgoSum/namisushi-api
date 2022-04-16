@@ -1,10 +1,11 @@
-import * as schemas from '../schemas'
-import {OrderCannotBeCanceledError} from '../order-error'
+import * as schemas from '@app/order/schemas'
+import {OrderCannotBeCanceledError} from '@app/order/order-error'
 import {ProductsDoNotExistError, ProductVariantsDoNotExistError} from '@app/product/product-error'
 import {UserRole, UserSession} from '@app/user'
 import {UserRightsError} from '@app/user/user-error'
-import {JsonSchemaValidationError, JsonSchemaValidationErrors} from '@error'
+import {DocsTags} from '@app/docs'
 import {BadRequest, Created, NotFound} from '@common/schemas/response'
+import {JsonSchemaValidationError, JsonSchemaValidationErrors} from '@error'
 import type {OrderService} from '@app/order/OrderService'
 import type {UserService} from '@app/user/UserService'
 import type {FastifyInstance} from 'fastify'
@@ -13,6 +14,7 @@ import type {FastifyInstance} from 'fastify'
 interface CreateRequest {
   Body: schemas.entities.CreateOrder
 }
+
 
 const MISSING_ADDRESS_ERROR = new JsonSchemaValidationErrors({
   in: 'body',
@@ -38,7 +40,7 @@ export async function create(fastify: FastifyInstance, service: OrderService, us
         url: '/order',
         schema: {
           summary: 'Создать заказ',
-          tags: ['Заказ'],
+          tags: [DocsTags.ORDER],
           body: schemas.entities.CreateOrder,
           response: {
             [201]: Created.fromEntity(schemas.entities.PopulatedOrder, 'order'),

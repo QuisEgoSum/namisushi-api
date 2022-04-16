@@ -1,8 +1,9 @@
-import * as schemas from '../schemas'
-import {BadRequest, NotFound, Ok} from '@common/schemas/response'
-import type {FastifyInstance} from 'fastify'
-import type {CategoryService} from '@app/product/packages/category/CategoryService'
+import * as schemas from '@app/product/packages/category/schemas'
 import {CategoryDoesNotExistError} from '@app/product/packages/category/category-error'
+import {DocsTags} from '@app/docs'
+import {BadRequest, NotFound, Ok} from '@common/schemas/response'
+import type {CategoryService} from '@app/product/packages/category/CategoryService'
+import type {FastifyInstance} from 'fastify'
 
 
 interface PullProductRequest {
@@ -21,7 +22,7 @@ export async function pullProduct(fastify: FastifyInstance, service: CategorySer
         url: '/admin/product/:productId/category/:categoryId',
         schema: {
           summary: 'Удалить продукт из категории',
-          tags: ['Управление категориями'],
+          tags: [DocsTags.CATEGORY_ADMIN],
           params: {
             productId: schemas.properties.productIds.items,
             categoryId: schemas.properties._id

@@ -3,13 +3,13 @@ import {rawPopulatedTransform} from '@app/order/order-transform'
 import {CreatedOrderDoesNotExistError, OrderDoesNotExistError} from '@app/order/order-error'
 import {OrderDiscount} from '@app/order/OrderDiscount'
 import {OrderCondition} from '@app/order/OrderCondition'
+import {INotificationEventEmitter, NotificationEvents} from '@app/notification'
 import {config} from '@config'
 import type {IOrder} from '@app/order/OrderModel'
 import type {OrderRepository} from '@app/order/OrderRepository'
 import type {CreateOrder} from '@app/order/schemas/entities'
 import type {ProductService} from '@app/product/ProductService'
 import type {CounterService} from '@app/order/packages/counter/CounterService'
-import {INotificationEventEmitter, NotificationEvents} from '@app/notification'
 
 
 export class OrderService extends BaseService<IOrder, OrderRepository> {
@@ -37,7 +37,7 @@ export class OrderService extends BaseService<IOrder, OrderRepository> {
   ) {
     super(repository)
 
-    this.Error.EntityDoesNotExistError = OrderDoesNotExistError
+    this.error.EntityDoesNotExistError = OrderDoesNotExistError
 
     this.discounts = {
       [OrderDiscount.WEEKDAY]: config.order.discount.weekday,

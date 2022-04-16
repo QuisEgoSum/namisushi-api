@@ -1,6 +1,6 @@
-import {CategoryService} from '@app/product/packages/category/CategoryService'
+import {CategoryModel, ICategory} from '@app/product/packages/category/CategoryModel'
 import {CategoryRepository} from '@app/product/packages/category/CategoryRepository'
-import {CategoryModel} from '@app/product/packages/category/CategoryModel'
+import {CategoryService} from '@app/product/packages/category/CategoryService'
 import {routes} from '@app/product/packages/category/routes'
 import type {FastifyInstance} from 'fastify'
 
@@ -19,11 +19,13 @@ class Category {
 }
 
 
-
 export async function initCategory(): Promise<Category> {
   return new Category(new CategoryService(new CategoryRepository(CategoryModel)))
 }
 
+
 export type {
-  Category
+  Category,
+  CategoryService,
+  ICategory
 }

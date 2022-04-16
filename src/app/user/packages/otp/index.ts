@@ -1,6 +1,6 @@
-import {OtpService} from '@app/user/packages/otp/OtpService'
-import {OtpRepository} from '@app/user/packages/otp/OtpRepository'
 import {OtpModel} from '@app/user/packages/otp/OtpModel'
+import {OtpRepository} from '@app/user/packages/otp/OtpRepository'
+import {OtpService} from '@app/user/packages/otp/OtpService'
 import {OtpTarget} from './OtpTarget'
 
 
@@ -16,9 +16,12 @@ export async function initOtp() {
   return new Otp(service)
 }
 
+
 export type {
-  Otp
+  Otp,
+  OtpService
 }
+
 
 export {
   OtpTarget

@@ -1,7 +1,7 @@
 import {DocsTags} from '@app/docs'
-import {FastifyInstance} from 'fastify'
-import {VariantService} from '@app/product/packages/variant/VariantService'
 import {Ok} from '@common/schemas/response'
+import type {VariantService} from '@app/product/packages/variant/VariantService'
+import type {FastifyInstance} from 'fastify'
 
 
 export async function getIcons(fastify: FastifyInstance, service: VariantService) {

@@ -1,7 +1,8 @@
-import * as schemas from '../schemas'
+import * as schemas from '@app/user/schemas'
+import {DocsTags} from '@app/docs'
 import {BadRequest, Ok} from '@common/schemas/response'
-import type {FastifyInstance} from 'fastify'
 import type {UserService} from '@app/user/UserService'
+import type {FastifyInstance} from 'fastify'
 
 
 interface GetStatusRequest {
@@ -18,7 +19,7 @@ export async function getStatus(fastify: FastifyInstance, service: UserService) 
       method: 'PUT',
       schema: {
         summary: 'Получить статус пользователя',
-        tags: ['Пользователь'],
+        tags: [DocsTags.USER],
         body: {
           type: 'object',
           properties: {

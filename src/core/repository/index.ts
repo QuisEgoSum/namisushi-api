@@ -8,6 +8,11 @@ import {IBaseRepository} from './IBaseRepository'
 import {IGenericRepository} from './IGenericRepository'
 
 
+type PageOptions = {
+  limit: number,
+  page: number
+}
+
 export {
   BaseRepository,
   GenericRepository,
@@ -16,5 +21,6 @@ export {
 
 export type {
   IBaseRepository,
-  IGenericRepository
+  IGenericRepository,
+  PageOptions
 }

@@ -1,8 +1,9 @@
-import {BadRequest, NotFound} from '@common/schemas/response'
-import {UserNotExistsError} from '../user-error'
-import * as schemas from '../schemas'
-import type {FastifyInstance} from 'fastify'
+import * as schemas from '@app/user/schemas'
+import {UserNotExistsError} from '@app/user/user-error'
+import {DocsTags} from '@app/docs'
+import {BadRequest, NotFound, Ok} from '@common/schemas/response'
 import type {UserService} from '@app/user/UserService'
+import type {FastifyInstance} from 'fastify'
 
 
 interface FindUserRequest {
@@ -20,20 +21,12 @@ export async function findUser(fastify: FastifyInstance, service: UserService) {
         method: 'GET',
         schema: {
           summary: 'Найти пользователя по id',
-          tags: ['Администратор'],
+          tags: [DocsTags.ADMIN],
           params: {
             userId: schemas.properties._id
           },
           response: {
-            [200]: {
-              description: 'Пользователь',
-              type: 'object',
-              properties: {
-                user: schemas.entities.UserBase
-              },
-              additionalProperties: false,
-              required: ['user']
-            },
+            [200]: Ok.fromEntity(schemas.entities.UserBase, 'user'),
             [400]: new BadRequest().paramsErrors(),
             [404]: new NotFound(UserNotExistsError.schema())
           }

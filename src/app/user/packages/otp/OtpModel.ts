@@ -10,6 +10,7 @@ export interface IOtp {
   createdAt: Date
 }
 
+
 const OtpSchema = new Schema<IOtp>(
   {
     code: {

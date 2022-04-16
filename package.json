@@ -41,6 +41,7 @@
     "yaml": "1.10.2"
   },
   "devDependencies": {
+    "@trivago/prettier-plugin-sort-imports": "^3.2.0",
     "@types/bcrypt": "^5.0.0",
     "@types/jest": "^27.4.1",
     "@types/mocha": "^9.0.0",

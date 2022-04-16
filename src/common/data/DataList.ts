@@ -1,14 +1,9 @@
 
 
 export class DataList<T> {
-
-  total: number
-  pages: number
-  data: Array<T>
-
-  constructor(total: number, pages: number, data: Array<T>) {
-    this.total = total
-    this.pages = pages
-    this.data = data
-  }
+  constructor(
+    public readonly total: number,
+    public readonly pages: number,
+    public readonly data: Array<T>
+  ) {}
 }

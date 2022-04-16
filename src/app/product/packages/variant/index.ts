@@ -1,8 +1,8 @@
 import {VariantService} from '@app/product/packages/variant/VariantService'
 import {VariantRepository} from '@app/product/packages/variant/VariantRepository'
-import {VariantModel} from '@app/product/packages/variant/VariantModel'
-import {FastifyInstance} from 'fastify'
+import {VariantModel, IVariant} from '@app/product/packages/variant/VariantModel'
 import {routes} from '@app/product/packages/variant/routes'
+import type {FastifyInstance} from 'fastify'
 
 
 class Variant {
@@ -24,5 +24,7 @@ export async function initVariant(): Promise<Variant> {
 }
 
 export type {
-  Variant
+  Variant,
+  VariantService,
+  IVariant
 }

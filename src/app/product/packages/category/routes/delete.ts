@@ -1,8 +1,9 @@
-import * as schemas from '../schemas'
-import type {FastifyInstance} from 'fastify'
-import type {CategoryService} from '@app/product/packages/category/CategoryService'
-import {BadRequest, MessageResponse, NotFound} from '@common/schemas/response'
+import * as schemas from '@app/product/packages/category/schemas'
 import {CategoryDoesNotExistError} from '@app/product/packages/category/category-error'
+import {DocsTags} from '@app/docs'
+import {BadRequest, MessageResponse, NotFound} from '@common/schemas/response'
+import type {CategoryService} from '@app/product/packages/category/CategoryService'
+import type {FastifyInstance} from 'fastify'
 
 
 export interface DeleteRequest {
@@ -20,7 +21,7 @@ export async function deleteById(fastify: FastifyInstance, service: CategoryServ
         url: '/admin/product/category/:categoryId',
         schema: {
           summary: 'Удалить категорию',
-          tags: ['Управление категориями'],
+          tags: [DocsTags.CATEGORY_ADMIN],
           params: {
             categoryId: schemas.properties._id
           },

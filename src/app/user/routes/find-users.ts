@@ -1,7 +1,8 @@
+import * as schemas from '@app/user/schemas'
+import {DocsTags} from '@app/docs'
 import {BadRequest, DataList} from '@common/schemas/response'
-import * as schemas from '../schemas'
-import type {FastifyInstance} from 'fastify'
 import type {UserService} from '@app/user/UserService'
+import type {FastifyInstance} from 'fastify'
 
 
 interface FindUsersRequest {
@@ -17,7 +18,7 @@ export async function findUsers(fastify: FastifyInstance, service: UserService) 
         method: 'GET',
         schema: {
           summary: 'Поиск пользователей',
-          tags: ['Администратор'],
+          tags: [DocsTags.ADMIN],
           querystring: schemas.entities.FindUsersQueryAdmin,
           response: {
             [200]: new DataList(schemas.entities.UserBase),

@@ -1,9 +1,9 @@
 import {INotificationEventEmitter} from '@app/notification/NotificationEventEmitter'
 import {NotificationEvents} from '@app/notification/NotificationEvents'
-import {PopulatedOrder} from '@app/order/schemas/entities'
 import {NotificationTelegramAgent} from '@app/notification/NotificationTelegramAgent'
-import {emitter as loggerEmitter, logger} from '@logger'
 import {NotificationMessageUtils} from '@app/notification/NotificationMessageUtils'
+import {PopulatedOrder} from '@app/order/schemas/entities'
+import {emitter as loggerEmitter, logger} from '@logger'
 
 
 export class NotificationEventListener {

@@ -19,5 +19,6 @@ export async function initCounter() {
 }
 
 export type {
-  Counter
+  Counter,
+  CounterService
 }

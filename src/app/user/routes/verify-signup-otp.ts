@@ -1,12 +1,15 @@
-import * as schemas from '../schemas'
-import {BadRequest, NoContent} from '@common/schemas/response'
-import type {FastifyInstance} from 'fastify'
-import type {UserService} from '@app/user/UserService'
+import * as schemas from '@app/user/schemas'
 import {InvalidOtpCodeError} from '@app/user/user-error'
+import {DocsTags} from '@app/docs'
+import {BadRequest, NoContent} from '@common/schemas/response'
+import type {UserService} from '@app/user/UserService'
+import type {FastifyInstance} from 'fastify'
+
 
 interface VerifySignupOtpRequest {
   Body: schemas.entities.VerifyOtp
 }
+
 
 export async function verifySignupOtp(fastify: FastifyInstance, service: UserService) {
   return fastify
@@ -16,7 +19,7 @@ export async function verifySignupOtp(fastify: FastifyInstance, service: UserSer
         method: 'POST',
         schema: {
           summary: 'Верифицировать OTP код',
-          tags: ['Пользователь'],
+          tags: [DocsTags.USER],
           body: schemas.entities.VerifyOtp,
           response: {
             [204]: new NoContent(),

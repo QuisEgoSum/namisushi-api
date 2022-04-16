@@ -1,7 +1,7 @@
-import {FastifyInstance} from 'fastify'
 import {loadRoutes} from '@utils/loader'
-import {OrderService} from '@app/order/OrderService'
-import {UserService} from '@app/user/UserService'
+import type {OrderService} from '@app/order/OrderService'
+import type {UserService} from '@app/user/UserService'
+import type {FastifyInstance} from 'fastify'
 
 
 export async function routes(fastify: FastifyInstance, service: OrderService, userService: UserService) {

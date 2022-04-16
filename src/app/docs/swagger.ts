@@ -1,4 +1,5 @@
 import {config} from '@core/config'
+import {DocsTags} from '@app/docs/DocsTags'
 
 
 export const swagger: Record<string, any> = {
@@ -25,23 +26,23 @@ export const swagger: Record<string, any> = {
       {
         name: 'Пользователь',
         tags: [
-          'Пользователь',
-          'Администратор'
+          DocsTags.USER,
+          DocsTags.ADMIN
         ]
       },
       {
         name: 'Продукт',
         tags: [
-          'Продукт',
-          'Управление продуктами',
-          'Управление категориями',
-          'Управление вариантами продуктов'
+          DocsTags.PRODUCT,
+          DocsTags.PRODUCT_ADMIN,
+          DocsTags.CATEGORY_ADMIN,
+          DocsTags.VARIANT_ADMIN
         ]
       },
       {
         name: 'Заказ',
         tags: [
-          'Заказ'
+          DocsTags.ORDER
         ]
       }
     ]

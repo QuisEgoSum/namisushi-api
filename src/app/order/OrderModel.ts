@@ -1,6 +1,6 @@
-import {model, Schema, Types} from 'mongoose'
 import {OrderCondition} from '@app/order/OrderCondition'
 import {OrderDiscount} from '@app/order/OrderDiscount'
+import {model, Schema, Types} from 'mongoose'
 
 
 export interface IOrderProduct {
@@ -36,6 +36,7 @@ export interface IOrder {
   createdAt: number
   updatedAt: number
 }
+
 
 const OrderSchema = new Schema<IOrder>(
   {
@@ -144,5 +145,6 @@ const OrderSchema = new Schema<IOrder>(
   .index({client: 1})
   .index({createdAt: 1})
   .index({phone: 1})
+
 
 export const OrderModel = model<IOrder>('Order', OrderSchema, 'orders')

@@ -1,17 +1,13 @@
 import {
-  _id,
-  avatar,
-  createdAt,
-  email,
-  mEmail,
-  mUsername,
-  password,
-  role,
-  updatedAt,
-  username,
-  savedUsername, savedEmail, savedPhone, name, telegramId, phone, allowedChangeRole, savedName, otpCode
+  _id, avatar, createdAt, email,
+  mEmail, mUsername, password,
+  role, updatedAt, username,
+  savedUsername, savedEmail,
+  savedPhone, name, telegramId,
+  phone, allowedChangeRole, savedName,
+  otpCode
 } from './properties'
-import {UserRole} from '../UserRole'
+import {UserRole} from '@app/user/UserRole'
 import {QueryPageLimit, QueryPageNumber, QuerySortDirection} from '@common/schemas/query'
 import type {SortDirection} from 'mongodb'
 
@@ -72,6 +68,9 @@ export const UserBase = {
   ]
 }
 
+/**
+ * @deprecated
+ */
 export const UserExpand = {
   title: 'UserExpand',
   type: 'object',
@@ -219,11 +218,11 @@ export const UpdateUserPassword = {
   }
 }
 
-export interface SendSignupOtp {
+export interface SendSignUpOtp {
   phone: string
 }
 
-export const SendSignupOtp = {
+export const SendSignUpOtp = {
   title: 'SendSignupOtp',
   type: 'object',
   properties: {
@@ -249,14 +248,14 @@ export const VerifyOtp = {
   required: ['phone', 'code']
 }
 
-export interface Signup extends VerifyOtp {
+export interface SignUp extends VerifyOtp {
   username?: string
   email?: string
   name: string,
   password: string
 }
 
-export const Signup = {
+export const SignUp = {
   title: 'Signup',
   type: 'object',
   properties: {

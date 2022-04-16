@@ -1,24 +1,17 @@
 import {BaseRepository, BaseRepositoryError} from '@core/repository'
 import {EntityExistsError, EntityDoesNotExistError, NoDataForUpdatingError} from '@core/error'
 import type {IBaseService} from './IBaseService'
-import type {
-  Types,
-  UpdateQuery,
-  FilterQuery,
-  QueryOptions,
-  ReturnsNewDoc
-} from 'mongoose'
+import type {Types, UpdateQuery, FilterQuery, QueryOptions, ReturnsNewDoc} from 'mongoose'
 import type {ServiceError} from '@core/service/index'
 
 
 export class BaseService<T, R extends BaseRepository<T>> implements IBaseService<T, R> {
-  public Error: ServiceError
+  public error: ServiceError
 
-  public repository: R
-
-  constructor(repository: R) {
-    this.repository = repository
-    this.Error = {
+  constructor(
+    public readonly repository: R
+  ) {
+    this.error = {
       EntityExistsError: EntityExistsError,
       EntityDoesNotExistError: EntityDoesNotExistError
     }
@@ -26,7 +19,7 @@ export class BaseService<T, R extends BaseRepository<T>> implements IBaseService
 
   errorHandler<T>(error: Error | BaseRepositoryError): T {
     if (error instanceof BaseRepositoryError.UniqueKeyError) {
-      throw new this.Error.EntityExistsError(error)
+      throw new this.error.EntityExistsError(error)
     } else {
       throw error
     }
@@ -45,29 +38,24 @@ export class BaseService<T, R extends BaseRepository<T>> implements IBaseService
 
   async deleteById(id: string): Promise<void> {
     const isDeleted = await this.repository.deleteById(id)
-
     if (!isDeleted) {
-      throw new this.Error.EntityDoesNotExistError()
+      throw new this.error.EntityDoesNotExistError()
     }
   }
 
   async findById(id: string | Types.ObjectId, projection?: unknown | null, options?: QueryOptions | null): Promise<T> {
     const document = await this.repository.findById(id, projection, options)
-
     if (document === null) {
-      throw new this.Error.EntityDoesNotExistError()
+      throw new this.error.EntityDoesNotExistError()
     }
-
     return document
   }
 
   async findByIdAndDelete(id: string | Types.ObjectId): Promise<T> {
     const document = await this.repository.findByIdAndDelete(id)
-
     if (document === null) {
-      throw new this.Error.EntityDoesNotExistError()
+      throw new this.error.EntityDoesNotExistError()
     }
-
     return document
   }
 
@@ -75,29 +63,24 @@ export class BaseService<T, R extends BaseRepository<T>> implements IBaseService
     this.checkUpdateData(update)
     const document = await this.repository.findByIdAndUpdate(id, update, {new: true})
       .catch(error => this.errorHandler(error))
-
     if (document === null) {
-      throw new this.Error.EntityDoesNotExistError()
+      throw new this.error.EntityDoesNotExistError()
     }
-
     return document
   }
 
   async findOne(filter: FilterQuery<T>, projection?: unknown | null, options?: QueryOptions | null): Promise<T> {
     const document = await this.repository.findOne(filter, projection, options)
-
     if (document === null) {
-      throw new this.Error.EntityDoesNotExistError()
+      throw new this.error.EntityDoesNotExistError()
     }
-
     return document
   }
 
   async deleteOne(query: FilterQuery<T>): Promise<void> {
     const isDeleted = await this.repository.deleteOne(query)
-
     if (!isDeleted) {
-      throw new this.Error.EntityDoesNotExistError()
+      throw new this.error.EntityDoesNotExistError()
     }
   }
 
@@ -105,21 +88,17 @@ export class BaseService<T, R extends BaseRepository<T>> implements IBaseService
     this.checkUpdateData(update)
     const document = await this.repository.findOneAndUpdate(filter, update, options)
       .catch(error => this.errorHandler(error))
-
     if (document === null) {
-      throw new this.Error.EntityDoesNotExistError()
+      throw new this.error.EntityDoesNotExistError()
     }
-
     return document
   }
 
   async findOneAndDelete(filter?: FilterQuery<T>, options?: QueryOptions | null): Promise<T> {
     const document = await this.repository.findOneAndDelete(filter, options)
-
     if (document === null) {
-      throw new this.Error.EntityDoesNotExistError()
+      throw new this.error.EntityDoesNotExistError()
     }
-
     return document
   }
 
@@ -127,9 +106,8 @@ export class BaseService<T, R extends BaseRepository<T>> implements IBaseService
     this.checkUpdateData(update)
     const result = await this.repository.updateOne(filter, update, options)
       .catch(error => this.errorHandler(error))
-
     if (result.matchedCount === 0) {
-      throw new this.Error.EntityDoesNotExistError()
+      throw new this.error.EntityDoesNotExistError()
     }
   }
 
@@ -138,9 +116,8 @@ export class BaseService<T, R extends BaseRepository<T>> implements IBaseService
     this.checkUpdateData(update)
     const result = await this.repository.updateById(id, update, options)
       .catch(error => this.errorHandler(error))
-
     if (result.matchedCount === 0) {
-      throw new this.Error.EntityDoesNotExistError()
+      throw new this.error.EntityDoesNotExistError()
     }
   }
 

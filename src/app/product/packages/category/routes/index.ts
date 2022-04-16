@@ -1,6 +1,6 @@
-import {FastifyInstance} from 'fastify'
 import {loadRoutes} from '@utils/loader'
-import {CategoryService} from '@app/product/packages/category/CategoryService'
+import type {CategoryService} from '@app/product/packages/category/CategoryService'
+import type {FastifyInstance} from 'fastify'
 
 
 export async function routes(fastify: FastifyInstance, service: CategoryService) {

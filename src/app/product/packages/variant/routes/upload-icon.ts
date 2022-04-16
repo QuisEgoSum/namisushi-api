@@ -1,9 +1,9 @@
-import {FastifyInstance} from 'fastify'
-import {VariantService} from '@app/product/packages/variant/VariantService'
-import {config} from '@config'
-import {BadRequest, Created} from '@common/schemas/response'
-import {MultipartFile} from 'fastify-multipart'
 import {DocsTags} from '@app/docs'
+import {BadRequest, Created} from '@common/schemas/response'
+import {config} from '@config'
+import type {VariantService} from '@app/product/packages/variant/VariantService'
+import type {FastifyInstance} from 'fastify'
+import type {MultipartFile} from 'fastify-multipart'
 
 
 interface UploadIconRequest {

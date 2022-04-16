@@ -1,24 +1,26 @@
+import * as schemas from '@app/user/schemas'
+import {DocsTags} from '@app/docs'
+import {Ok} from '@common/schemas/response'
 import {config} from '@config'
 import type {FastifyInstance} from 'fastify'
 import type {UserService} from '@app/user/UserService'
-import {MessageResponse} from '@common/schemas/response'
 
 
-interface SignoutUser {
-  Headers: {
-    'x-localhost': string
-  }
+interface SignInUser {
+  Body: schemas.entities.UserCredentials
 }
 
-export async function signout(fastify: FastifyInstance, service: UserService) {
+
+export async function signIn(fastify: FastifyInstance, service: UserService) {
   return fastify
-    .route<SignoutUser>(
+    .route<SignInUser>(
       {
-        url: '/user/signout',
-        method: 'DELETE',
+        url: '/user/signin',
+        method: 'POST',
         schema: {
-          summary: 'Выход из аккаунта',
-          tags: ['Пользователь'],
+          summary: 'Авторизоваться',
+          tags: [DocsTags.USER],
+          body: schemas.entities.UserCredentials,
           headers: {
             'x-localhost': {
               description: 'Установите любое значение, чтобы ответ устанавливал куки для домена localhost',
@@ -26,14 +28,14 @@ export async function signout(fastify: FastifyInstance, service: UserService) {
             }
           },
           response: {
-            [200]: new MessageResponse('Вы вышли из своего аккаунта')
+            [200]: Ok.fromEntity(schemas.entities.UserBase, 'user')
           }
         },
         security: {
-          auth: true
+          auth: false
         },
         handler: async function(request, reply) {
-          await service.logout(request.session.userId, request.session.sessionId)
+          const {user, sessionId} = await service.signin(request.body)
 
           let cookieOptions = config.user.session.cookie
 
@@ -45,10 +47,10 @@ export async function signout(fastify: FastifyInstance, service: UserService) {
           }
 
           reply
-            .clearCookie('sessionId', cookieOptions)
+            .setCookie('sessionId', sessionId, cookieOptions)
             .code(200)
             .type('application/json')
-            .send({message: 'Вы вышли из своего аккаунта'})
+            .send({user})
         }
       }
     )

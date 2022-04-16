@@ -1,7 +1,7 @@
 import {BaseRepository} from '@core/repository'
-import {IOrder} from '@app/order/OrderModel'
 import {Types} from 'mongoose'
-import {RawPopulatedOrder} from '@app/order/schemas/entities'
+import type {IOrder} from '@app/order/OrderModel'
+import type {RawPopulatedOrder} from '@app/order/schemas/entities'
 
 
 export class OrderRepository extends BaseRepository<IOrder> {

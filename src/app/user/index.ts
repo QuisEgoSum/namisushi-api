@@ -1,21 +1,21 @@
 import {UserModel} from './UserModel'
 import {UserRepository} from './UserRepository'
 import {UserService} from './UserService'
-import {routes} from './routes'
-import {initSession} from './packages/session'
+import {UserSession} from './UserSession'
+import {UserRole} from './UserRole'
 import * as error from './user-error'
 import * as schemas from './schemas'
-import {UserRole} from './UserRole'
-import type {FastifyInstance} from 'fastify'
-import type {Session} from './packages/session'
+import {routes} from './routes'
+import {initSession, Session} from './packages/session'
 import {initOtp, Otp} from '@app/user/packages/otp'
-import {UserSession} from '@app/user/UserSession'
+import type {FastifyInstance} from 'fastify'
 
 
 class User {
   public readonly UserRole: typeof UserRole
   public readonly error: typeof import('./user-error')
   public readonly schemas: typeof import('./schemas')
+  public readonly UserSession: typeof UserSession
 
   constructor(
     public readonly service: UserService,
@@ -23,6 +23,7 @@ class User {
     public readonly otp: Otp
   ) {
     this.UserRole = UserRole
+    this.UserSession = UserSession
     this.error = error
     this.schemas = schemas
 
@@ -55,5 +56,6 @@ export {
 }
 
 export type {
-  User
+  User,
+  UserService
 }

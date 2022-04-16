@@ -1,24 +1,17 @@
-import {
-  FilterQuery, Model,
-  QueryOptions, ReturnsNewDoc,
-  Types,
-  UpdateQuery,
-  UpdateWithAggregationPipeline,
-  UpdateWriteOpResult
-} from 'mongoose'
-import {IGenericRepository} from '@core/repository/IGenericRepository'
-import {PageOptions} from '@core/repository/IBaseRepository'
-import {DataList} from '@common/data'
-import {AnyBulkWriteOperation, BulkWriteOptions, BulkWriteResult, DeleteResult, MongoServerError} from 'mongodb'
 import {BaseRepositoryError} from '@core/repository/BaseRepositoryError'
+import {DataList} from '@common/data'
+import {FilterQuery, Model, QueryOptions, ReturnsNewDoc, Types,
+  UpdateQuery, UpdateWithAggregationPipeline, UpdateWriteOpResult
+} from 'mongoose'
+import type {IGenericRepository} from '@core/repository/IGenericRepository'
+import type {PageOptions} from '@core/repository'
+import type {AnyBulkWriteOperation, BulkWriteOptions, BulkWriteResult, DeleteResult, MongoServerError} from 'mongodb'
 
 
 export abstract class GenericRepository<T> implements IGenericRepository<T> {
-  public readonly Model: Model<T>
-
-  protected constructor(model: Model<T>) {
-    this.Model = model
-  }
+  protected constructor(
+    public readonly Model: Model<T>
+  ) {}
 
   static errorHandler(error: Error | MongoServerError) {
     // @ts-ignore - Because mongoose does not export the class MongoServerError
@@ -29,7 +22,6 @@ export abstract class GenericRepository<T> implements IGenericRepository<T> {
       throw error
     }
   }
-
 
   async create<I extends T>(entity?: Partial<I>): Promise<I> {
     //@ts-ignore

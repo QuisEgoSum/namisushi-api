@@ -13,6 +13,7 @@ export interface IVariant {
   updatedAt: number
 }
 
+
 const VariantSchema = new Schema<IVariant>(
   {
     productId: {

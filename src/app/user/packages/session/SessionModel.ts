@@ -9,6 +9,7 @@ export interface ISession {
   updatedAt: number
 }
 
+
 const SessionSchema = new Schema<ISession>(
   {
     _id: {

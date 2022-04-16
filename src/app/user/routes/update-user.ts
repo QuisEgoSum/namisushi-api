@@ -1,12 +1,12 @@
-import {BadRequest} from '@common/schemas/response'
-import * as schemas from '../schemas'
-import type {FastifyInstance} from 'fastify'
-import type {UpdateUser} from '../schemas/entities'
+import * as schemas from '@app/user/schemas'
+import {DocsTags} from '@app/docs'
+import {BadRequest, Ok} from '@common/schemas/response'
 import type {UserService} from '@app/user/UserService'
+import type {FastifyInstance} from 'fastify'
 
 
 interface UpdateUserRequest {
-  Body: UpdateUser
+  Body: schemas.entities.UpdateUser
 }
 
 
@@ -18,18 +18,10 @@ export async function updateUser(fastify: FastifyInstance, service: UserService)
         method: 'PATCH',
         schema: {
           summary: 'Обновить пользователя',
-          tags: ['Пользователь'],
+          tags: [DocsTags.USER],
           body: schemas.entities.UpdateUser,
           response: {
-            [200]: {
-              description: 'Пользователь',
-              type: 'object',
-              properties: {
-                user: schemas.entities.UserBase
-              },
-              additionalProperties: false,
-              required: ['user']
-            },
+            [200]: Ok.fromEntity(schemas.entities.UserBase, 'user'),
             [400]: new BadRequest().bodyErrors().updateError()
           }
         },

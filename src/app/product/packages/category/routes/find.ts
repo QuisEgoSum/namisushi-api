@@ -1,7 +1,8 @@
-import * as schemas from '../schemas'
+import * as schemas from '@app/product/packages/category/schemas'
+import {DocsTags} from '@app/docs'
 import {Ok} from '@common/schemas/response'
-import type {FastifyInstance} from 'fastify'
 import type {CategoryService} from '@app/product/packages/category/CategoryService'
+import type {FastifyInstance} from 'fastify'
 
 
 export async function find(fastify: FastifyInstance, service: CategoryService) {
@@ -12,7 +13,7 @@ export async function find(fastify: FastifyInstance, service: CategoryService) {
         url: '/admin/product/categories',
         schema: {
           summary: 'Получить категории',
-          tags: ['Управление категориями'],
+          tags: [DocsTags.CATEGORY_ADMIN],
           response: {
             [200]: Ok.fromEntity({type: 'array', items: schemas.entities.BaseCategory}, 'categories')
           }

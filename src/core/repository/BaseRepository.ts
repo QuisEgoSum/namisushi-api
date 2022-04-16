@@ -1,25 +1,19 @@
-import mongoose from 'mongoose'
 import {BaseRepositoryError} from './BaseRepositoryError'
 import {DataList} from '@common/data'
-import type {IBaseRepository} from './IBaseRepository'
 import type {
-  FilterQuery,
-  QueryOptions,
-  UpdateQuery,
+  FilterQuery, QueryOptions, UpdateQuery,
   UpdateWithAggregationPipeline,
-  UpdateWriteOpResult,
-  ReturnsNewDoc
+  UpdateWriteOpResult, ReturnsNewDoc, Model
 } from 'mongoose'
-import type {PageOptions} from './IBaseRepository'
+import type {PageOptions} from '@core/repository'
+import type {IBaseRepository} from '@core/repository/IBaseRepository'
 import type {BulkWriteOptions, BulkWriteResult, AnyBulkWriteOperation, MongoServerError, DeleteResult} from 'mongodb'
-
+import {Types} from 'mongoose'
 
 export class BaseRepository<T> implements IBaseRepository<T> {
-  public readonly Model: mongoose.Model<T>
-
-  constructor(model: mongoose.Model<T>) {
-    this.Model = model
-  }
+  constructor(
+    public readonly Model: Model<T>
+  ) {}
 
   static errorHandler(error: Error | MongoServerError) {
     // @ts-ignore - Because mongoose does not export the class MongoServerError
@@ -46,10 +40,10 @@ export class BaseRepository<T> implements IBaseRepository<T> {
       .catch(error => BaseRepository.errorHandler(error)) as unknown as Promise<UpdateWriteOpResult>
   }
 
-  updateById(id: string | mongoose.Types.ObjectId, update?: UpdateQuery<T> | UpdateWithAggregationPipeline, options?: QueryOptions | null): Promise<UpdateWriteOpResult> {
+  updateById(id: string | Types.ObjectId, update?: UpdateQuery<T> | UpdateWithAggregationPipeline, options?: QueryOptions | null): Promise<UpdateWriteOpResult> {
     return this.Model
       // @ts-ignore
-      .updateOne({_id: new mongoose.Types.ObjectId(id)}, update, options)
+      .updateOne({_id: new Types.ObjectId(id)}, update, options)
       .exec()
       .catch(error => BaseRepository.errorHandler(error)) as unknown as Promise<UpdateWriteOpResult>
   }
@@ -63,9 +57,9 @@ export class BaseRepository<T> implements IBaseRepository<T> {
 
   }
 
-  findByIdAndUpdate(id: string | mongoose.Types.ObjectId, update: UpdateQuery<T>, options: QueryOptions & { upsert?: true } & ReturnsNewDoc = {new: true}): Promise<T | null> {
+  findByIdAndUpdate(id: string | Types.ObjectId, update: UpdateQuery<T>, options: QueryOptions & { upsert?: true } & ReturnsNewDoc = {new: true}): Promise<T | null> {
     return this.Model
-      .findByIdAndUpdate(new mongoose.Types.ObjectId(id), update, options)
+      .findByIdAndUpdate(new Types.ObjectId(id), update, options)
       .lean()
       .exec()
       .catch(error => BaseRepository.errorHandler(error)) as unknown as Promise<T | null>
@@ -78,23 +72,23 @@ export class BaseRepository<T> implements IBaseRepository<T> {
       .exec() as unknown as Promise<T | null>
   }
 
-  findByIdAndDelete(id: string | mongoose.Types.ObjectId, options?: QueryOptions | null): Promise<T | null> {
+  findByIdAndDelete(id: string | Types.ObjectId, options?: QueryOptions | null): Promise<T | null> {
     return this.Model
       .findByIdAndDelete(id, options)
       .lean()
       .exec() as unknown as Promise<T | null>
   }
 
-  deleteOne(query: mongoose.FilterQuery<T>): Promise<boolean> {
+  deleteOne(query: FilterQuery<T>): Promise<boolean> {
     return this.Model.deleteOne(query)
       .exec()
       .then(result => !!result.deletedCount)
   }
 
-  deleteById(id: string | mongoose.Types.ObjectId): Promise<boolean> {
+  deleteById(id: string | Types.ObjectId): Promise<boolean> {
     // @ts-ignore
     return this.Model
-      .deleteOne({_id: new mongoose.Types.ObjectId(id)})
+      .deleteOne({_id: new Types.ObjectId(id)})
       .exec()
       .then(result => !!result.deletedCount)
   }
@@ -120,14 +114,14 @@ export class BaseRepository<T> implements IBaseRepository<T> {
     return new DataList(total, Math.ceil(total / page.limit), data)
   }
 
-  findById(id: string | mongoose.Types.ObjectId, projection?: unknown | null, options?: QueryOptions | null): Promise<T | null> {
+  findById(id: string | Types.ObjectId, projection?: unknown | null, options?: QueryOptions | null): Promise<T | null> {
     return this.Model
-      .findById(new mongoose.Types.ObjectId(id), projection, options)
+      .findById(new Types.ObjectId(id), projection, options)
       .lean()
       .exec() as unknown as Promise<T | null>
   }
 
-  findOne(query: mongoose.FilterQuery<T>, projection?: unknown | null, options?: QueryOptions | null,) {
+  findOne(query: FilterQuery<T>, projection?: unknown | null, options?: QueryOptions | null,) {
     return this.Model
       .findOne(query, projection, options)
       .lean()

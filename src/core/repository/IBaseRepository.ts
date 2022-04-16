@@ -10,12 +10,7 @@ import type {DataList} from '@common/data'
 import type mongoose from 'mongoose'
 import type {ReturnsNewDoc} from 'mongoose'
 import type {BulkWriteOptions, BulkWriteResult, AnyBulkWriteOperation} from 'mongodb'
-
-
-export type PageOptions = {
-  limit: number,
-  page: number
-}
+import type {PageOptions} from '@core/repository'
 
 
 export interface IBaseRepository<T> {

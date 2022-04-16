@@ -1,5 +1,5 @@
+import type {UserService} from '@app/user/UserService'
 import type {Telegraf} from 'telegraf'
-import {UserService} from '@app/user/UserService'
 import type {ExtraReplyMessage} from 'telegraf/typings/telegram-types'
 
 

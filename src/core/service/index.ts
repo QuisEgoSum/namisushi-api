@@ -1,7 +1,7 @@
-import {IBaseService} from './IBaseService'
-import {BaseService} from './BaseService'
+import {IBaseService} from '@core/service/IBaseService'
+import {BaseService} from '@core/service/BaseService'
 import {IGenericService} from '@core/service/IGenericService'
-import {GenericService} from './GenericService'
+import {GenericService} from '@core/service/GenericService'
 import type {EntityExistsError, EntityDoesNotExistError} from '@error'
 
 

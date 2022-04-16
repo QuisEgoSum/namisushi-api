@@ -5,10 +5,10 @@ import {routes} from './routes'
 import {OrderCondition} from './OrderCondition'
 import {OrderDiscount} from './OrderDiscount'
 import {Counter, initCounter} from '@app/order/packages/counter'
-import type {FastifyInstance} from 'fastify'
 import type {Product} from '@app/product'
 import type {Notification} from '@app/notification'
 import type {User} from '@app/user'
+import type {FastifyInstance} from 'fastify'
 
 
 class Order {
@@ -30,6 +30,7 @@ class Order {
   }
 }
 
+
 export async function initOrder(
   product: Product,
   notification: Notification,
@@ -40,9 +41,11 @@ export async function initOrder(
   return new Order(service, counter, user)
 }
 
+
 export type {
   Order
 }
+
 
 export {
   OrderCondition,

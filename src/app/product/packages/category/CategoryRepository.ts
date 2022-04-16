@@ -4,7 +4,6 @@ import {Types} from 'mongoose'
 
 
 export class CategoryRepository extends BaseRepository<ICategory> {
-
   async addCategory(categoryId: string, productId: string) {
     const productObjectId = new Types.ObjectId(productId)
     return await this.findOneAndUpdate(

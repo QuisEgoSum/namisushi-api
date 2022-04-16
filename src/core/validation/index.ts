@@ -15,6 +15,7 @@ export const ajv = new Ajv(
   }
 )
 
+
 ajvErrors(ajv, {singleError: false, keepErrors: false})
 ajvKeywords(ajv)
 
@@ -35,7 +36,7 @@ export function errorFormatter(error: Record<string, any>) {
     return new JsonSchemaValidationError({
         message: error.message,
         keyword: error.keyword,
-        dataPath: error.dataPath || error.instancePath, // dataPath deprecated?
+        dataPath: error.instancePath || error.dataPath,
         schemaPath: error.schemaPath,
         details: error.params
     })
