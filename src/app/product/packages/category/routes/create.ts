@@ -21,7 +21,7 @@ export async function create(fastify: FastifyInstance, service: CategoryService)
           tags: ['Управление категориями'],
           body: schemas.entities.CreateCategory,
           response: {
-            [201]: new Created(schemas.entities.BaseCategory, 'category'),
+            [201]: Created.fromEntity(schemas.entities.BaseCategory, 'category'),
             [400]: new BadRequest(EntityExistsError.schema()).bodyErrors()
           }
         },

@@ -20,7 +20,7 @@ export async function createProductSingle(fastify: FastifyInstance, service: Pro
           tags: ['Управление продуктами'],
           body: schemas.entities.CreateSingleProduct,
           response: {
-            [201]: new Created(schemas.entities.SingleProduct, 'product'),
+            [201]: Created.fromEntity(schemas.entities.SingleProduct, 'product'),
             [400]: new BadRequest().bodyErrors()
           }
         },

@@ -1,7 +1,7 @@
 import * as schemas from '../schemas'
 import {OrderCannotBeCanceledError} from '../order-error'
 import {ProductsDoNotExistError, ProductVariantsDoNotExistError} from '@app/product/product-error'
-import {UserRole} from '@app/user'
+import {UserRole, UserSession} from '@app/user'
 import {UserRightsError} from '@app/user/user-error'
 import {JsonSchemaValidationError, JsonSchemaValidationErrors} from '@error'
 import {BadRequest, Created, NotFound} from '@common/schemas/response'
@@ -41,7 +41,7 @@ export async function create(fastify: FastifyInstance, service: OrderService, us
           tags: ['Заказ'],
           body: schemas.entities.CreateOrder,
           response: {
-            [201]: new Created(schemas.entities.PopulatedOrder, 'order'),
+            [201]: Created.fromEntity(schemas.entities.PopulatedOrder, 'order'),
             [400]: new BadRequest(OrderCannotBeCanceledError.schema()).bodyErrors(),
             [404]: new NotFound(ProductsDoNotExistError.schema(), ProductVariantsDoNotExistError.schema())
           }
@@ -53,14 +53,17 @@ export async function create(fastify: FastifyInstance, service: OrderService, us
           if (request.body.delivery && !request.body.address) {
             throw MISSING_ADDRESS_ERROR
           }
-          if (request.body.isTestOrder && request.optionalSession.userRole !== UserRole.ADMIN && request.optionalSession.userRole !== UserRole.WATCHER) {
+          if (!request.session) {
+            request.session = new UserSession(
+              '',
+              await userService.upsertByPhone(request.body.phone, request.body.username),
+              UserRole.CUSTOMER
+            )
+          }
+          if (request.body.isTestOrder && !request.session.isAdmin()) {
             throw new UserRightsError({message: 'Создать тестовый заказ может только администратор'})
           }
-          if (!request.body.isTestOrder) {
-            request.body.clientId = request.optionalSession.userId || await userService.upsertByPhone(request.body.phone, request.body.username)
-          } else {
-            request.body.clientId = request.optionalSession.userId
-          }
+          request.body.clientId = request.session.userId
         },
         handler: async function(request, reply) {
           const order = await service.createOrder(request.body)

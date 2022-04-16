@@ -20,7 +20,7 @@ export async function signup(fastify: FastifyInstance, service: UserService) {
           tags: ['Пользователь'],
           body: schemas.entities.Signup,
           response: {
-            [201]: new Created(schemas.entities.UserBase, 'user')
+            [201]: Created.fromEntity(schemas.entities.UserBase, 'user')
           }
         },
         security: {

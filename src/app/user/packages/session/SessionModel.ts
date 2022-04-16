@@ -1,6 +1,5 @@
 import {Types, Schema, model} from 'mongoose'
 import {v4} from 'uuid'
-import {UserRole} from '../../UserRole'
 
 
 export interface ISession {
@@ -8,12 +7,6 @@ export interface ISession {
   user: Types.ObjectId,
   createdAt: number,
   updatedAt: number
-}
-
-export interface UserSession {
-  sessionId: string,
-  userId: Types.ObjectId,
-  userRole: UserRole
 }
 
 const SessionSchema = new Schema<ISession>(

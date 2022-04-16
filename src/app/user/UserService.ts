@@ -9,13 +9,12 @@ import {escapeStringRegexp} from '@libs/alg/string'
 import {config} from '@config'
 import {FilterQuery, Types} from 'mongoose'
 import bcrypt from 'bcrypt'
-import type {UserSession} from './packages/session/SessionModel'
 import type {IUser} from './UserModel'
 import type {UserRepository} from './UserRepository'
 import type {DataList} from '@common/data'
 import type {SessionService} from './packages/session/SessionService'
 import type {OtpService} from '@app/user/packages/otp/OtpService'
-import {password} from '@app/user/schemas/properties'
+import {UserSession} from '@app/user/UserSession'
 
 
 export class UserService extends BaseService<IUser, UserRepository> {
@@ -66,11 +65,7 @@ export class UserService extends BaseService<IUser, UserRepository> {
     if (session === null || session.user === null) {
       throw new this.Error.UserAuthorizationError()
     }
-    return {
-      sessionId: session._id,
-      userId: session.user._id,
-      userRole: session.user.role
-    }
+    return new UserSession(session._id, session.user._id, session.user.role)
   }
 
   async signin(credentials: entities.UserCredentials): Promise<{user: IUser, sessionId: string}> {

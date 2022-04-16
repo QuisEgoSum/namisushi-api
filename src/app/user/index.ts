@@ -6,10 +6,10 @@ import {initSession} from './packages/session'
 import * as error from './user-error'
 import * as schemas from './schemas'
 import {UserRole} from './UserRole'
-import {Types} from 'mongoose'
 import type {FastifyInstance} from 'fastify'
 import type {Session} from './packages/session'
 import {initOtp, Otp} from '@app/user/packages/otp'
+import {UserSession} from '@app/user/UserSession'
 
 
 class User {
@@ -32,14 +32,6 @@ class User {
   async router(fastify: FastifyInstance) {
     await routes(fastify, this.service)
   }
-
-  //TODO: remove this method
-  /**
-   * @deprecated
-   */
-  async authorization(sessionId: string) {
-    return this.service.authorization(sessionId)
-  }
 }
 
 export async function initUser(): Promise<User> {
@@ -58,7 +50,8 @@ export async function initUser(): Promise<User> {
 export {
   error,
   schemas,
-  UserRole
+  UserRole,
+  UserSession
 }
 
 export type {

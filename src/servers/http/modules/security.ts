@@ -1,11 +1,11 @@
 import {FastifyRequest, RouteOptions} from 'fastify'
-import type {UserSession} from '@app/user/packages/session/SessionModel'
 import type {User} from '@app/user'
+import {UserSession, error as userError} from '@app/user'
+
 
 declare module 'fastify' {
   interface FastifyRequest {
     session: UserSession
-    optionalSession: UserSession | {sessionId: null, userId: null, userRole: null}
   }
   interface RouteOptions {
     security: {
@@ -19,19 +19,20 @@ export interface CreateSecurityHookOptions {
   user: User
 }
 
-
 export async function createSecurityHook({user}: CreateSecurityHookOptions) {
   async function auth(request: FastifyRequest) {
-    request.session = await user.authorization(request.cookies.sessionId)
+    request.session = await user.service.authorization(request.cookies.sessionId)
     request.log.info(request.session)
   }
 
   async function optionalAuth(request: FastifyRequest) {
     try {
-      request.optionalSession = await user.authorization(request.cookies.sessionId)
-      request.log.info(request.optionalSession)
-    } catch {
-      request.optionalSession = {sessionId: null, userId: null, userRole: null}
+      request.session = await user.service.authorization(request.cookies.sessionId)
+      request.log.info(request.session)
+    } catch (error) {
+      if (!(error instanceof userError.UserAuthorizationError)) {
+        throw error
+      }
     }
   }
 

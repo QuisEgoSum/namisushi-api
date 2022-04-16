@@ -26,7 +26,7 @@ export async function createProductVariant(fastify: FastifyInstance, service: Pr
           },
           body: schemas.entities.CreateVariantProduct,
           response: {
-            [201]: new Created(schemas.entities.VariantProduct, 'product'),
+            [201]: Created.fromEntity(schemas.entities.VariantProduct, 'product'),
             [400]: new BadRequest().bodyErrors()
           }
         },

@@ -120,6 +120,7 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
     )
     const updatedProduct = await this.repository.addToSetImages(productId, images)
     if (!updatedProduct) {
+      await Promise.all(images.map(filename => deleteFile(config.product.image.file.destination, filename)))
       throw new this.Error.EntityDoesNotExistError()
     }
     return updatedProduct.images

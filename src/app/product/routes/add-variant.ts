@@ -28,7 +28,7 @@ export async function addVariant(fastify: FastifyInstance, service: ProductServi
           },
           body: variantSchemas.entities.CreateVariant,
           response: {
-            [201]: new Created(variantSchemas.entities.BaseVariant, 'variant'),
+            [201]: Created.fromEntity(variantSchemas.entities.BaseVariant, 'variant'),
             [400]: new BadRequest().bodyErrors().paramsErrors(),
             [404]: new NotFound(ProductDoesNotExistError.schema())
           }

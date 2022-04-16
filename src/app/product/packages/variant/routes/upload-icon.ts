@@ -63,7 +63,7 @@ export async function uploadIcon(fastify: FastifyInstance, service: VariantServi
             }
           },
           response: {
-            [201]: new Created({type: 'string'}, 'filename'),
+            [201]: Created.fromEntity({type: 'string'}, 'filename'),
             [400]: new BadRequest().bodyErrors()
           }
         },

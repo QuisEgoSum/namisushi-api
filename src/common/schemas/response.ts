@@ -38,13 +38,21 @@ export class Created extends Response {
   private description: string
   private properties: Record<string, any>
   private required: string[]
-  constructor(schema: Record<string, any>, entity: string) {
+
+  static fromEntity(schema: Record<string, any>, entity: string): Created {
+    return new Created(
+      {
+        [entity]: schema
+      },
+      [entity]
+    )
+  }
+
+  constructor(properties: Record<string, any>, required: string[] = []) {
     super()
     this.description = 'Created'
-    this.properties = {
-      [entity]: schema
-    }
-    this.required = [entity]
+    this.properties = properties
+    this.required = required
   }
 }
 
