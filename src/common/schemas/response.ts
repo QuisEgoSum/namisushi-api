@@ -3,7 +3,7 @@ import {Schema} from 'openapi-error'
 import {error as userError} from '@app/user'
 
 
-class Response {
+class ResponseObject {
   private type: string
   private additionalProperties: boolean
   constructor() {
@@ -12,7 +12,7 @@ class Response {
   }
 }
 
-export class Ok extends Response {
+export class Ok extends ResponseObject {
   private description: string
   private properties: Record<string, any>
   private required: string[]
@@ -34,7 +34,7 @@ export class Ok extends Response {
   }
 }
 
-export class Created extends Response {
+export class Created extends ResponseObject {
   private description: string
   private properties: Record<string, any>
   private required: string[]
@@ -93,7 +93,7 @@ export class ErrorResponse {
   private additionalProperties: boolean
   private oneOf: any[]
 
-  static ErrorResponseOne = class ErrorResponse {
+  static ErrorResponseOneOf = class ErrorResponse {
     private title: string
     private type: string
     private properties: {error: Schema}
@@ -126,7 +126,7 @@ export class ErrorResponse {
   }
 
   addSchema(schema: Schema) {
-    this.oneOf.push(new ErrorResponse.ErrorResponseOne(schema))
+    this.oneOf.push(new ErrorResponse.ErrorResponseOneOf(schema))
     return this
   }
 }
