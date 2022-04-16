@@ -20,7 +20,7 @@ export class GenericService<T, R extends IGenericRepository<T>> implements IGene
 
   errorHandler<T>(error: Error | BaseRepositoryError): T {
     if (error instanceof BaseRepositoryError.UniqueKeyError) {
-      throw new this.error.EntityExistsError(error)
+      throw new this.error.EntityExistsError({key: error.key, value: error.value})
     } else {
       throw error
     }

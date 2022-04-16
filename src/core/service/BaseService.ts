@@ -19,7 +19,7 @@ export class BaseService<T, R extends BaseRepository<T>> implements IBaseService
 
   errorHandler<T>(error: Error | BaseRepositoryError): T {
     if (error instanceof BaseRepositoryError.UniqueKeyError) {
-      throw new this.error.EntityExistsError(error)
+      throw new this.error.EntityExistsError({key: error.key, value: error.value})
     } else {
       throw error
     }

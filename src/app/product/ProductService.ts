@@ -2,7 +2,6 @@ import {GenericService, ServiceError} from '@core/service'
 import {ProductType} from '@app/product/ProductType'
 import * as error from '@app/product/product-error'
 import * as fs from '@utils/fs'
-import {EntityExistsError} from '@error'
 import {config} from '@config'
 import {Types} from 'mongoose'
 import type {IProduct, ISingleProduct, IVariantProduct} from '@app/product/ProductModel'
@@ -28,7 +27,7 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
     super(repository)
 
     this.error = {
-      EntityExistsError: EntityExistsError,
+      EntityExistsError: error.ProductExistError,
       EntityDoesNotExistError: error.ProductDoesNotExistError,
       ...error
     }

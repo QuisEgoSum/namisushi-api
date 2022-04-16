@@ -47,6 +47,7 @@ const ProductSchema = new Schema<IProduct>(
   }
 )
   .index({type: 1})
+  .index({title: 1}, {unique: true})
   .index({visible: 1, type: 1})
 
 

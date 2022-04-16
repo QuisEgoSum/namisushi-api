@@ -1,4 +1,4 @@
-import {EntityDoesNotExistError, InvalidDataError} from '@error'
+import {EntityDoesNotExistError, EntityExistsError, InvalidDataError} from '@error'
 import {config} from '@config'
 import {ObjectId} from '@common/schemas/helpers'
 
@@ -39,22 +39,6 @@ export const ProductImagesNotCompatibleError = InvalidDataError.extends(
   }
 )
 
-export const ProductsDoNotExistError = EntityDoesNotExistError.extends(
-  {
-    properties: {
-      productIds: {
-        type: 'array',
-        items: new ObjectId()
-      }
-    }
-  },
-  {
-    error: 'ProductsDoNotExistError',
-    message: 'Один или несколько продуктов не найдено',
-    code: 3000
-  }
-)
-
 export const ProductVariantsDoNotExistError = EntityDoesNotExistError.extends(
   {
     properties: {
@@ -75,6 +59,31 @@ export const ProductVariantsDoNotExistError = EntityDoesNotExistError.extends(
   {
     error: 'ProductVariantsDoNotExistError',
     message: 'Один или несколько вариантов продукта не найдено',
-    code :3004
+    code: 3004
+  }
+)
+
+export const ProductsDoNotExistError = EntityDoesNotExistError.extends(
+  {
+    properties: {
+      productIds: {
+        type: 'array',
+        items: new ObjectId()
+      }
+    }
+  },
+  {
+    error: 'ProductsDoNotExistError',
+    message: 'Один или несколько продуктов не найдено',
+    code: 3005
+  }
+)
+
+export const ProductExistError = EntityExistsError.extends(
+  {},
+  {
+    error: 'ProductExistError',
+    code: 3006,
+    message: 'Продукт с таким названием уже существует'
   }
 )
