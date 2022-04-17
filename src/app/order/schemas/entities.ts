@@ -16,6 +16,8 @@ import {IProduct} from '@app/product/ProductModel'
 import {IVariant} from '@app/product/packages/variant/VariantModel'
 import {IOrder} from '@app/order/OrderModel'
 import {nullable} from '@common/schemas/transform'
+import {SortDirection} from 'mongodb'
+import {QueryPageLimit, QueryPageNumber, QuerySortDirection} from '@common/schemas/query'
 
 
 export const discount = {
@@ -261,7 +263,7 @@ export interface CreateOrder {
   additionalInformation?: string
   products: CreateOrderProduct[]
   isTestOrder: boolean
-  clientId: Types.ObjectId | null
+  clientId: Types.ObjectId
 }
 
 export const CreateOrder = {
@@ -292,4 +294,79 @@ export const CreateOrder = {
       products: 'Выберите список продуктов'
     }
   }
+}
+
+export interface FindQuery {
+  page: number
+  limit: number
+  fClientId?: string
+  fCondition?: OrderCondition
+  sCreatedAt: SortDirection
+}
+
+export const FindQuery = {
+  title: 'FindQuery',
+  type: 'object',
+  properties: {
+    page: new QueryPageNumber().setDefault(1),
+    limit: new QueryPageLimit().setDefault(10),
+    sCreatedAt: new QuerySortDirection().setDefault("desc"),
+    fClientId: clientId,
+    fCondition: condition
+  },
+  additionalProperties: false
+}
+
+export interface PreviewExpandOrder {
+  _id: Types.ObjectId
+  number: number
+  clientId: Types.ObjectId
+  phone: string
+  address: string | null
+  cost: number
+  username: string
+  condition: string
+  delivery: boolean
+  discount: {
+    type: OrderDiscount,
+    percent: number
+  } | null
+  additionalInformation: string | null
+  deliveryCalculateManually: boolean | null
+  createdAt: number
+}
+
+export const PreviewExpandOrder = {
+  title: 'PreviewExpandOrder',
+  type: 'object',
+  properties: {
+    _id,
+    number,
+    phone,
+    address,
+    cost,
+    username,
+    condition,
+    delivery,
+    discount,
+    additionalInformation,
+    deliveryCalculateManually,
+    isTestOrder,
+    createdAt
+  },
+  additionalProperties: false,
+  required: [
+    '_id',
+    'number',
+    'phone',
+    'address',
+    'cost',
+    'username',
+    'condition',
+    'delivery',
+    'discount',
+    'additionalInformation',
+    'deliveryCalculateManually',
+    'createdAt'
+  ]
 }

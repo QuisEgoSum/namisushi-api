@@ -5,7 +5,7 @@ import {OrderDiscount} from '@app/order/OrderDiscount'
 
 
 export const _id = new ObjectId({errorMessage: 'Невалидный идентификатор заказа'})
-export const clientId = new ObjectId({errorMessage: 'Невалидный идентификатор пользователя', null: true})
+export const clientId = new ObjectId({errorMessage: 'Невалидный идентификатор пользователя'})
 export const productId = new ObjectId({errorMessage: 'Невалидный идентификатор продукта'})
 export const variantId = new ObjectId({errorMessage: 'Невалидный идентификатор варианта продукта'})
 export const number = {
@@ -21,10 +21,12 @@ export const phone = {
   }
 }
 export const address = {
-  type: 'string',
+  type: ['string', 'null'],
+  minLength: 1,
   maxLength: 2048,
   errorMessage: {
     type: 'Адрес доставки должен быть строкой',
+    minLength: 'Адрес доставки должен содержать не менее 1 символа',
     maxLength: 'Адрес доставки должен не должен быть больше 2048 символов'
   }
 }
@@ -93,10 +95,12 @@ export const discountPercent = {
 }
 export const additionalInformation = {
   description: 'Дополнительная информация',
-  type: 'string',
+  type: ['string', 'null'],
+  minLength: 1,
   maxLength: 2048,
   errorMessage: {
     type: 'Дополнительная информация должна быть строкой',
+    minLength: 'Дополнительная информация должна содержать хотя бы 1 символ',
     maxLength: 'Дополнительная информация не должен быть больше 2048 символов'
   }
 }

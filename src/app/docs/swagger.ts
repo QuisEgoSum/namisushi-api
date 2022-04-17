@@ -42,7 +42,8 @@ export const swagger: Record<string, any> = {
       {
         name: 'Заказ',
         tags: [
-          DocsTags.ORDER
+          DocsTags.ORDER,
+          DocsTags.ORDER_ADMIN
         ]
       }
     ]

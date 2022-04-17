@@ -4,12 +4,14 @@ import {CreatedOrderDoesNotExistError, OrderDoesNotExistError} from '@app/order/
 import {OrderDiscount} from '@app/order/OrderDiscount'
 import {OrderCondition} from '@app/order/OrderCondition'
 import {INotificationEventEmitter, NotificationEvents} from '@app/notification'
+import * as schemas from '@app/order/schemas'
 import {config} from '@config'
 import type {IOrder} from '@app/order/OrderModel'
 import type {OrderRepository} from '@app/order/OrderRepository'
 import type {CreateOrder} from '@app/order/schemas/entities'
 import type {ProductService} from '@app/product/ProductService'
 import type {CounterService} from '@app/order/packages/counter/CounterService'
+import {Types} from 'mongoose'
 
 
 export class OrderService extends BaseService<IOrder, OrderRepository> {
@@ -96,5 +98,17 @@ export class OrderService extends BaseService<IOrder, OrderRepository> {
     const populatedOrder = rawPopulatedTransform(rawPopulatedOrder)
     this.notificationEmitter.emit(NotificationEvents.NEW_ORDER, populatedOrder)
     return populatedOrder
+  }
+
+  async findByNumber(number: number, clientId?: Types.ObjectId) {
+    const order = await this.repository.findPopulatedOrderByNumber(number, clientId)
+    if (order === null) {
+      throw new this.error.EntityDoesNotExistError()
+    }
+    return rawPopulatedTransform(order)
+  }
+
+  async find(query: schemas.entities.FindQuery) {
+    return this.repository.findExpandPage(query)
   }
 }

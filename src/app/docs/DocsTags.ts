@@ -7,5 +7,6 @@ export enum DocsTags {
   USER = 'Пользователь',
   ADMIN = 'Администратор',
   CATEGORY_ADMIN = 'Управление категориями',
-  ORDER = 'Заказ'
+  ORDER = 'Заказ',
+  ORDER_ADMIN = 'Управление заказами'
 }

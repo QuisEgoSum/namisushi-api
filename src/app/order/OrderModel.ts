@@ -14,7 +14,7 @@ export interface IOrderProduct {
 export interface IOrder {
   _id: Types.ObjectId
   number: number,
-  clientId: Types.ObjectId | null
+  clientId: Types.ObjectId
   phone: string
   address: string | null
   cost: number
@@ -43,8 +43,7 @@ const OrderSchema = new Schema<IOrder>(
     number: Number,
     clientId: {
       type: Schema.Types.ObjectId,
-      ref: 'User',
-      default: null
+      ref: 'User'
     },
     phone: {
       type: String,
