@@ -35,7 +35,7 @@ export class OrderRepository extends BaseRepository<IOrder> {
   }
 
   async findPopulatedOrderByNumber(number: number, clientId?: Types.ObjectId): Promise<RawPopulatedOrder | null> {
-    const match: FilterQuery<IOrder> = {number}
+    const match: FilterQuery<IOrder> = {number: number, isTestOrder: false}
     if (clientId) {
       match.clientId = clientId
     }
