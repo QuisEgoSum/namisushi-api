@@ -3,6 +3,7 @@ import {CategoryDoesNotExistError} from '@app/product/packages/category/category
 import {DocsTags} from '@app/docs'
 import {BadRequest, MessageResponse, NotFound} from '@common/schemas/response'
 import type {CategoryService} from '@app/product/packages/category/CategoryService'
+import type {ProductService} from '@app/product'
 import type {FastifyInstance} from 'fastify'
 
 
@@ -13,7 +14,7 @@ export interface DeleteRequest {
 }
 
 
-export async function deleteById(fastify: FastifyInstance, service: CategoryService) {
+export async function deleteById(fastify: FastifyInstance, service: CategoryService, productService: ProductService) {
   return fastify
     .route<DeleteRequest>(
       {
@@ -42,7 +43,8 @@ export async function deleteById(fastify: FastifyInstance, service: CategoryServ
             .code(200)
             .type('application/json')
             .send({message: 'Категория удалена'})
-        }
+        },
+        onSuccessful: () => productService.reloadVisibleProductsCache(true)
       }
     )
 }

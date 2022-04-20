@@ -2,6 +2,7 @@ import {VariantIconDoesNotExistError} from '@app/product/packages/variant/varian
 import {DocsTags} from '@app/docs'
 import {MessageResponse, NotFound} from '@common/schemas/response'
 import type {VariantService} from '@app/product/packages/variant/VariantService'
+import type {ProductService} from '@app/product/ProductService'
 import type {FastifyInstance} from 'fastify'
 
 
@@ -12,7 +13,7 @@ interface DeleteIconRequest {
 }
 
 
-export async function deleteIcon(fastify: FastifyInstance, service: VariantService) {
+export async function deleteIcon(fastify: FastifyInstance, service: VariantService, productService: ProductService) {
   return fastify
     .route<DeleteIconRequest>(
       {
@@ -40,7 +41,8 @@ export async function deleteIcon(fastify: FastifyInstance, service: VariantServi
             .code(200)
             .type('application/json')
             .send({message: 'Иконка удалена'})
-        }
+        },
+        onSuccessful: () => productService.reloadVisibleProductsCache(true)
       }
     )
 }

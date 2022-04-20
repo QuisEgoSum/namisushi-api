@@ -12,6 +12,7 @@ import {notFoundHandler} from './modules/not-found-handler'
 import {schemaErrorFormatter, ajv} from '@core/validation'
 import {createSecurityHook, CreateSecurityHookOptions} from './modules/security'
 import {createDocsHook} from './modules/docs'
+import {customHooks} from './modules/custom-hooks'
 import type {FastifyInstance} from 'fastify'
 
 
@@ -30,6 +31,7 @@ export async function createHttpServer(options: CreateHttpServerOptions) {
   })
     .addHook('onRoute', await createSecurityHook(options.securityOptions))
     .addHook('onRoute', createDocsHook())
+    .addHook('onRoute', customHooks)
     .setErrorHandler(errorHandler)
     .setNotFoundHandler(notFoundHandler)
     // @ts-ignore

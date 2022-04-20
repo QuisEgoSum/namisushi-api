@@ -43,7 +43,8 @@ export async function detachImage(fastify: FastifyInstance, service: ProductServ
             .code(200)
             .type('application/json')
             .send({message: 'Картинка удалена'})
-        }
+        },
+        onSuccessful: () => service.reloadVisibleProductsCache(true)
       }
     )
 }

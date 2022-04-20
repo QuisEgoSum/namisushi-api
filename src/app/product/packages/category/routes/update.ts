@@ -2,8 +2,9 @@ import * as schemas from '@app/product/packages/category/schemas'
 import {CategoryDoesNotExistError, CategoryExistsError} from '@app/product/packages/category/category-error'
 import {DocsTags} from '@app/docs'
 import {BadRequest, NotFound, Ok} from '@common/schemas/response'
-import type {FastifyInstance} from 'fastify'
 import type {CategoryService} from '@app/product/packages/category/CategoryService'
+import type {ProductService} from '@app/product'
+import type {FastifyInstance} from 'fastify'
 
 
 interface UpdateRequest {
@@ -14,7 +15,7 @@ interface UpdateRequest {
 }
 
 
-export async function update(fastify: FastifyInstance, service: CategoryService) {
+export async function update(fastify: FastifyInstance, service: CategoryService, productService: ProductService) {
   return fastify
     .route<UpdateRequest>(
       {
@@ -44,7 +45,8 @@ export async function update(fastify: FastifyInstance, service: CategoryService)
             .code(200)
             .type('application/json')
             .send({category})
-        }
+        },
+        onSuccessful: () => productService.reloadVisibleProductsCache(true)
       }
     )
 }

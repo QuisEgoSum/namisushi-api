@@ -299,9 +299,13 @@ export const CreateOrder = {
 export interface FindQuery {
   page: number
   limit: number
-  fClientId?: string
   fCondition?: OrderCondition
   sCreatedAt: SortDirection
+}
+
+export interface FindQueryAdmin extends FindQuery {
+  fClientId?: string
+  fIsTestOrder?: boolean
 }
 
 export const FindQuery = {
@@ -311,8 +315,21 @@ export const FindQuery = {
     page: new QueryPageNumber().setDefault(1),
     limit: new QueryPageLimit().setDefault(10),
     sCreatedAt: new QuerySortDirection().setDefault("desc"),
-    fClientId: clientId,
     fCondition: condition
+  },
+  additionalProperties: false
+}
+
+export const FindQueryAdmin = {
+  title: 'FindQueryAdmin',
+  type: 'object',
+  properties: {
+    page: new QueryPageNumber().setDefault(1),
+    limit: new QueryPageLimit().setDefault(10),
+    sCreatedAt: new QuerySortDirection().setDefault("desc"),
+    fClientId: clientId,
+    fCondition: condition,
+    fIsTestOrder: isTestOrder
   },
   additionalProperties: false
 }
@@ -336,8 +353,8 @@ export interface PreviewExpandOrder {
   createdAt: number
 }
 
-export const PreviewExpandOrder = {
-  title: 'PreviewExpandOrder',
+export const PreviewOrder = {
+  title: 'PreviewOrder',
   type: 'object',
   properties: {
     _id,
@@ -369,4 +386,18 @@ export const PreviewExpandOrder = {
     'deliveryCalculateManually',
     'createdAt'
   ]
+}
+
+export interface UpdateCondition {
+  condition: OrderCondition
+}
+
+export const UpdateCondition = {
+  title: 'UpdateCondition',
+  type: 'object',
+  properties: {
+    condition
+  },
+  additionalProperties: false,
+  required: ['condition']
 }

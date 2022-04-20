@@ -2,6 +2,7 @@ import {VariantService} from '@app/product/packages/variant/VariantService'
 import {VariantRepository} from '@app/product/packages/variant/VariantRepository'
 import {VariantModel, IVariant} from '@app/product/packages/variant/VariantModel'
 import {routes} from '@app/product/packages/variant/routes'
+import type {ProductService} from '@app/product'
 import type {FastifyInstance} from 'fastify'
 
 
@@ -11,8 +12,8 @@ class Variant {
     this.service = service
   }
 
-  async router(fastify: FastifyInstance) {
-    await routes(fastify, this.service)
+  async router(fastify: FastifyInstance, productService: ProductService) {
+    await routes(fastify, this.service, productService)
   }
 }
 
@@ -22,6 +23,7 @@ export async function initVariant(): Promise<Variant> {
   await service.resetIconsList()
   return new Variant(service)
 }
+
 
 export type {
   Variant,

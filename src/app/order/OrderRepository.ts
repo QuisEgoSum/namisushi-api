@@ -1,5 +1,6 @@
 import {BaseRepository} from '@core/repository'
 import * as schemas from '@app/order/schemas'
+import {OrderCondition} from '@app/order/OrderCondition'
 import {DataList} from '@common/data'
 import {FilterQuery, Types} from 'mongoose'
 import type {IOrder} from '@app/order/OrderModel'
@@ -34,8 +35,8 @@ export class OrderRepository extends BaseRepository<IOrder> {
       .then(result => result[0] || null)
   }
 
-  async findPopulatedOrderByNumber(number: number, clientId?: Types.ObjectId): Promise<RawPopulatedOrder | null> {
-    const match: FilterQuery<IOrder> = {number: number, isTestOrder: false}
+  async findPopulatedOrderByNumber(number: number, isTestOrder = false, clientId?: Types.ObjectId): Promise<RawPopulatedOrder | null> {
+    const match: FilterQuery<IOrder> = {number: number, isTestOrder: isTestOrder}
     if (clientId) {
       match.clientId = clientId
     }
@@ -46,13 +47,16 @@ export class OrderRepository extends BaseRepository<IOrder> {
       .then(result => result[0] || null)
   }
 
-  findExpandPage(query: schemas.entities.FindQuery): Promise<DataList<schemas.entities.PreviewExpandOrder>> {
+  findExpandPage(query: schemas.entities.FindQueryAdmin): Promise<DataList<schemas.entities.PreviewExpandOrder>> {
     const filter: FilterQuery<IOrder> = {isTestOrder: false}
     if (query.fClientId) {
       filter.clientId = new Types.ObjectId(query.fClientId)
     }
     if (query.fCondition) {
       filter.condition = query.fCondition
+    }
+    if (query.fIsTestOrder) {
+      filter.isTestOrder = true
     }
     return this.findPage(
       {limit: query.limit, page: query.page},
@@ -75,6 +79,13 @@ export class OrderRepository extends BaseRepository<IOrder> {
       {
         sort: {createdAt: query.sCreatedAt}
       }
+    )
+  }
+
+  async updateStatus(number: number, condition: OrderCondition, isTestOrder: boolean) {
+    return await this.updateOne(
+      {number, isTestOrder},
+      {$set: {condition}}
     )
   }
 }

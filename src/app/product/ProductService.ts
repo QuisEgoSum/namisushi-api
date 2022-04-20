@@ -3,13 +3,14 @@ import {ProductType} from '@app/product/ProductType'
 import * as error from '@app/product/product-error'
 import * as fs from '@utils/fs'
 import {config} from '@config'
+import {logger} from '@logger'
 import {Types} from 'mongoose'
 import type {IProduct, ISingleProduct, IVariantProduct} from '@app/product/ProductModel'
 import type {ProductRepository} from '@app/product/ProductRepository'
 import type * as entities from '@app/product/schemas/entities'
 import type {BaseVariant, CreateVariant, UpdateVariant} from '@app/product/packages/variant/schemas/entities'
 import type {VariantService} from '@app/product/packages/variant'
-import type {CategoryService, ICategory} from '@app/product/packages/category'
+import type {CategoryService} from '@app/product/packages/category'
 import type {CreateOrderProduct, CreateOrderSingleProduct, CreateOrderVariantProduct} from '@app/order/schemas/entities'
 import type {IOrderProduct} from '@app/order/OrderModel'
 import type {MultipartFile} from 'fastify-multipart'
@@ -18,6 +19,9 @@ import type {MultipartFile} from 'fastify-multipart'
 export class ProductService extends GenericService<IProduct, ProductRepository> {
 
   public readonly error: ServiceError & typeof error
+  private cachedVisibleProducts: string
+  private cacheTimeout: null | NodeJS.Timeout
+  private logger: typeof logger
 
   constructor(
     repository: ProductRepository,
@@ -26,10 +30,41 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
   ) {
     super(repository)
 
+    this.cachedVisibleProducts = ''
+    this.cacheTimeout = null
+
+    this.logger = logger.child({label: 'ProductService'})
+
     this.error = {
       EntityExistsError: error.ProductExistError,
       EntityDoesNotExistError: error.ProductDoesNotExistError,
       ...error
+    }
+  }
+
+  private async timeoutReloadCache() {
+    this.logger.info("Reload cache timeout")
+    try {
+      await this.reloadVisibleProductsCache(false)
+    } catch(error) {
+      logger.error(error)
+    }
+  }
+
+  async reloadVisibleProductsCache(timeout = false): Promise<void> {
+    this.logger.info("Reload cache")
+    const [categories, single, variant] = await Promise.all([
+      this.categoryService.findVisible(),
+      this.repository.findSingleVisible(),
+      this.repository.findVariantVisible()
+    ])
+    this.cachedVisibleProducts = JSON.stringify({categories, products: [...single, ...variant]})
+    if (timeout) {
+      if (this.cacheTimeout !== null) {
+        this.cacheTimeout.unref()
+        this.cacheTimeout = null
+      }
+      this.cacheTimeout = setTimeout(() => this.timeoutReloadCache(), 15000)
     }
   }
 
@@ -153,17 +188,8 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
     return await this.categoryService.addProduct(categoryId, productId)
   }
 
-  async findVisible(): Promise<{categories: ICategory[], products: Array<ISingleProduct | entities.VariantProduct>}> {
-    const [categories, single, variant] = await Promise.all([
-      this.categoryService.findVisible(),
-      this.repository.findSingleVisible(),
-      this.repository.findVariantVisible()
-    ])
-    return {
-      categories,
-      //@ts-ignore
-      products: single.concat(variant)
-    }
+  findVisible(): string {
+    return this.cachedVisibleProducts
   }
 
   private addMissingProducts(array: string[], expected: string[] | IterableIterator<string>, actual: {_id: Types.ObjectId}[]) {

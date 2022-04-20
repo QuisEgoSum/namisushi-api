@@ -44,7 +44,8 @@ export async function updateOrderImages(fastify: FastifyInstance, service: Produ
             .code(200)
             .type('application/json')
             .send({images})
-        }
+        },
+        onSuccessful: () => service.reloadVisibleProductsCache(true)
       }
     )
 }

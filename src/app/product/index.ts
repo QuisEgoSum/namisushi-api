@@ -29,8 +29,8 @@ class Product {
   async router(fastify: FastifyInstance) {
     await Promise.all([
       routes(fastify, this.service),
-      this.category.router(fastify),
-      this.variant.router(fastify)
+      this.category.router(fastify, this.service),
+      this.variant.router(fastify, this.service)
     ])
   }
 }
@@ -39,9 +39,12 @@ class Product {
 export async function initProduct(): Promise<Product> {
   const variant = await initVariant()
   const category = await initCategory()
+  const service = new ProductService(new ProductRepository(ProductModel), variant.service, category.service)
+
+  await service.reloadVisibleProductsCache()
 
   return new Product(
-    new ProductService(new ProductRepository(ProductModel), variant.service, category.service),
+    service,
     variant,
     category
   )
@@ -49,5 +52,6 @@ export async function initProduct(): Promise<Product> {
 
 
 export type {
-  Product
+  Product,
+  ProductService
 }

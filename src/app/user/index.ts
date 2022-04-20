@@ -40,6 +40,7 @@ export async function initUser(): Promise<User> {
   const otp = await initOtp()
   const service = new UserService(new UserRepository(UserModel), session.service, otp.service)
   await service.upsertSuperadmin()
+  await service.reloadTelegramCache()
 
   return new User(
     service,

@@ -34,12 +34,10 @@ export async function findVisible(fastify: FastifyInstance, service: ProductServ
           auth: false
         },
         handler: async function(request, reply) {
-          const data = await service.findVisible()
-
           reply
             .code(200)
             .type('application/json')
-            .send(data)
+            .send(service.findVisible())
         }
       }
     )

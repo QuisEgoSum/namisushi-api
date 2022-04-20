@@ -34,7 +34,7 @@ const options: TestOptions = {
 }
 
 beforeAll(async function() {
-  await reloadConfigByPath(path.resolve(__dirname, '../config/test.yaml'))
+  reloadConfigByPath(path.resolve(__dirname, '../config/test.yaml'))
   await mongoose.connect(config.database.credentials.connectionString)
   await mongoose.connection.dropDatabase()
   await mongoose.disconnect()

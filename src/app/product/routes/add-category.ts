@@ -45,7 +45,8 @@ export async function addCategory(fastify: FastifyInstance, service: ProductServ
             .code(200)
             .type('application/json')
             .send({category})
-        }
+        },
+        onSuccessful: () => service.reloadVisibleProductsCache(true)
       }
     )
 }

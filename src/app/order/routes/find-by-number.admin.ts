@@ -10,6 +10,9 @@ interface FindByNumberAdminRequest {
   Params: {
     number: number
   }
+  Querystring: {
+    isTestOrder: boolean
+  }
 }
 
 
@@ -25,6 +28,9 @@ export async function findByNumberAdmin(fastify: FastifyInstance, service: Order
           params: {
             number: schemas.properties.number
           },
+          query: {
+            isTestOrder: schemas.properties.isTestOrder
+          },
           response: {
             [200]: Ok.fromEntity(schemas.entities.PopulatedOrder, 'order'),
             [404]: new NotFound(OrderDoesNotExistError.schema())
@@ -35,7 +41,7 @@ export async function findByNumberAdmin(fastify: FastifyInstance, service: Order
           admin: true
         },
         handler: async function(request, reply) {
-          const order = await service.findByNumber(request.params.number)
+          const order = await service.findByNumber(request.params.number, request.query.isTestOrder)
 
           reply
             .code(200)

@@ -100,15 +100,22 @@ export class OrderService extends BaseService<IOrder, OrderRepository> {
     return populatedOrder
   }
 
-  async findByNumber(number: number, clientId?: Types.ObjectId) {
-    const order = await this.repository.findPopulatedOrderByNumber(number, clientId)
+  async findByNumber(number: number, isTestOrder = false, clientId?: Types.ObjectId) {
+    const order = await this.repository.findPopulatedOrderByNumber(number, isTestOrder, clientId)
     if (order === null) {
       throw new this.error.EntityDoesNotExistError()
     }
     return rawPopulatedTransform(order)
   }
 
-  async find(query: schemas.entities.FindQuery) {
+  async find(query: schemas.entities.FindQueryAdmin) {
     return this.repository.findExpandPage(query)
+  }
+
+  async updateStatus(number: number, condition: OrderCondition, isTestOrder = false) {
+    const result = await this.repository.updateStatus(number, condition, isTestOrder)
+    if (result.modifiedCount === 0) {
+      throw new this.error.EntityDoesNotExistError()
+    }
   }
 }

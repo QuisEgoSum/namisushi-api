@@ -14,12 +14,12 @@ export class NotificationTelegramAgent {
   }
 
   public async sendAdminMessage(messages: string[]) {
-    const recipientIds = await this.userService.distinctAdminTelegramIds()
+    const recipientIds = this.userService.getTelegramAdminIds()
     await this.sendMessages(recipientIds, messages)
   }
 
   public async sendWatcherMessage(messages: string[]) {
-    const recipientIds = await this.userService.distinctWatcherTelegramIds()
+    const recipientIds = this.userService.getTelegramWatcherIds()
     await this.sendMessages(recipientIds, messages)
   }
 }

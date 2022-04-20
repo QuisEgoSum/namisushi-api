@@ -34,7 +34,7 @@ export async function findByNumber(fastify: FastifyInstance, service: OrderServi
           auth: true
         },
         handler: async function(request, reply) {
-          const order = await service.findByNumber(request.params.number, request.session.userId)
+          const order = await service.findByNumber(request.params.number, false, request.session.userId)
 
           reply
             .code(200)

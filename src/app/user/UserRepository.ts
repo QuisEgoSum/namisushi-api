@@ -28,21 +28,13 @@ export class UserRepository extends BaseRepository<IUser> {
       )
   }
 
-  distinctAdminTelegramIds(): Promise<number[]> {
+  distinctTelegramIdsByRoles(...roles: UserRole[]): Promise<number[]> {
     return this.Model
       .distinct(
         'telegramId',
-        {telegramId: {$ne: null}, role: {$in: [UserRole.ADMIN, UserRole.WATCHER]}}
-      ) as unknown as Promise<number[]>
-  }
-
-
-  distinctWatcherTelegramIds() {
-    return this.Model
-      .distinct(
-        'telegramId',
-        {telegramId: {$ne: null}, role: UserRole.WATCHER}
-      ) as unknown as Promise<number[]>
+        {telegramId: {$ne: null}, role: {$in: roles}}
+      )
+      .exec()
   }
 
   async upsertCustomerByPhone(phone: string, name: string): Promise<IUser> {

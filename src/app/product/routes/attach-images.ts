@@ -92,7 +92,8 @@ export async function attachImages(fastify: FastifyInstance, service: ProductSer
             .code(200)
             .type('application/json')
             .send({images})
-        }
+        },
+        onSuccessful: () => service.reloadVisibleProductsCache(true)
       }
     )
 }

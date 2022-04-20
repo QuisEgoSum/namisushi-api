@@ -3,6 +3,7 @@ import {CategoryDoesNotExistError} from '@app/product/packages/category/category
 import {DocsTags} from '@app/docs'
 import {BadRequest, NotFound, Ok} from '@common/schemas/response'
 import type {CategoryService} from '@app/product/packages/category/CategoryService'
+import type {ProductService} from '@app/product'
 import type {FastifyInstance} from 'fastify'
 
 
@@ -14,7 +15,7 @@ interface PullProductRequest {
 }
 
 
-export async function pullProduct(fastify: FastifyInstance, service: CategoryService) {
+export async function pullProduct(fastify: FastifyInstance, service: CategoryService, productService: ProductService) {
   return fastify
     .route<PullProductRequest>(
       {
@@ -44,7 +45,8 @@ export async function pullProduct(fastify: FastifyInstance, service: CategorySer
             .code(200)
             .type('application/json')
             .send({category})
-        }
+        },
+        onSuccessful: () => productService.reloadVisibleProductsCache(true)
       }
     )
 }

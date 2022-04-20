@@ -3,6 +3,7 @@ import {DocsTags} from '@app/docs'
 import {EntityExistsError} from '@error'
 import {BadRequest, Created} from '@common/schemas/response'
 import type {CategoryService} from '@app/product/packages/category/CategoryService'
+import type {ProductService} from '@app/product/ProductService'
 import type {FastifyInstance} from 'fastify'
 
 
@@ -11,7 +12,7 @@ interface CreateRequest {
 }
 
 
-export async function create(fastify: FastifyInstance, service: CategoryService) {
+export async function create(fastify: FastifyInstance, service: CategoryService, productService: ProductService) {
   return fastify
     .route<CreateRequest>(
       {
@@ -37,7 +38,8 @@ export async function create(fastify: FastifyInstance, service: CategoryService)
             .code(201)
             .type('application/json')
             .send({category})
-        }
+        },
+        onSuccessful: () => productService.reloadVisibleProductsCache(true)
       }
     )
 }

@@ -6,32 +6,30 @@ import type {FastifyInstance} from 'fastify'
 
 
 interface FindRequest {
-  Querystring: schemas.entities.FindQuery
+  Querystring: schemas.entities.FindQueryAdmin
 }
 
 
-export async function find(fastify: FastifyInstance, service: OrderService) {
+export async function findAdmin(fastify: FastifyInstance, service: OrderService) {
   return fastify
     .route<FindRequest>(
       {
-        url: '/user/orders',
+        url: '/admin/orders',
         method: 'GET',
         schema: {
           summary: 'Получить список заказов',
-          tags: [DocsTags.ORDER],
-          query: schemas.entities.FindQuery,
+          tags: [DocsTags.ORDER_ADMIN],
+          query: schemas.entities.FindQueryAdmin,
           response: {
             [200]: new DataList(schemas.entities.PreviewOrder)
           }
         },
         security: {
-          auth: true
+          auth: true,
+          admin: true
         },
         handler: async function(request, reply) {
-          const orders = await service.find({
-            ...request.query,
-            fClientId: request.session.userId.toHexString()
-          })
+          const orders = await service.find(request.query)
 
           reply
             .code(200)

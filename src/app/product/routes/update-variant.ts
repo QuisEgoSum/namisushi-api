@@ -50,7 +50,8 @@ export async function updateVariant(fastify: FastifyInstance, service: ProductSe
             .code(200)
             .type('application/json')
             .send({variant})
-        }
+        },
+        onSuccessful: () => service.reloadVisibleProductsCache(true)
       }
     )
 }

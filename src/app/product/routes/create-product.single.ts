@@ -35,7 +35,8 @@ export async function createProductSingle(fastify: FastifyInstance, service: Pro
             .code(201)
             .type('application/json')
             .send({product})
-        }
+        },
+        onSuccessful: () => service.reloadVisibleProductsCache(true)
       }
     )
 }

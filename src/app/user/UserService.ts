@@ -2,6 +2,7 @@ import {BaseService, ServiceError} from '@core/service'
 import {BaseRepositoryError} from '@core/repository'
 import {UserRole} from '@app/user/UserRole'
 import {UserStatus} from '@app/user/UserStatus'
+import type {OtpService} from '@app/user/packages/otp'
 import {OtpTarget} from '@app/user/packages/otp'
 import {UserSession} from '@app/user/UserSession'
 import * as error from '@app/user/user-error'
@@ -14,7 +15,6 @@ import type {IUser} from '@app/user/UserModel'
 import type {UserRepository} from '@app/user/UserRepository'
 import type * as entities from '@app/user/schemas/entities'
 import type {SessionService} from '@app/user/packages/session'
-import type {OtpService} from '@app/user/packages/otp'
 
 
 export class UserService extends BaseService<IUser, UserRepository> {
@@ -31,6 +31,8 @@ export class UserService extends BaseService<IUser, UserRepository> {
 
   public error: ServiceError & typeof error
 
+  private telegramCache: {watcherIds: number[]; adminIds: number[]}
+
   constructor(
     userRepository: UserRepository,
     private readonly sessionService: SessionService,
@@ -38,11 +40,33 @@ export class UserService extends BaseService<IUser, UserRepository> {
   ) {
     super(userRepository)
 
+    this.telegramCache = {
+      adminIds: [],
+      watcherIds: []
+    }
+
     this.error = {
       EntityExistsError: error.UserExistsError,
       EntityDoesNotExistError: error.UserNotExistsError,
       ...error
     }
+  }
+
+  async reloadTelegramCache() {
+    const [adminIds, watcherIds] = await Promise.all([
+      this.repository.distinctTelegramIdsByRoles(UserRole.ADMIN, UserRole.WATCHER),
+      this.repository.distinctTelegramIdsByRoles(UserRole.WATCHER)
+    ])
+    this.telegramCache.adminIds = adminIds
+    this.telegramCache.watcherIds = watcherIds
+  }
+
+  getTelegramAdminIds() {
+    return this.telegramCache.adminIds
+  }
+
+  getTelegramWatcherIds() {
+    return this.telegramCache.watcherIds
   }
 
   errorHandler<T>(error: Error | BaseRepositoryError): T {
@@ -176,14 +200,6 @@ export class UserService extends BaseService<IUser, UserRepository> {
 
   async existsUser(userId: Types.ObjectId | string) {
     await this.findById(new Types.ObjectId(userId))
-  }
-
-  async distinctAdminTelegramIds() {
-    return this.repository.distinctAdminTelegramIds()
-  }
-
-  async distinctWatcherTelegramIds() {
-    return this.repository.distinctWatcherTelegramIds()
   }
 
   async upsertByPhone(phone: string, name: string): Promise<Types.ObjectId> {

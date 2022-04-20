@@ -44,7 +44,8 @@ export async function addVariant(fastify: FastifyInstance, service: ProductServi
             .code(201)
             .type('application/json')
             .send({variant})
-        }
+        },
+        onSuccessful: () => service.reloadVisibleProductsCache(true)
       }
     )
 }

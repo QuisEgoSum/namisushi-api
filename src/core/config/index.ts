@@ -43,7 +43,7 @@ function readConfig(
 
 export const config = new ConfigEntity(readConfig())
 
-export async function reloadConfigByPath(path: string) {
+export function reloadConfigByPath(path: string) {
   const _config = readConfig(path)
   Object.assign(config, _config)
 }
