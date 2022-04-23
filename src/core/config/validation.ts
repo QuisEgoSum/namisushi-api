@@ -8,7 +8,8 @@ export function validation(config: Record<string, any>) {
     {
       coerceTypes: true,
       allErrors: true,
-      allowUnionTypes: true
+      allowUnionTypes: true,
+      useDefaults: true
     }
   )
 

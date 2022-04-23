@@ -46,6 +46,9 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
     this.logger.info("Reload cache timeout")
     try {
       await this.reloadVisibleProductsCache(false)
+      if (this.cacheTimeout !== null) {
+        this.cacheTimeout = null
+      }
     } catch(error) {
       logger.error(error)
     }

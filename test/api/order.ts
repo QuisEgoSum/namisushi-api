@@ -8,7 +8,7 @@ export function orderTests(options: TestOptions) {
         url: '/order',
         method: 'POST',
         payload: {
-          phone: '+38(071)-000-00-00',
+          phone: '+38(071)000-00-00',
           address: 'test',
           username: 'test',
           delivery: false,

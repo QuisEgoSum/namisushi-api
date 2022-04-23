@@ -8,6 +8,7 @@ import {UserSession} from '@app/user/UserSession'
 import * as error from '@app/user/user-error'
 import {escapeStringRegexp} from '@libs/alg/string'
 import {config} from '@config'
+import {logger} from '@logger'
 import {FilterQuery, Types} from 'mongoose'
 import bcrypt from 'bcrypt'
 import type {DataList} from '@common/data'
@@ -20,6 +21,7 @@ import type {SessionService} from '@app/user/packages/session'
 export class UserService extends BaseService<IUser, UserRepository> {
 
   private static superadminId = '4920737570657261646d696e'
+  private logger: typeof logger
 
   private static hashPassword(password: string): Promise<string> {
     return bcrypt.hash(password, 10)
@@ -50,9 +52,12 @@ export class UserService extends BaseService<IUser, UserRepository> {
       EntityDoesNotExistError: error.UserNotExistsError,
       ...error
     }
+
+    this.logger = logger.child({label: 'UserService'})
   }
 
   async reloadTelegramCache() {
+    this.logger.info(`Reload cache`)
     const [adminIds, watcherIds] = await Promise.all([
       this.repository.distinctTelegramIdsByRoles(UserRole.ADMIN, UserRole.WATCHER),
       this.repository.distinctTelegramIdsByRoles(UserRole.WATCHER)

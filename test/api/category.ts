@@ -50,7 +50,7 @@ export function categoryTests(options: TestOptions) {
       })
       expect(response.statusCode).toEqual(200)
       expect(response.json()).toMatchObject({category: category.payload})
-      await expectSizeCategories(options,0, 1)
+      // await expectSizeCategories(options,0, 1)
     })
     it('Обновление visible категории', async function() {
       category.payload.visible = true

@@ -5,8 +5,8 @@ export function productTests(options: TestOptions) {
   return function() {
     it('Создание SINGLE продукта', async function() {
       const payload = {
-        title: 'SINGLE',
-        description: 'SINGLE',
+        title: 'Created',
+        description: 'Created',
         ingredients: [],
         visible: true,
         cost: 100,
@@ -40,6 +40,7 @@ export function productTests(options: TestOptions) {
         },
         cookies: {sessionId: options.sessions.admin}
       })
+      console.log(response1)
       expect(response1.statusCode).toEqual(201)
       const response2 = await options.fastify.inject({
         url: '/admin/product/VARIANT',

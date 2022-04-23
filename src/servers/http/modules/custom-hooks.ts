@@ -1,4 +1,5 @@
-import {FastifyReply, FastifyRequest, RouteOptions} from 'fastify'
+import {config} from '@config'
+import type {FastifyReply, FastifyRequest, RouteOptions} from 'fastify'
 
 
 declare module 'fastify' {
@@ -10,12 +11,14 @@ declare module 'fastify' {
 
 export function customHooks(routeOptions: RouteOptions) {
   if (typeof routeOptions.onSuccessful === 'function') {
-    if (!routeOptions.onResponse) {
-      routeOptions.onResponse = []
-    } else if (typeof routeOptions.onResponse === 'function') {
-      routeOptions.onResponse = [routeOptions.onResponse]
+    if (!routeOptions[config._.onSuccessful]) {
+      routeOptions[config._.onSuccessful] = []
+    } else if (typeof routeOptions[config._.onSuccessful] === 'function') {
+      // @ts-ignore
+      routeOptions[config._.onSuccessful] = [routeOptions[config._.onSuccessful]]
     }
-    routeOptions.onResponse.push(async function(request: FastifyRequest, reply: FastifyReply) {
+    // @ts-ignore
+    routeOptions[config._.onSuccessful].push(async function(request: FastifyRequest, reply: FastifyReply) {
       if (reply.raw.statusCode >= 200 && reply.raw.statusCode < 300) {
         //@ts-ignore
         await routeOptions.onSuccessful()

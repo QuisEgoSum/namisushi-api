@@ -115,6 +115,18 @@
             "webhook"
           ],
           "additionalProperties": false
+        },
+        "ws": {
+          "type": "object",
+          "properties": {
+            "port": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 65353
+            }
+          },
+          "additionalProperties": false,
+          "required": ["port"]
         }
       },
       "additionalProperties": false,
@@ -122,7 +134,8 @@
         "http",
         "cors",
         "csp",
-        "telegram"
+        "telegram",
+        "ws"
       ]
     },
     "logger": {
@@ -353,6 +366,19 @@
       },
       "required": ["discount"],
       "additionalProperties": false
+    },
+    "_": {
+      "type": "object",
+      "properties": {
+        "onSuccessful": {
+          "type": "string",
+          "default": "onResponse",
+          "enum": ["onResponse", "onSend"]
+        }
+      },
+      "additionalProperties": false,
+      "required": ["onSuccessful"],
+      "default": {}
     }
   },
   "additionalProperties": false,
@@ -363,6 +389,7 @@
     "user",
     "database",
     "product",
-    "order"
+    "order",
+    "_"
   ]
 }

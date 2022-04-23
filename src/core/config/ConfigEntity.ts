@@ -14,31 +14,34 @@ interface ConfigPaths {
 
 interface ConfigServer {
   readonly http: {
-    readonly protocol: 'http' | 'https',
-    readonly address: string,
-    readonly host: string,
+    readonly protocol: 'http' | 'https'
+    readonly address: string
+    readonly host: string
     readonly port: number
   },
   readonly cors: {
-    readonly allowedOrigins: string[],
+    readonly allowedOrigins: string[]
     readonly allowedHeaders: string[]
-  },
+  }
   readonly csp: {
     readonly directives: {
-      readonly defaultSrc: string[],
+      readonly defaultSrc: string[]
       readonly  data: string[]
-      [key: string]: string[] | any
+      readonly [key: string]: string[] | any
     }
   }
   readonly telegram: {
-    token: string
-    enableBot: boolean
-    enableWebhook: boolean
-    webhook: {
-      port: number
-      hookPath: string
-      domain: string
+    readonly token: string
+    readonly enableBot: boolean
+    readonly enableWebhook: boolean
+    readonly webhook: {
+      readonly port: number
+      readonly hookPath: string
+      readonly domain: string
     }
+  }
+  readonly ws: {
+    readonly port: number
   }
 }
 
@@ -119,6 +122,9 @@ export class ConfigEntity {
   public readonly database: DatabaseConfig
   public readonly product: ProductConfig
   public readonly order: OrderConfig
+  public readonly _: {
+    onSuccessful: 'onResponse' | 'onSend'
+  }
 
   constructor(defaultConfig: ConfigEntity) {
     this.configInfo = defaultConfig.configInfo
@@ -130,6 +136,7 @@ export class ConfigEntity {
     this.database = defaultConfig.database
     this.product = defaultConfig.product
     this.order = defaultConfig.order
+    this._ = defaultConfig._
 
     const rootDir = path.resolve(__dirname, '../../../')
 

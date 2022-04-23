@@ -1,9 +1,11 @@
 import {INotificationEventEmitter} from '@app/notification/NotificationEventEmitter'
 import {NotificationEvents} from '@app/notification/NotificationEvents'
 import {NotificationTelegramAgent} from '@app/notification/NotificationTelegramAgent'
+import {NotificationWebSocketAgent, NotificationWebSocketEvents} from '@app/notification/NotificationWebSocketAgent'
 import {NotificationMessageUtils} from '@app/notification/NotificationMessageUtils'
 import {PopulatedOrder} from '@app/order/schemas/entities'
 import {emitter as loggerEmitter, logger} from '@logger'
+import {UserRole} from '@app/user'
 
 
 export class NotificationEventListener {
@@ -14,7 +16,8 @@ export class NotificationEventListener {
 
   constructor(
     private readonly emitter: INotificationEventEmitter,
-    private readonly telegram: NotificationTelegramAgent | null
+    private readonly telegram: NotificationTelegramAgent | null,
+    protected readonly ws: NotificationWebSocketAgent
   ) {
     this.emitter
       .on(
@@ -54,6 +57,8 @@ export class NotificationEventListener {
   }
 
   private async newOrderHandler(order: PopulatedOrder): Promise<void> {
+    this.ws.sendEvent(NotificationWebSocketEvents.NEW_ORDER, UserRole.ADMIN, order)
+    this.ws.sendEvent(NotificationWebSocketEvents.NEW_ORDER, UserRole.WATCHER, order)
     if (this.telegram) {
       await this.telegram.sendAdminMessage(
         NotificationMessageUtils.telegramMessageReplacer(NotificationMessageUtils.parseOrder(order))

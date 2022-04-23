@@ -1,6 +1,7 @@
 import {createConnection} from '@core/database'
 import {createHttpServer} from './servers/http'
 import {createTelegramBot} from './servers/telegram'
+import {createWsServer} from './servers/ws'
 import {initDocs} from '@app/docs'
 import {initUser} from '@app/user'
 import {initProduct} from '@app/product'
@@ -12,24 +13,27 @@ import {logger} from '@logger'
 
 
 export async function initApp() {
+  await createConnection()
+
   const models = await loadModels()
 
   models.forEach(
     model => model.once('index', error => error && logger.child({label: 'db'}).error(error))
   )
 
-  await createConnection()
-
   const telegramBot = await createTelegramBot()
 
   const file = await initFile()
   const docs = await initDocs()
   const user = await initUser()
+
+  const wsServer = createWsServer(user)
+
   const product = await initProduct()
-  const notification = await initNotification(telegramBot, user)
+  const notification = await initNotification(telegramBot, wsServer, user)
   const order = await initOrder(product, notification, user)
 
-  const httpServer = await createHttpServer(
+  const httpServer = createHttpServer(
     {
       routers: [
         docs.router,
@@ -48,6 +52,7 @@ export async function initApp() {
   return {
     http: httpServer,
     bot: telegramBot,
+    ws: wsServer,
     notification: notification
   }
 }

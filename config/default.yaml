@@ -50,6 +50,8 @@ server:
       port: 9000
       hookPath: /api/telegram
       domain: localhost:9000
+  ws:
+    port: 8000
 
 logger:
   # Recommended false for production

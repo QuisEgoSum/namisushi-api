@@ -19,7 +19,7 @@ export interface CreateSecurityHookOptions {
   user: User
 }
 
-export async function createSecurityHook({user}: CreateSecurityHookOptions) {
+export function createSecurityHook({user}: CreateSecurityHookOptions) {
   async function auth(request: FastifyRequest) {
     request.session = await user.service.authorization(request.cookies.sessionId)
     request.log.info(request.session)

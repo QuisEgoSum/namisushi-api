@@ -14,6 +14,7 @@
 | NAMISUSHI_API_SERVER_TELEGRAM_WEBHOOK_PORT           |                      | integer         | Range: 1...65353                |
 | NAMISUSHI_API_SERVER_TELEGRAM_WEBHOOK_HOOK_PATH      |                      | string          |                                 |
 | NAMISUSHI_API_SERVER_TELEGRAM_WEBHOOK_DOMAIN         |                      | string          |                                 |
+| NAMISUSHI_API_SERVER_WS_PORT                         |                      | integer         | Range: 1...65353                |
 | NAMISUSHI_API_LOGGER_PRETTY                          |                      | boolean         |                                 |
 | NAMISUSHI_API_LOGGER_ISO_TIME                        |                      | boolean         |                                 |
 | NAMISUSHI_API_LOGGER_TIME                            |                      | boolean         |                                 |

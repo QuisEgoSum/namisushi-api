@@ -1,6 +1,6 @@
 import path from 'path'
 import {config, reloadConfigByPath} from '@config'
-import {initApp} from '../src/init'
+import {initApp} from '../../src/init'
 import {FastifyInstance} from 'fastify'
 import mongoose from 'mongoose'
 import {userTests} from './user'
@@ -34,12 +34,17 @@ const options: TestOptions = {
 }
 
 beforeAll(async function() {
-  reloadConfigByPath(path.resolve(__dirname, '../config/test.yaml'))
-  await mongoose.connect(config.database.credentials.connectionString)
-  await mongoose.connection.dropDatabase()
-  await mongoose.disconnect()
-  const app = await initApp()
-  options.fastify = app.http
+  try {
+    reloadConfigByPath(path.resolve(__dirname, '../../config/test.yaml'))
+    await mongoose.connect(config.database.credentials.connectionString)
+    await mongoose.connection.dropDatabase()
+    await mongoose.disconnect()
+    const app = await initApp()
+    options.fastify = app.http
+  } catch(error) {
+    console.error(error)
+    throw error
+  }
 })
 
 describe("Пользователь", userTests(options))

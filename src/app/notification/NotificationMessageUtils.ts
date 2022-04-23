@@ -123,7 +123,14 @@ export class NotificationMessageUtils {
       'APPLICATION STARTED\n\n',
       `local network:\n`,
       ` - http: 127.0.0.1:${config.server.http.port}\n`,
-      // ` - ws: 127.0.0.1:${config.server.ws.port}\n\n`,
+      ` - ws: 127.0.0.1:${config.server.ws.port}\n`,
+      ` - telegram: ${
+        config.server.telegram.enableBot 
+          ? config.server.telegram.enableWebhook
+            ? `127.0.0.1:${config.server.telegram.webhook.port}`
+            : 'Long polling'
+          : 'Disabled'
+      }\n\n`,
       `Domain: ${config.server.http.protocol}://${config.server.http.host}\n\n`,
       `OS:\n`,
       `- hostname: ${os.hostname()}\n`,

@@ -23,13 +23,13 @@ export interface CreateHttpServerOptions {
   securityOptions: CreateSecurityHookOptions
 }
 
-export async function createHttpServer(options: CreateHttpServerOptions) {
+export function createHttpServer(options: CreateHttpServerOptions) {
   const fastifyInstance: FastifyInstance = options.server || fastify({
     trustProxy: true,
     logger: httpLogger,
     bodyLimit: 10737418240
   })
-    .addHook('onRoute', await createSecurityHook(options.securityOptions))
+    .addHook('onRoute', createSecurityHook(options.securityOptions))
     .addHook('onRoute', createDocsHook())
     .addHook('onRoute', customHooks)
     .setErrorHandler(errorHandler)

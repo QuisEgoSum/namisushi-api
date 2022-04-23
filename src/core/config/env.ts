@@ -1,14 +1,16 @@
 
 
+const useIndexIfExist = (array: string[], i: number, cb: (i: number) => unknown) => typeof array[i] === 'string' && cb(i)
+
 function stringToEnvName(string: string) {
   const stringPart = string.split('')
   for (let i = 0; i < stringPart.length; i++) {
     const s = stringPart[i]
     if (s === '-' || s === '.') {
       stringPart[i] = '_'
-      stringPart[i + 1] = stringPart[i + 1].toLocaleLowerCase()
+      useIndexIfExist(stringPart, i + 1, i => stringPart[i] = stringPart[i].toLocaleLowerCase())
     } else if (s === '_') {
-      stringPart[i + 1] = stringPart[i + 1].toLocaleLowerCase()
+      useIndexIfExist(stringPart, i + 1, i => stringPart[i] = stringPart[i].toLocaleLowerCase())
     } else if (s === s.toUpperCase()) {
       stringPart[i] = '_' + s
     }

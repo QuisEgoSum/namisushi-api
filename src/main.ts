@@ -1,24 +1,25 @@
 import 'module-alias/register'
 import {initApp} from './init'
-import {logger} from '@logger'
 import {config} from '@config'
-import mongoose from 'mongoose'
+import {logger} from '@logger'
 import {promisify} from 'util'
-import type {FastifyInstance} from 'fastify'
+import mongoose from 'mongoose'
 import type {TelegramBot} from './servers/telegram'
 import type {NotificationEventListener} from '@app/notification'
+import type {FastifyInstance} from 'fastify'
+import type {Server} from 'socket.io'
 
 
 (async function main() {
-  const {http, bot, notification} = await initApp()
+  const {http, bot, notification, ws} = await initApp()
 
-  await listen(http, bot)
+  await listen(http, bot, ws)
 
   await notification.listener.startApplication()
 
   {
     ['SIGINT', 'SIGTERM']
-      .forEach(event => process.once(event, () => shutdown(event, http, bot, notification.listener)))
+      .forEach(event => process.once(event, () => shutdown(event, http, bot, ws, notification.listener)))
   }
 })()
   .catch(error => {
@@ -29,10 +30,13 @@ import type {NotificationEventListener} from '@app/notification'
 
 async function listen(
   http: FastifyInstance,
-  bot: TelegramBot
+  bot: TelegramBot,
+  ws: Server
 ) {
   await promisify(http.ready)()
   await http.listen(config.server.http.port, config.server.http.address)
+  ws.listen(config.server.ws.port)
+  logger.child({label: 'ws'}).info(`Server listening at http://127.0.0.1:${config.server.ws.port}`)
   if (bot) {
     let telegrafOptions = {}
     if (config.server.telegram.enableWebhook) {
@@ -47,7 +51,7 @@ async function listen(
           config.server.telegram.webhook.hookPath}`
       )
     } else {
-      logger.child({label: 'telegram'}).info(`Telegram webhook client started`)
+      logger.child({label: 'telegram'}).info(`Telegram long polling client started`)
     }
   }
 }
@@ -56,16 +60,21 @@ async function shutdown(
   event: string,
   http: FastifyInstance,
   bot: TelegramBot,
+  ws: Server,
   notification: NotificationEventListener
 ) {
   const sLogger = logger.child({label: 'shutdown'})
   sLogger.info({mgs: 'Shutdown start', event})
-  await notification.shutdownApplication(event)
   if (bot) {
     bot.stop()
   }
-  await http.close()
-  await mongoose.disconnect()
+  const results = await Promise.allSettled([
+    notification.shutdownApplication(event),
+    http.close(),
+    promisify(ws.close.bind(ws))(),
+    mongoose.disconnect(),
+  ])
+  results.forEach(result => result.status === 'rejected' && sLogger.error(result.reason))
   sLogger.info({msg: 'Shutdown end', event})
   process.exit(0)
 }

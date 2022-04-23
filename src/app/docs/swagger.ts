@@ -1,5 +1,7 @@
 import {config} from '@core/config'
 import {DocsTags} from '@app/docs/DocsTags'
+import * as fs from 'fs'
+import * as path from 'path'
 
 
 export const swagger: Record<string, any> = {
@@ -10,7 +12,8 @@ export const swagger: Record<string, any> = {
   openapi: {
     info: {
       title: config.pkgJson.name,
-      version: config.pkgJson.version
+      version: config.pkgJson.version,
+      description: fs.readFileSync(path.resolve(config.paths.root, './docs/DESCRIPTION.md'), 'utf-8')
     },
     components: {
       securitySchemes: {
