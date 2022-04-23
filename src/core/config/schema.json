@@ -7,20 +7,26 @@
     "server": {
       "type": "object",
       "properties": {
+        "address": {
+          "type": "object",
+          "properties": {
+            "api": {
+              "type": "string"
+            },
+            "admin": {
+              "type": "string"
+            },
+            "user": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false,
+          "required": ["api", "admin", "user"]
+        },
         "http": {
           "type": "object",
           "properties": {
-            "protocol": {
-              "type": "string",
-              "enum": [
-                "http",
-                "https"
-              ]
-            },
             "address": {
-              "type": "string"
-            },
-            "host": {
               "type": "string"
             },
             "port": {
@@ -31,9 +37,7 @@
           },
           "additionalProperties": false,
           "required": [
-            "protocol",
             "address",
-            "host",
             "port"
           ]
         },
@@ -131,6 +135,7 @@
       },
       "additionalProperties": false,
       "required": [
+        "address",
         "http",
         "cors",
         "csp",

@@ -13,10 +13,13 @@ interface ConfigPaths {
 }
 
 interface ConfigServer {
+  readonly address: {
+    readonly api: string
+    readonly admin: string
+    readonly user: string
+  }
   readonly http: {
-    readonly protocol: 'http' | 'https'
     readonly address: string
-    readonly host: string
     readonly port: number
   },
   readonly cors: {

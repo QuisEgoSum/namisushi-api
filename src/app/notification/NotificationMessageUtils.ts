@@ -59,9 +59,9 @@ export class NotificationMessageUtils {
     const orderTexts = []
 
     if (order.isTestOrder) {
-      orderTexts.push(`*ТЕСТОВЫЙ ЗАКАЗ! №${order.number}*\n`)
+      orderTexts.push(`[ТЕСТОВЫЙ ЗАКАЗ! №${order.number}](${config.server.address.admin}/order/${order.number}?isTestOrder=true)\n`)
     } else {
-      orderTexts.push(`*Новый заказ! №${order.number}*\n`)
+      orderTexts.push(`[Новый заказ! №${order.number}](${config.server.address.admin}/order/${order.number})\n`)
     }
 
     orderTexts.push(`Имя: ${order.username}\n`,)
@@ -121,7 +121,7 @@ export class NotificationMessageUtils {
   public static getStartMessage(): string[] {
     return [
       'APPLICATION STARTED\n\n',
-      `local network:\n`,
+      `Local networks:\n`,
       ` - http: 127.0.0.1:${config.server.http.port}\n`,
       ` - ws: 127.0.0.1:${config.server.ws.port}\n`,
       ` - telegram: ${
@@ -131,7 +131,7 @@ export class NotificationMessageUtils {
             : 'Long polling'
           : 'Disabled'
       }\n\n`,
-      `Domain: ${config.server.http.protocol}://${config.server.http.host}\n\n`,
+      `Public addresses: \n- user: ${config.server.address.user}\n- admin: ${config.server.address.admin}\n- api: ${config.server.address.api}\n\n`,
       `OS:\n`,
       `- hostname: ${os.hostname()}\n`,
       `- platform: ${os.platform()}\n`,

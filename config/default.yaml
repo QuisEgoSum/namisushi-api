@@ -10,12 +10,13 @@ database:
     keepAlive: true
 
 server:
+  address:
+    api: http://localhost:8080
+    user: http://localhost:8000
+    admin: http://localhost:8001
   http:
     address: 127.0.0.1
     port: 8080
-    #docs. TODO: rename
-    host: localhost:8080
-    protocol: http
   cors:
     allowedOrigins:
       - http://localhost:8000
