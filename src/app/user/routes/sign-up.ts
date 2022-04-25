@@ -25,7 +25,7 @@ export async function signUp(fastify: FastifyInstance, service: UserService) {
           }
         },
         security: {
-          auth: true
+          auth: false
         },
         handler: async function(request, reply) {
           const user = await service.signUp(request.body)
