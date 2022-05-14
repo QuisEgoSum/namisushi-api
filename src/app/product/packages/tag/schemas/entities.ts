@@ -32,5 +32,31 @@ export const CreateTag = {
     )
   },
   additionalProperties: false,
-  required: ['name', 'icon']
+  required: ['name', 'icon'],
+  errorMessage: {
+    name: 'Укажите имя тега',
+    icon: 'Загрузите иконку тега'
+  }
+}
+
+export interface UpdateTag {
+  name?: string
+  icon: MultipartFile[]
+}
+
+export const UpdateTag = {
+  title: 'UpdateTag',
+  type: 'object',
+  properties: {
+    name,
+    icon: new FastifyMultipartSchema(
+      {
+        maximum: 1,
+        minimum: 1,
+        maximumFileSize: config.product.tag.icon.maximumSize,
+        allowedMimetypes: ['image/svg+xml']
+      }
+    )
+  },
+  additionalProperties: false
 }

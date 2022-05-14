@@ -39,8 +39,8 @@ class Product {
 export async function initProduct(): Promise<Product> {
   const variant = await initVariant()
   const category = await initCategory()
-  const service = new ProductService(new ProductRepository(ProductModel), variant.service, category.service)
-  const tag = await initTag(service)
+  const tag = await initTag()
+  const service = new ProductService(new ProductRepository(ProductModel), variant.service, category.service, tag.service)
 
   await service.reloadVisibleProductsCache()
 

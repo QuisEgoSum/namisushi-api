@@ -11,6 +11,7 @@ import type * as entities from '@app/product/schemas/entities'
 import type {BaseVariant, CreateVariant, UpdateVariant} from '@app/product/packages/variant/schemas/entities'
 import type {VariantService} from '@app/product/packages/variant'
 import type {CategoryService} from '@app/product/packages/category'
+import type {TagService} from '@app/product/packages/tag'
 import type {CreateOrderProduct, CreateOrderSingleProduct, CreateOrderVariantProduct} from '@app/order/schemas/entities'
 import type {IOrderProduct} from '@app/order/OrderModel'
 import type {MultipartFile} from '@fastify/multipart'
@@ -26,7 +27,8 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
   constructor(
     repository: ProductRepository,
     private readonly variantService: VariantService,
-    private readonly categoryService: CategoryService
+    private readonly categoryService: CategoryService,
+    private readonly tagService: TagService
   ) {
     super(repository)
 
@@ -45,10 +47,10 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
   private async timeoutReloadCache() {
     this.logger.info("Reload cache timeout")
     try {
-      await this.reloadVisibleProductsCache(false)
       if (this.cacheTimeout !== null) {
         this.cacheTimeout = null
       }
+      await this.reloadVisibleProductsCache(false)
     } catch(error) {
       logger.error(error)
     }

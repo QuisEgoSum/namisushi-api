@@ -25,8 +25,8 @@ class Tag {
 }
 
 
-export async function initTag(productService: ProductService) {
-  return new Tag(new TagService(new TagRepository(TagModel), productService))
+export async function initTag() {
+  return new Tag(new TagService(new TagRepository(TagModel)))
 }
 
 

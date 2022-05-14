@@ -1,6 +1,7 @@
 import {routes} from './routes'
+import {DocsTags} from '@app/docs/DocsTags'
+import {ContentType} from '@app/docs/ContentType'
 import type {FastifyInstance} from 'fastify'
-import {DocsTags} from './DocsTags'
 
 
 class Docs {
@@ -23,5 +24,6 @@ export async function initDocs(): Promise<Docs> {
 }
 
 export {
-  DocsTags
+  DocsTags,
+  ContentType
 }
