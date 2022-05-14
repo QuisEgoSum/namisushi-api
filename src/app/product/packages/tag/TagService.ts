@@ -5,13 +5,16 @@ import {config} from '@config'
 import {NoDataForUpdatingError} from '@error'
 import {Types} from 'mongoose'
 import type {ITag} from './TagModel'
+import type {ITagEventEmitter} from './TagEventEmitter'
+import {TagEvents} from './TagEventEmitter'
 import type {TagRepository} from './TagRepository'
 import type {MultipartFile} from '@fastify/multipart'
 
 
 export class TagService extends BaseService<ITag, TagRepository> {
   constructor(
-    repository: TagRepository
+    repository: TagRepository,
+    private readonly emitter: ITagEventEmitter
   ) {
     super(repository)
 
@@ -19,8 +22,12 @@ export class TagService extends BaseService<ITag, TagRepository> {
     this.error.EntityDoesNotExistError = TagDoesNotExistError
   }
 
+  get iconDestination() {
+    return config.product.tag.icon.destination
+  }
+  
   async createTag(name: string, icon: MultipartFile) {
-    const filename = await fs.createFilepath(config.product.tag.icon.destination, 'svg')
+    const filename = await fs.createFilepath(this.iconDestination, 'svg')
     const tag = await this.create({name: name, icon: filename.filename})
     await fs.writeFile(filename.filepath, icon.file)
     return tag
@@ -31,16 +38,25 @@ export class TagService extends BaseService<ITag, TagRepository> {
       throw new NoDataForUpdatingError()
     }
     if (icon) {
-      const filename = await fs.createFilepath(config.product.tag.icon.destination, 'svg')
+      const filename = await fs.createFilepath(this.iconDestination, 'svg')
       const oldTag = await this.repository.updateTag(tagId, filename.filename, name)
       if (!oldTag) {
         throw new this.error.EntityDoesNotExistError()
       }
       await fs.writeFile(filename.filepath, icon.file)
-      await fs.deleteFile(config.product.tag.icon.destination, oldTag.icon)
+      await fs.deleteFile(this.iconDestination, oldTag.icon)
       return await this.findById(tagId)
     } else {
       return await this.findOneAndUpdate({_id: new Types.ObjectId(tagId)}, {name}, {new: true})
     }
+  }
+
+  /**
+   * @override
+   */
+  async deleteById(tagId: string) {
+    const tag = await this.findByIdAndDelete(tagId)
+    await fs.deleteFile(this.iconDestination, tag.icon)
+    this.emitter.emit(TagEvents.DELETE_TAG, tag._id)
   }
 }

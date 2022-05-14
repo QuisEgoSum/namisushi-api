@@ -81,7 +81,8 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
       visible: product.visible,
       cost: product.cost,
       ingredients: product.ingredients,
-      weight: product.weight
+      weight: product.weight,
+      tags: []
     })
   }
 
@@ -93,7 +94,8 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
       visible: product.visible,
       ingredients: product.ingredients,
       cost: null,
-      weight: null
+      weight: null,
+      tags: []
     })
   }
 
@@ -295,5 +297,9 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
       })
     }
     return products
+  }
+
+  async pullTag(tagId: Types.ObjectId) {
+    await this.repository.pullTag(tagId)
   }
 }

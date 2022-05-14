@@ -8,6 +8,7 @@ import {initVariant, Variant} from '@app/product/packages/variant'
 import {initCategory, Category} from '@app/product/packages/category'
 import type {FastifyInstance} from 'fastify'
 import {initTag, Tag} from '@app/product/packages/tag'
+import {ProductEventListener} from '@app/product/ProductEventListener'
 
 
 class Product {
@@ -17,7 +18,8 @@ class Product {
     public readonly service: ProductService,
     public readonly variant: Variant,
     public readonly category: Category,
-    public readonly tag: Tag
+    public readonly tag: Tag,
+    private readonly listener: ProductEventListener
   ) {
     this.schemas = schemas
     this.error = error
@@ -44,11 +46,14 @@ export async function initProduct(): Promise<Product> {
 
   await service.reloadVisibleProductsCache()
 
+  const listener = new ProductEventListener(service, tag.emitter)
+
   return new Product(
     service,
     variant,
     category,
-    tag
+    tag,
+    listener
   )
 }
 

@@ -6,7 +6,7 @@ import {
   visible,
   title,
   typeSingle, typeVariant,
-  updatedAt, weight, images, nullCost, nullWeight, type, nullableCost, nullableWeight
+  updatedAt, weight, images, nullCost, nullWeight, tags
 } from '@app/product/schemas/properties'
 import {BaseVariant} from '@app/product/packages/variant/schemas/entities'
 import {Types} from 'mongoose'
@@ -26,6 +26,7 @@ export const SingleProduct = {
     type: typeSingle,
     cost,
     weight,
+    tags,
     createdAt,
     updatedAt
   },
@@ -40,6 +41,7 @@ export const SingleProduct = {
     'type',
     'cost',
     'weight',
+    'tags',
     'createdAt',
     'updatedAt'
   ]
@@ -55,6 +57,7 @@ export interface VariantProduct {
   ingredients: string[]
   images: string[]
   variants: BaseVariant[],
+  tags: string[],
   createdAt: number
   updatedAt: number
 }
@@ -73,6 +76,7 @@ export const VariantProduct = {
     type: typeVariant,
     cost: nullCost,
     weight: nullWeight,
+    tags,
     variants: {
       type: 'array',
       items: BaseVariant,
@@ -92,6 +96,7 @@ export const VariantProduct = {
     'type',
     'cost',
     'weight',
+    'tags',
     'variants',
     'createdAt',
     'updatedAt'

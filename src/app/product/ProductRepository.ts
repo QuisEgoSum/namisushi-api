@@ -179,4 +179,11 @@ export class ProductRepository extends GenericRepository<IProduct> {
       }
     ]).exec()
   }
+
+  async pullTag(tagId: Types.ObjectId) {
+    await this.Model.updateMany(
+      {tags: tagId},
+      {$pull: {tags: tagId}}
+    )
+  }
 }

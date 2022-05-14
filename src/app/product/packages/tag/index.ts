@@ -6,6 +6,7 @@ import {TagRepository} from './TagRepository'
 import {TagModel, ITag} from './TagModel'
 import type {ProductService} from '@app/product'
 import type {FastifyInstance} from 'fastify'
+import {TagEventEmitter, TagEvents, ITagEventEmitter} from '@app/product/packages/tag/TagEventEmitter'
 
 
 class Tag {
@@ -13,7 +14,8 @@ class Tag {
   public readonly error: typeof error
 
   constructor(
-    public readonly service: TagService
+    public readonly service: TagService,
+    public readonly emitter: ITagEventEmitter
   ) {
     this.schemas = schemas
     this.error = error
@@ -26,17 +28,20 @@ class Tag {
 
 
 export async function initTag() {
-  return new Tag(new TagService(new TagRepository(TagModel)))
+  const emitter = new TagEventEmitter()
+  return new Tag(new TagService(new TagRepository(TagModel), emitter), emitter)
 }
 
 
 export {
   schemas,
-  error
+  error,
+  TagEvents
 }
 
 export type {
   Tag,
   ITag,
-  TagService
+  TagService,
+  ITagEventEmitter
 }

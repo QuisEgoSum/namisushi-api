@@ -86,3 +86,7 @@ export const images = {
   type: 'array',
   items: {type: 'string'}
 }
+export const tags = {
+  type: 'array',
+  items: new ObjectId({entity: 'tag'})
+}
