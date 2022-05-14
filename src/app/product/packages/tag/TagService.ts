@@ -9,6 +9,7 @@ import type {ITagEventEmitter} from './TagEventEmitter'
 import {TagEvents} from './TagEventEmitter'
 import type {TagRepository} from './TagRepository'
 import type {MultipartFile} from '@fastify/multipart'
+import {PageOptions} from '@core/repository'
 
 
 export class TagService extends BaseService<ITag, TagRepository> {
@@ -58,5 +59,9 @@ export class TagService extends BaseService<ITag, TagRepository> {
     const tag = await this.findByIdAndDelete(tagId)
     await fs.deleteFile(this.iconDestination, tag.icon)
     this.emitter.emit(TagEvents.DELETE_TAG, tag._id)
+  }
+
+  async find(query: PageOptions) {
+    return this.repository.findPage(query)
   }
 }
