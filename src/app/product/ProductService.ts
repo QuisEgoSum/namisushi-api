@@ -13,7 +13,7 @@ import type {VariantService} from '@app/product/packages/variant'
 import type {CategoryService} from '@app/product/packages/category'
 import type {CreateOrderProduct, CreateOrderSingleProduct, CreateOrderVariantProduct} from '@app/order/schemas/entities'
 import type {IOrderProduct} from '@app/order/OrderModel'
-import type {MultipartFile} from 'fastify-multipart'
+import type {MultipartFile} from '@fastify/multipart'
 
 
 export class ProductService extends GenericService<IProduct, ProductRepository> {
@@ -144,7 +144,7 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
       files
         .map(file => fs.createFilepath(config.product.image.file.destination, file.mimetype.split('/').pop() || 'png'))
         .map((promise, i) => promise.then(
-          file => fs.moveFile(files[i].filepath, file.filepath).then(() => file.filename))
+          file => fs.writeFile(file.filepath, files[i].file).then(() => file.filename))
         )
     )
     const updatedProduct = await this.repository.addToSetImages(productId, images)

@@ -347,9 +347,30 @@
           },
           "additionalProperties": false,
           "required": ["icon"]
+        },
+        "tag": {
+          "type": "object",
+          "properties": {
+            "icon":  {
+              "type": "object",
+              "properties": {
+                "destination": {
+                  "type": "string"
+                },
+                "maximumSize": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": ["maximumSize"]
+            }
+          },
+          "additionalProperties": false,
+          "required": ["icon"]
         }
       },
-      "required": ["image", "variant"],
+      "required": ["image", "variant", "tag"],
       "additionalProperties": false
     },
     "order": {

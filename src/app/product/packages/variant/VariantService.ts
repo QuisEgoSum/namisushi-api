@@ -7,7 +7,7 @@ import {Types} from 'mongoose'
 import type {VariantRepository} from '@app/product/packages/variant/VariantRepository'
 import type {IVariant} from '@app/product/packages/variant/VariantModel'
 import type {UpdateVariant} from '@app/product/packages/variant/schemas/entities'
-import type {MultipartFile} from 'fastify-multipart'
+import type {MultipartFile} from '@fastify/multipart'
 
 
 export class VariantService extends BaseService<IVariant, VariantRepository> {
@@ -49,7 +49,7 @@ export class VariantService extends BaseService<IVariant, VariantRepository> {
 
   async uploadIcon(file: MultipartFile) {
     const filepath = await fs.createFilepath(config.product.variant.icon.destination, 'svg')
-    await fs.moveFile(file.filepath, filepath.filepath)
+    await fs.writeFile(filepath.filepath, file.file)
     await this.resetIconsList()
     return filepath.filename
   }

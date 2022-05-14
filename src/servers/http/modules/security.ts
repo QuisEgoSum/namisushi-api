@@ -37,7 +37,7 @@ export function createSecurityHook({user}: CreateSecurityHookOptions) {
   }
 
   async function isAdmin(request: FastifyRequest) {
-    if (request.session?.userRole !== user.UserRole.ADMIN && request.session?.userRole !== user.UserRole.WATCHER) {
+    if (!request.session?.isAdmin()) {
       throw new user.error.UserRightsError()
     }
   }

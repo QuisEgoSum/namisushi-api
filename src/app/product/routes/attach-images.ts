@@ -1,14 +1,15 @@
 import * as schemas from '../schemas'
 import {config} from '@config'
 import type {FastifyInstance} from 'fastify'
-import type {MultipartFile} from 'fastify-multipart'
+import type {MultipartFile} from '@fastify/multipart'
 import {BadRequest, NotFound, Ok} from '@common/schemas/response'
 import {ProductService} from '@app/product/ProductService'
 import {ProductDoesNotExistError} from '@app/product/product-error'
+import {FastifyMultipartSchema} from '@common/schemas/payload'
 
 
 interface AttachImagesRequest {
-  Body: MultipartFile[]
+  Body: {images: MultipartFile[]}
   Params: {
     productId: string
   }
@@ -23,48 +24,31 @@ export async function attachImages(fastify: FastifyInstance, service: ProductSer
         url: '/admin/product/:productId/images',
         schema: {
           summary: 'Добавить продукту картинки',
-          description: 'Один или несколько файлов в прозвольном свойстве или свойствах'
+          description: 'Один или несколько файлов в `images` свойстве'
             + `<br/><br/>*Допустимые mimetype: ${config.product.image.file.allowedTypes.join(', ')}.*`
             + `<br/>*Максимальный размер файла ${config.product.image.file.maximumSize}b.*`,
           tags: ['Управление продуктами'],
           consumes: ['multipart/form-data'],
           params: {
-            productId: schemas.properties._id
+            type: 'object',
+            properties: {
+              productId: schemas.properties._id
+            }
           },
           body: {
-            type: 'array',
-            items: {
-              type: 'object',
-              properties: {
-                mimetype: {
-                  type: 'string',
-                  enum: config.product.image.file.allowedTypes,
-                  errorMessage: {
-                    enum: `Недопустимый тип файла. Допустимые mimetype: ${config.product.image.file.allowedTypes.join(', ')}`
-                  }
-                },
-                file: {
-                  type: 'object',
-                  properties: {
-                    bytesRead: {
-                      type: 'integer',
-                      maximum: config.product.image.file.maximumSize,
-                      errorMessage: {
-                        maximum: `Максимальный допустимый размер файла ${config.product.image.file.maximumSize}b`
-                      }
-                    }
-                  },
-                  additionalProperties: true
+            type: 'object',
+            properties: {
+              images: new FastifyMultipartSchema(
+                {
+                  minimum: 1,
+                  maximum: config.product.image.maximum,
+                  allowedMimetypes: config.product.image.file.allowedTypes,
+                  maximumFileSize: config.product.image.file.maximumSize
                 }
-              },
-              additionalProperties: true
+              )
             },
-            minItems: 1,
-            maxItems: config.product.image.maximum,
-            errorMessage: {
-              minItems: 'Загрузите файл',
-              maxItems: `Вы не можете загружать больше ${config.product.image.maximum} файлов`
-            }
+            required: ['images'],
+            additionalProperties: false
           },
           response: {
             [200]: Ok.fromEntity(schemas.properties.images, 'images'),
@@ -76,17 +60,8 @@ export async function attachImages(fastify: FastifyInstance, service: ProductSer
           auth: true,
           admin: true
         },
-        preValidation: async function(request) {
-          if (request.isMultipart()) {
-            request.body = await request.saveRequestFiles()
-          } else {
-            request.body = []
-          }
-        },
         handler: async function(request, reply) {
-          const images = await service.attachImage(request.params.productId, request.body)
-
-          request.tmpUploads.length = 0
+          const images = await service.attachImage(request.params.productId, request.body.images)
 
           reply
             .code(200)

@@ -12,6 +12,7 @@ declare module 'fastify' {
     schema?: {
       summary?: string
       tags?: string[]
+      consumes?: string[]
       response?: {
         [200]?: Ok | DataList | MessageResponse | OkBinaryString
         [201]?: Created

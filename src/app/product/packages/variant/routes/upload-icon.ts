@@ -3,11 +3,12 @@ import {BadRequest, Created} from '@common/schemas/response'
 import {config} from '@config'
 import type {VariantService} from '@app/product/packages/variant/VariantService'
 import type {FastifyInstance} from 'fastify'
-import type {MultipartFile} from 'fastify-multipart'
+import type {MultipartFile} from '@fastify/multipart'
+import {FastifyMultipartSchema} from '@common/schemas/payload'
 
 
 interface UploadIconRequest {
-  Body: MultipartFile[]
+  Body: {icon: MultipartFile[]}
   Params: {
     productId: string
   }
@@ -23,44 +24,24 @@ export async function uploadIcon(fastify: FastifyInstance, service: VariantServi
         schema: {
           summary: 'Загрузить иконку',
           tags: [DocsTags.VARIANT_ADMIN],
-          description: 'Один файл в прозвольном свойстве'
+          description: 'Один файл в `icon` свойстве'
             + `<br/><br/>*Допустимый mimetype: \`image/svg+xml\`.*`
             + `<br/>*Максимальный размер файла ${config.product.variant.icon.maximumSize}b.*`,
           consumes: ['multipart/form-data'],
           body: {
-            type: 'array',
-            items: {
-              type: 'object',
-              properties: {
-                mimetype: {
-                  type: 'string',
-                  enum: ['image/svg+xml'],
-                  errorMessage: {
-                    enum: `Недопустимый тип файла. Допустимый mimetype: image/svg+xml`
-                  }
-                },
-                file: {
-                  type: 'object',
-                  properties: {
-                    bytesRead: {
-                      type: 'integer',
-                      maximum: config.product.variant.icon.maximumSize,
-                      errorMessage: {
-                        maximum: `Максимальный допустимый размер файла ${config.product.variant.icon.maximumSize}b`
-                      }
-                    }
-                  },
-                  additionalProperties: true
+            type: 'object',
+            properties: {
+              icon: new FastifyMultipartSchema(
+                {
+                  minimum: 1,
+                  maximum: 1,
+                  allowedMimetypes: ['image/svg+xml'],
+                  maximumFileSize: config.product.variant.icon.maximumSize
                 }
-              },
-              additionalProperties: true
+              )
             },
-            minItems: 1,
-            maxItems: 1,
-            errorMessage: {
-              minItems: 'Загрузите файл',
-              maxItems: `Вы не можете загружать больше 1 файла`
-            }
+            additionalProperties: false,
+            required: ['icon']
           },
           response: {
             [201]: Created.fromEntity({type: 'string'}, 'filename'),
@@ -71,17 +52,8 @@ export async function uploadIcon(fastify: FastifyInstance, service: VariantServi
           auth: true,
           admin: true
         },
-        preValidation: async function(request) {
-          if (request.isMultipart()) {
-            request.body = await request.saveRequestFiles()
-          } else {
-            request.body = []
-          }
-        },
         handler: async function(request, reply) {
-          const filename = await service.uploadIcon(request.body[0])
-
-          request.tmpUploads.length = 0
+          const filename = await service.uploadIcon(request.body.icon[0])
 
           reply
             .code(201)

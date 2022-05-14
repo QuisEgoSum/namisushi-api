@@ -17,6 +17,7 @@
   "author": "QuisEgoSum",
   "license": "MIT",
   "dependencies": {
+    "@fastify/multipart": "^6.0.0",
     "ajv": "8.8.2",
     "ajv-errors": "3.0.0",
     "ajv-keywords": "5.1.0",
@@ -26,7 +27,6 @@
     "fastify-cookie": "5.4.0",
     "fastify-cors": "6.0.2",
     "fastify-helmet": "5.3.2",
-    "fastify-multipart": "5.3.1",
     "fastify-static": "4.5.0",
     "fastify-swagger": "4.12.6",
     "module-alias": "2.2.2",

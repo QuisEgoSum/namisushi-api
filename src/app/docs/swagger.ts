@@ -39,7 +39,8 @@ export const swagger: Record<string, any> = {
           DocsTags.PRODUCT,
           DocsTags.PRODUCT_ADMIN,
           DocsTags.CATEGORY_ADMIN,
-          DocsTags.VARIANT_ADMIN
+          DocsTags.VARIANT_ADMIN,
+          DocsTags.PRODUCT_TAG_ADMIN
         ]
       },
       {

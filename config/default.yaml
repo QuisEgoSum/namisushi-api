@@ -84,6 +84,9 @@ product:
   variant:
     icon:
       maximumSize: 10485760
+  tag:
+    icon:
+      maximumSize: 10485760
   image:
     maximum: 10
     file:

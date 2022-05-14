@@ -94,6 +94,12 @@ interface ProductConfig {
       readonly maximumSize: number
     }
   }
+  readonly tag: {
+    readonly icon: {
+      destination: string
+      readonly maximumSize: number
+    }
+  }
   readonly image: {
     readonly maximum: number
     readonly file: {
@@ -148,6 +154,9 @@ export class ConfigEntity {
     }
     if (!this.product.variant.icon.destination) {
       this.product.variant.icon.destination = path.resolve(rootDir, 'image/variant-icon')
+    }
+    if (!this.product.tag.icon.destination) {
+      this.product.tag.icon.destination = path.resolve(rootDir, 'image/tag')
     }
 
     this.paths = {

@@ -4,7 +4,13 @@ import {v4} from 'uuid'
 import mv from 'mv'
 import util from 'util'
 import {logger as defaultLogger} from '@logger'
+import {Readable} from 'stream'
 
+
+
+export async function writeFile(filepath: string, file: Readable) {
+  await fs.promises.writeFile(filepath, file)
+}
 
 const logger = defaultLogger.child({label: 'fs'})
 
