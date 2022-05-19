@@ -58,12 +58,13 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
 
   async reloadVisibleProductsCache(timeout = false): Promise<void> {
     this.logger.info("Reload cache")
-    const [categories, single, variant] = await Promise.all([
+    const [categories, single, variant, tags] = await Promise.all([
       this.categoryService.findVisible(),
       this.repository.findSingleVisible(),
-      this.repository.findVariantVisible()
+      this.repository.findVariantVisible(),
+      this.tagService.findAll()
     ])
-    this.cachedVisibleProducts = JSON.stringify({categories, products: [...single, ...variant]})
+    this.cachedVisibleProducts = JSON.stringify({products: [...single, ...variant], categories, tags})
     if (timeout) {
       if (this.cacheTimeout !== null) {
         this.cacheTimeout.unref()
@@ -300,6 +301,22 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
   }
 
   async pullTag(tagId: Types.ObjectId) {
-    await this.repository.pullTag(tagId)
+    await this.repository.pullTagFromAllProducts(tagId)
+  }
+
+  async removeTag(productId: string, tagId: string) {
+    await this.tagService.existsById(tagId)
+    const updatedResult = await this.repository.pullTag(productId, tagId)
+    if (!updatedResult.matchedCount) {
+      throw new this.error.ProductDoesNotExistError()
+    }
+  }
+
+  async addTag(productId: string, tagId: string) {
+    await this.tagService.existsById(tagId)
+    const updatedResult = await this.repository.addToSetTag(productId, tagId)
+    if (!updatedResult.matchedCount) {
+      throw new this.error.ProductDoesNotExistError()
+    }
   }
 }

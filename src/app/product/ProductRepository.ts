@@ -180,10 +180,18 @@ export class ProductRepository extends GenericRepository<IProduct> {
     ]).exec()
   }
 
-  async pullTag(tagId: Types.ObjectId) {
+  async pullTagFromAllProducts(tagId: Types.ObjectId) {
     await this.Model.updateMany(
       {tags: tagId},
       {$pull: {tags: tagId}}
     )
+  }
+
+  async addToSetTag(productId: string, tagId: string) {
+    return await this.updateById(new Types.ObjectId(productId), {$addToSet: {tags: new Types.ObjectId(tagId)}})
+  }
+
+  async pullTag(productId: string, tagId: string) {
+    return await this.updateById(new Types.ObjectId(productId), {$pull: {tags: new Types.ObjectId(tagId)}})
   }
 }

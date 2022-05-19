@@ -1,6 +1,7 @@
 import {Ok} from '@common/schemas/response'
 import * as schemas from '../schemas'
 import * as categorySchemas from '@app/product/packages/category/schemas'
+import * as tagSchemas from '@app/product/packages/tag/schemas'
 import type {FastifyInstance} from 'fastify'
 import type {ProductService} from '@app/product/ProductService'
 
@@ -24,6 +25,10 @@ export async function findVisible(fastify: FastifyInstance, service: ProductServ
                 products: {
                   type: 'array',
                   items: schemas.entities.BaseProduct
+                },
+                tags: {
+                  type: 'array',
+                  items: tagSchemas.entities.BaseTag
                 }
               },
               ['categories', 'products']

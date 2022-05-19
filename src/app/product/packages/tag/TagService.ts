@@ -64,4 +64,8 @@ export class TagService extends BaseService<ITag, TagRepository> {
   async find(query: PageOptions) {
     return this.repository.findPage(query)
   }
+
+  async findAll() {
+    return this.repository.find({})
+  }
 }
