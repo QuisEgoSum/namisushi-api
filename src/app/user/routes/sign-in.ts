@@ -16,8 +16,8 @@ export async function signIn(fastify: FastifyInstance, service: UserService) {
   return fastify
     .route<SignInRequest>(
       {
-        url: '/user/singin',
-        method: 'GET',
+        url: '/user/signin',
+        method: 'POST',
         schema: {
           summary: 'Авторизация',
           tags: [DocsTags.USER],
