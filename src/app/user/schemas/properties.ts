@@ -1,14 +1,10 @@
 import {ObjectId, Timestamp} from '@common/schemas/helpers'
 import {phonePattern} from '@common/schemas/pattern'
 import {UserRole} from '@app/user/UserRole'
-import {UserStatus} from '@app/user/UserStatus'
 import {v4} from 'uuid'
 
 
 export const _id = new ObjectId({entity: 'user'})
-export const savedUsername = {
-  type: ['string', 'null']
-}
 export const email = {
   type: 'string',
   example: 'user@nowhere.com',

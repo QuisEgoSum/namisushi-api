@@ -1,7 +1,7 @@
 import {
   _id, avatar, createdAt, email,
   mEmail, role, updatedAt,
-  savedUsername, savedEmail,
+  savedEmail,
   savedPhone, name, phone,
   allowedChangeRole, savedName,
   otpCode
@@ -33,7 +33,6 @@ export const UserBase = {
   properties: {
     _id: _id,
     name: savedName,
-    username: savedUsername,
     email: savedEmail,
     phone: savedPhone,
     role: role,
@@ -44,7 +43,6 @@ export const UserBase = {
   additionalProperties: false,
   required: [
     '_id',
-    'username',
     'name',
     'email',
     'phone',
