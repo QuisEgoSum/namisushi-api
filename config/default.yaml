@@ -76,7 +76,6 @@ user:
       maxAge: 5184000000
 
   superadmin:
-    username: admin
     email: admin@nowhere.org
     password: SuperSecretPassword
 

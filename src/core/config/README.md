@@ -27,7 +27,6 @@
 | NAMISUSHI_API_USER_SESSION_COOKIE_SAME_SITE          |                      | string, boolean |                                        |
 | NAMISUSHI_API_USER_SESSION_COOKIE_MAX_AGE            |                      | integer         |                                        |
 | NAMISUSHI_API_USER_SUPERADMIN_PASSWORD               |                      | string          | Length: 6...1024                       |
-| NAMISUSHI_API_USER_SUPERADMIN_USERNAME               |                      | string          | Length: 1...24                         |
 | NAMISUSHI_API_USER_SUPERADMIN_EMAIL                  |                      | string          |                                        |
 | NAMISUSHI_API_DATABASE_CREDENTIALS_CONNECTION_STRING |                      | string          |                                        |
 | NAMISUSHI_API_DATABASE_OPTIONS_USE_NEW_URL_PARSER    |                      | boolean         |                                        |

@@ -1,6 +1,9 @@
 import {v4} from 'uuid'
 
 
+/**
+ * @deprecated
+ */
 export class OtpUtils {
   private static xmur3(str: string) {
     let h = 1779033703 ^ str.length
@@ -30,6 +33,9 @@ export class OtpUtils {
     }
   }
 
+  /**
+   * @deprecated
+   */
   public static createRandomGenerator() {
     const seed = OtpUtils.xmur3(v4())
     const generator = OtpUtils.xoshiro128ss(seed(), seed(), seed(), seed())

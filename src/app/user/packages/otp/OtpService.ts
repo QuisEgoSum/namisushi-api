@@ -15,6 +15,9 @@ export class OtpService extends BaseService<IOtp, OtpRepository> {
     super(repository)
   }
 
+  /**
+   * @deprecated
+   */
   private async createOtp(phone: string, target: OtpTarget, retry = 5): Promise<IOtp> {
     try {
       const code = this.randomGenerator()
@@ -31,6 +34,9 @@ export class OtpService extends BaseService<IOtp, OtpRepository> {
     }
   }
 
+  /**
+   * @deprecated
+   */
   public async createCode(phone: string, target: OtpTarget): Promise<string> {
     const otp = await this.createOtp(phone, target)
     return otp.code

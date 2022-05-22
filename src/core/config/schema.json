@@ -231,11 +231,6 @@
               "minLength": 6,
               "maxLength": 1024
             },
-            "username": {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 24
-            },
             "email": {
               "type": "string"
             }
@@ -243,7 +238,6 @@
           "additionalProperties": false,
           "required": [
             "password",
-            "username",
             "email"
           ]
         }

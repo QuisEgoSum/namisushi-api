@@ -10,7 +10,6 @@ import {escapeStringRegexp} from '@libs/alg/string'
 import {config} from '@config'
 import {logger} from '@logger'
 import {FilterQuery, Types} from 'mongoose'
-import bcrypt from 'bcrypt'
 import type {DataList} from '@common/data'
 import type {IUser} from '@app/user/UserModel'
 import type {UserRepository} from '@app/user/UserRepository'
@@ -21,19 +20,10 @@ import type {SessionService} from '@app/user/packages/session'
 export class UserService extends BaseService<IUser, UserRepository> {
 
   private static superadminId = '4920737570657261646d696e'
+
   private logger: typeof logger
-
-  private static hashPassword(password: string): Promise<string> {
-    return bcrypt.hash(password, 10)
-  }
-
-  private static compareHashPassword(password: string, hash: string): Promise<boolean> {
-    return bcrypt.compare(password, hash)
-  }
-
-  public error: ServiceError & typeof error
-
   private telegramCache: {watcherIds: number[]; adminIds: number[]}
+  public error: ServiceError & typeof error
 
   constructor(
     userRepository: UserRepository,
@@ -78,9 +68,6 @@ export class UserService extends BaseService<IUser, UserRepository> {
     if (error instanceof BaseRepositoryError.UniqueKeyError) {
       let message
       switch (error.key) {
-        case 'username':
-          message = 'Пользователь с таким никнеймом уже существует'
-          break
         case 'email':
           message = 'Пользователь с таким адресом электронной почты уже существует'
           break
@@ -107,21 +94,6 @@ export class UserService extends BaseService<IUser, UserRepository> {
     return new UserSession(session._id, session.user._id, session.user.role)
   }
 
-  async signin(credentials: entities.UserCredentials): Promise<{user: IUser, sessionId: string}> {
-    const user = await this.repository.findByLogin(credentials.login)
-    if (!user || user.passwordHash === null) {
-      throw new this.error.IncorrectUserCredentials()
-    }
-    if (!await UserService.compareHashPassword(credentials.password, user.passwordHash)) {
-      throw new this.error.IncorrectUserCredentials()
-    }
-    const session = await this.sessionService.createForUser(user._id)
-    return {
-      user: user,
-      sessionId: session._id
-    }
-  }
-
   async signOut(userId: string | Types.ObjectId, sessionId: string) {
     return this.sessionService.deleteUserSession(userId, sessionId)
   }
@@ -133,10 +105,10 @@ export class UserService extends BaseService<IUser, UserRepository> {
 
   async create(user: entities.CreateUser) {
     const createUser = {
-      username: user.username,
-      email: user.email,
+      name: user.name || null,
+      email: user.email || null,
       role: user.role,
-      passwordHash: await UserService.hashPassword(user.password)
+      phone: user.phone
     }
     return super.create(createUser)
   }
@@ -145,9 +117,6 @@ export class UserService extends BaseService<IUser, UserRepository> {
     const filter: FilterQuery<IUser> = {}
     if ('fRole' in query) {
       filter.role = query.fRole
-    }
-    if (query.mUsername) {
-      filter.username = new RegExp(escapeStringRegexp(query.mUsername), 'i')
     }
     if (query.mEmail) {
       filter.email = new RegExp(escapeStringRegexp(query.mEmail), 'i')
@@ -168,32 +137,13 @@ export class UserService extends BaseService<IUser, UserRepository> {
   }
 
   async findByIdAndUpdate(id: string | Types.ObjectId, data: entities.UpdateUserById | entities.UpdateUser): Promise<IUser> {
-    let update: Partial<IUser> = {}
-    if ('password' in data && data.password) {
-      update.passwordHash = await UserService.hashPassword(data.password)
-      delete data.password
-    }
-    update = {...update, ...data}
-    return super.findByIdAndUpdate(id, update)
-  }
-
-  async updateUserPassword(userId: string | Types.ObjectId, data: entities.UpdateUserPassword): Promise<IUser> {
-    const user = await this.findById(userId, {passwordHash: 1})
-    if (!user) {
-      throw new this.error.EntityDoesNotExistError()
-    }
-    if (user.passwordHash && !await UserService.compareHashPassword(data.oldPassword, user.passwordHash)) {
-      throw new this.error.InvalidPasswordError()
-    }
-    return this.findByIdAndUpdate(userId, {password: data.password})
+    return super.findByIdAndUpdate(id, data)
   }
 
   async upsertSuperadmin() {
     const superadmin = {
-      username: config.user.superadmin.username,
       email: config.user.superadmin.email,
-      role: UserRole.WATCHER,
-      passwordHash: await UserService.hashPassword(config.user.superadmin.password)
+      role: UserRole.WATCHER
     }
 
     await this.repository.updateById(
@@ -203,15 +153,14 @@ export class UserService extends BaseService<IUser, UserRepository> {
     )
   }
 
-  async existsUser(userId: Types.ObjectId | string) {
-    await this.findById(new Types.ObjectId(userId))
-  }
-
   async upsertByPhone(phone: string, name: string): Promise<Types.ObjectId> {
     const user = await this.repository.upsertCustomerByPhone(phone, name)
     return user._id
   }
 
+  /**
+   * @deprecated
+   */
   async getStatusByPhone(phone: string): Promise<UserStatus> {
     const user = await this.repository.findRoleByPhone(phone)
     if (user === null || user.role === UserRole.CUSTOMER) {
@@ -221,6 +170,9 @@ export class UserService extends BaseService<IUser, UserRepository> {
     }
   }
 
+  /**
+   * @deprecated
+   */
   async sendSignUpOtp(phone: string) {
     const status = await this.getStatusByPhone(phone)
     if (status === UserStatus.SIGN_IN) {
@@ -235,23 +187,9 @@ export class UserService extends BaseService<IUser, UserRepository> {
     return await this.otpService.createCode(phone, OtpTarget.SIGN_UP)
   }
 
-  async verifyOtp(data: entities.VerifyOtp) {
-    if (!await this.otpService.isExists(data.phone, data.code, OtpTarget.SIGN_UP)) {
-      throw new this.error.InvalidOtpCodeError()
-    }
-  }
-
-  async signUp(signup: entities.SignUp) {
-    await this.verifyOtp(signup)
-    const user = await this.repository.upsertUser({
-      name: signup.name,
-      phone: signup.phone,
-      username: signup.username || null,
-      email: signup.email || null,
-      role: UserRole.USER,
-      passwordHash: await UserService.hashPassword(signup.password)
-    })
-    await this.otpService.deleteOtp(signup.phone, signup.code, OtpTarget.SIGN_UP)
-    return user
-  }
+  // async verifyOtp(data: entities.VerifyOtp) {
+  //   if (!await this.otpService.isExists(data.phone, data.code, OtpTarget.SIGN_UP)) {
+  //     throw new this.error.InvalidOtpCodeError()
+  //   }
+  // }
 }

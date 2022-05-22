@@ -1,44 +1,14 @@
 import {
   _id, avatar, createdAt, email,
-  mEmail, mUsername, password,
-  role, updatedAt, username,
+  mEmail, role, updatedAt,
   savedUsername, savedEmail,
-  savedPhone, name, telegramId,
-  phone, allowedChangeRole, savedName,
-  otpCode
+  savedPhone, name, phone,
+  allowedChangeRole, savedName
 } from './properties'
 import {UserRole} from '@app/user/UserRole'
 import {QueryPageLimit, QueryPageNumber, QuerySortDirection} from '@common/schemas/query'
 import type {SortDirection} from 'mongodb'
 
-
-export interface UserCredentials {
-  login: string,
-  password: string
-}
-
-export const UserCredentials = {
-  title: 'UserCredentials',
-  type: 'object',
-  properties: {
-    login: {
-      description: 'username, email или phone',
-      type: 'string'
-    },
-    password: {
-      type: 'string'
-    }
-  },
-  additionalProperties: false,
-  required: ['login', 'password'],
-  errorMessage: {
-    type: 'Введите логин и пароль',
-    required: {
-      login: 'Введите логин',
-      password: 'Введите пароль'
-    }
-  }
-}
 
 export const UserBase = {
   title: 'UserBase',
@@ -68,45 +38,11 @@ export const UserBase = {
   ]
 }
 
-/**
- * @deprecated
- */
-export const UserExpand = {
-  title: 'UserExpand',
-  type: 'object',
-  properties: {
-    _id: _id,
-    name: savedName,
-    username: savedUsername,
-    email: savedEmail,
-    phone: savedPhone,
-    role: role,
-    avatar: avatar,
-    telegramId: telegramId,
-    createdAt: createdAt,
-    updatedAt: updatedAt
-  },
-  additionalProperties: false,
-  required: [
-    '_id',
-    'name',
-    'username',
-    'email',
-    'phone',
-    'role',
-    'avatar',
-    'telegramId',
-    'createdAt',
-    'updatedAt'
-  ]
-}
-
 export interface CreateUser {
-  name: string
-  username: string
-  email: string
+  name?: string
+  email?: string
   role: UserRole
-  password: string
+  phone: string
 }
 
 export const CreateUser = {
@@ -114,26 +50,22 @@ export const CreateUser = {
   type: 'object',
   properties: {
     name: name,
-    username: username,
     email: email,
     phone: phone,
-    role: allowedChangeRole,
-    password: password
+    role: allowedChangeRole
   },
   additionalProperties: false,
-  required: ['name', 'role', 'password'],
+  required: ['role', 'phone'],
   errorMessage: {
     required: {
-      name: 'Введите имя пользователя',
       role: 'Выберите роль',
-      password: 'Введите пароль'
+      phone: 'Номер телефона'
     }
   }
 }
 
 export interface FindUsersQueryAdmin {
   fRole?: UserRole,
-  mUsername?: string,
   mEmail?: string,
   sCreatedAt: SortDirection,
   page: number,
@@ -145,7 +77,6 @@ export const FindUsersQueryAdmin = {
   type: 'object',
   properties: {
     fRole: role,
-    mUsername: mUsername,
     mEmail: mEmail,
     sCreatedAt: new QuerySortDirection().setDefault('desc'),
     page: new QueryPageNumber().setDefault(1),
@@ -157,9 +88,7 @@ export const FindUsersQueryAdmin = {
 export interface UpdateUserById {
   name?: string
   email?: string
-  username?: string
   phone?: string
-  password?: string
   role?: UserRole
 }
 
@@ -169,9 +98,7 @@ export const UpdateUserById = {
   properties: {
     name: name,
     email: email,
-    username: username,
     phone: phone,
-    password: password,
     role: allowedChangeRole
   },
   additionalProperties: false
@@ -179,7 +106,6 @@ export const UpdateUserById = {
 
 export interface UpdateUser {
   name?: string
-  username?: string
   email?: string
 }
 
@@ -188,84 +114,7 @@ export const UpdateUser = {
   type: 'object',
   properties: {
     name: name,
-    username: username,
     email: email
   },
   additionalProperties: false
-}
-
-export interface UpdateUserPassword {
-  password: string,
-  oldPassword: string
-}
-
-export const UpdateUserPassword = {
-  title: 'UpdateUserPassword',
-  type: 'object',
-  properties: {
-    password: password,
-    oldPassword: {
-      type: 'string'
-    }
-  },
-  additionalProperties: false,
-  required: ['password', 'oldPassword'],
-  errorMessage: {
-    required: {
-      password: 'Введите новый пароль',
-      oldPassword: 'Введите старый пароль'
-    }
-  }
-}
-
-export interface SendSignUpOtp {
-  phone: string
-}
-
-export const SendSignUpOtp = {
-  title: 'SendSignupOtp',
-  type: 'object',
-  properties: {
-    phone
-  },
-  additionalProperties: false,
-  required: ['phone']
-}
-
-export interface VerifyOtp {
-  phone: string,
-  code: string
-}
-
-export const VerifyOtp = {
-  title: 'VerifyOtp',
-  type: 'object',
-  properties: {
-    phone,
-    code: otpCode
-  },
-  additionalProperties: false,
-  required: ['phone', 'code']
-}
-
-export interface SignUp extends VerifyOtp {
-  username?: string
-  email?: string
-  name: string,
-  password: string
-}
-
-export const SignUp = {
-  title: 'Signup',
-  type: 'object',
-  properties: {
-    phone,
-    code: otpCode,
-    username,
-    email,
-    name,
-    password
-  },
-  additionalProperties: false,
-  required: ['phone', 'code', 'name', 'password']
 }

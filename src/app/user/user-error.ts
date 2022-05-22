@@ -51,14 +51,13 @@ export const UserExistsError = EntityExistsError.extends(
         default: undefined,
         example: 'Пользователь с таким адресом электронной почты уже существует',
         enum: [
-          'Пользователь с таким никнеймом уже существует',
           'Пользователь с таким адресом электронной почты уже существует',
           'Пользователь с таким номером телефона уже существует'
         ]
       },
       key: {
         type: 'string',
-        enum: ['email', 'username', 'phone']
+        enum: ['email', 'phone']
       }
     }
   },

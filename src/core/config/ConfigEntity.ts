@@ -70,7 +70,6 @@ interface UserConfig {
   },
   readonly superadmin: {
     readonly password: string,
-    readonly username: string,
     readonly email: string
   }
 }

@@ -9,29 +9,6 @@ export const _id = new ObjectId({entity: 'user'})
 export const savedUsername = {
   type: ['string', 'null']
 }
-export const username = {
-  type: 'string',
-  minLength: 1,
-  maxLength: 24,
-  pattern: "^[a-z0-9_-]+$",
-  example: 'user',
-  errorMessage: {
-    minLength: 'Имя пользователя должно содержать как минимум 1 символ',
-    maxLength: 'Имя пользователя не может превышать 24 символа',
-    pattern: 'Имя пользователя может содержать цифры, английские символы, символ нижнего подчёркивания(_) и дефис(-)'
-  }
-}
-export const mUsername = {
-  description: 'Поиск по частичному совпадению username',
-  type: 'string',
-  minLength: 1,
-  maxLength: 24,
-  example: 'Joe',
-  errorMessage: {
-    minLength: 'Укажите хотя бы 1 символ в поле username',
-    maxLength: 'Username не может содержать больше 24 символов'
-  }
-}
 export const email = {
   type: 'string',
   example: 'user@nowhere.com',
@@ -73,15 +50,6 @@ export const role = {
     enum: `Допустимые роли: ${Object.values(UserRole).join(', ')}`
   }
 }
-export const password = {
-  type: 'string',
-  minLength: 6,
-  maxLength: 1024,
-  errorMessage: {
-    minLength: 'Password must not be less than 6 characters',
-    maxLength: 'Password must not be more than 1024 characters'
-  }
-}
 export const phone = {
   type: 'string',
   pattern: phonePattern,
@@ -114,10 +82,6 @@ export const name = {
 }
 export const telegramId = {
   type: ['string', 'null']
-}
-export const status = {
-  type: 'string',
-  enum: Object.values(UserStatus)
 }
 export const otpCode = {
   type: 'string',
