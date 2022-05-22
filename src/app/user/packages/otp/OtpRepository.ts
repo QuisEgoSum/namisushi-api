@@ -12,7 +12,7 @@ export class OtpRepository extends BaseRepository<IOtp> {
     return await this.deleteOne({phone, code, target})
   }
 
-  async findLastCreatedAt(phone: string, target: OtpTarget.SIGN_UP) {
+  async findLastCreatedAt(phone: string, target: OtpTarget.SIGN_IN) {
     return this.findOne({phone, target}, {createdAt: 1}, {sort: {createdAt: -1}})
   }
 }

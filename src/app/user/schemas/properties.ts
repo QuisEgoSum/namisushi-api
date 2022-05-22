@@ -85,9 +85,9 @@ export const telegramId = {
 }
 export const otpCode = {
   type: 'string',
-  pattern: '^[0-9]{6}$',
+  pattern: '^[0-9]{4}$',
   errorMessage: {
-    pattern: 'OTP код должен состоять из 6 цифр'
+    pattern: 'OTP код должен состоять из 4 цифр'
   }
 }
 export const createdAt = new Timestamp({description: 'Timestamp of user creation'})

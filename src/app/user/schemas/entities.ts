@@ -3,12 +3,29 @@ import {
   mEmail, role, updatedAt,
   savedUsername, savedEmail,
   savedPhone, name, phone,
-  allowedChangeRole, savedName
+  allowedChangeRole, savedName,
+  otpCode
 } from './properties'
 import {UserRole} from '@app/user/UserRole'
 import {QueryPageLimit, QueryPageNumber, QuerySortDirection} from '@common/schemas/query'
 import type {SortDirection} from 'mongodb'
 
+
+export interface UserCredentials {
+  code: string
+  phone: string
+}
+
+export const UserCredentials = {
+  title: 'UserCredentials',
+  type: 'object',
+  properties: {
+    code: otpCode,
+    phone: phone
+  },
+  additionalProperties: false,
+  required: ['code', 'phone']
+}
 
 export const UserBase = {
   title: 'UserBase',

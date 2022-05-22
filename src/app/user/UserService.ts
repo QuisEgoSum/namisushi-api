@@ -10,10 +10,12 @@ import {escapeStringRegexp} from '@libs/alg/string'
 import {config} from '@config'
 import {logger} from '@logger'
 import {FilterQuery, Types} from 'mongoose'
+import {v4} from 'uuid'
 import type {DataList} from '@common/data'
 import type {IUser} from '@app/user/UserModel'
 import type {UserRepository} from '@app/user/UserRepository'
 import type * as entities from '@app/user/schemas/entities'
+import {UserCredentials} from '@app/user/schemas/entities'
 import type {SessionService} from '@app/user/packages/session'
 
 
@@ -178,18 +180,35 @@ export class UserService extends BaseService<IUser, UserRepository> {
     if (status === UserStatus.SIGN_IN) {
       throw new this.error.UserRegisteredError()
     }
-    const lastTimestamp = await this.otpService.findLastTimestamp(phone, OtpTarget.SIGN_UP)
+    const lastTimestamp = await this.otpService.findLastTimestamp(phone, OtpTarget.SIGN_IN)
     const sendDif = lastTimestamp && Math.ceil((Date.now() - lastTimestamp) / 1000)
     if (sendDif && sendDif < 60) {
       throw new this.error.SendOtpTimeoutError({message: `Интервал между отправкой сообщений должен быть 60 секунд. Подождите ещё ${60 - sendDif || 1}`})
     }
     //TODO: send code
-    return await this.otpService.createCode(phone, OtpTarget.SIGN_UP)
+    return await this.otpService.createCode(phone, OtpTarget.SIGN_IN)
   }
 
-  // async verifyOtp(data: entities.VerifyOtp) {
-  //   if (!await this.otpService.isExists(data.phone, data.code, OtpTarget.SIGN_UP)) {
-  //     throw new this.error.InvalidOtpCodeError()
-  //   }
-  // }
+  async signIn(credentials: UserCredentials): Promise<{user: IUser, sessionId: string}> {
+    if (!await this.otpService.isExists(credentials.phone, credentials.code, OtpTarget.SIGN_IN)) {
+      throw new this.error.InvalidOtpCodeError()
+    }
+    const setOnInsert: Partial<IUser> = {
+      avatar: `#=${v4()}`,
+      name: null,
+      email: null,
+      role: UserRole.USER,
+      telegramId: null
+    }
+    const user = await this.repository.upsertUser(credentials.phone, setOnInsert)
+    if (user.role === UserRole.CUSTOMER) {
+      await this.repository.setUserRole(user._id, UserRole.USER)
+      user.role = UserRole.USER
+    }
+    const session = await this.sessionService.createForUser(user._id)
+    return {
+      user: user,
+      sessionId: session._id
+    }
+  }
 }
