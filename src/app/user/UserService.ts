@@ -11,17 +11,25 @@ import {config} from '@config'
 import {logger} from '@logger'
 import {FilterQuery, Types} from 'mongoose'
 import {v4} from 'uuid'
+import bcrypt from 'bcrypt'
 import type {DataList} from '@common/data'
 import type {IUser} from '@app/user/UserModel'
 import type {UserRepository} from '@app/user/UserRepository'
 import type * as entities from '@app/user/schemas/entities'
-import {UserCredentials} from '@app/user/schemas/entities'
 import type {SessionService} from '@app/user/packages/session'
 
 
 export class UserService extends BaseService<IUser, UserRepository> {
 
   private static superadminId = '4920737570657261646d696e'
+
+  private static hashPassword(password: string): Promise<string> {
+    return bcrypt.hash(password, 10)
+  }
+
+  private static compareHashPassword(password: string, hash: string): Promise<boolean> {
+    return bcrypt.compare(password, hash)
+  }
 
   private logger: typeof logger
   private telegramCache: {watcherIds: number[]; adminIds: number[]}
@@ -106,9 +114,11 @@ export class UserService extends BaseService<IUser, UserRepository> {
   }
 
   async create(user: entities.CreateUser) {
-    const createUser = {
+    const createUser: Partial<IUser> = {
       name: user.name || null,
       email: user.email || null,
+      username: user.username || null,
+      passwordHash: user.password ? await UserService.hashPassword(user.password) : null,
       role: user.role,
       phone: user.phone
     }
@@ -139,13 +149,20 @@ export class UserService extends BaseService<IUser, UserRepository> {
   }
 
   async findByIdAndUpdate(id: string | Types.ObjectId, data: entities.UpdateUserById | entities.UpdateUser): Promise<IUser> {
-    return super.findByIdAndUpdate(id, data)
+    let update: Partial<IUser> = {}
+    if ('password' in data && data.password) {
+      update.passwordHash = await UserService.hashPassword(data.password)
+      delete data.password
+    }
+    update = {...update, ...data}
+    return super.findByIdAndUpdate(id, update)
   }
 
   async upsertSuperadmin() {
     const superadmin = {
       email: config.user.superadmin.email,
-      role: UserRole.WATCHER
+      role: UserRole.WATCHER,
+      passwordHash: await UserService.hashPassword(config.user.superadmin.password)
     }
 
     await this.repository.updateById(
@@ -189,16 +206,33 @@ export class UserService extends BaseService<IUser, UserRepository> {
     return await this.otpService.createCode(phone, OtpTarget.SIGN_IN)
   }
 
-  async signIn(credentials: UserCredentials): Promise<{user: IUser, sessionId: string}> {
+  private async signInByPassword(credentials: entities.UserCredentialsByPassword): Promise<{user: IUser, sessionId: string}> {
+    const user = await this.repository.findByLogin(credentials.login)
+    if (!user || user.passwordHash === null) {
+      throw new this.error.IncorrectUserCredentials()
+    }
+    if (!await UserService.compareHashPassword(credentials.password, user.passwordHash)) {
+      throw new this.error.IncorrectUserCredentials()
+    }
+    const session = await this.sessionService.createForUser(user._id)
+    return {
+      user: user,
+      sessionId: session._id
+    }
+  }
+
+  private async signInByCode(credentials: entities.UserCredentialsByCode): Promise<{user: IUser, sessionId: string}> {
     if (!await this.otpService.isExists(credentials.phone, credentials.code, OtpTarget.SIGN_IN)) {
       throw new this.error.InvalidOtpCodeError()
     }
     const setOnInsert: Partial<IUser> = {
       avatar: `#=${v4()}`,
+      role: UserRole.USER,
       name: null,
       email: null,
-      role: UserRole.USER,
-      telegramId: null
+      telegramId: null,
+      username: null,
+      passwordHash: null
     }
     const user = await this.repository.upsertUser(credentials.phone, setOnInsert)
     if (user.role === UserRole.CUSTOMER) {
@@ -209,6 +243,14 @@ export class UserService extends BaseService<IUser, UserRepository> {
     return {
       user: user,
       sessionId: session._id
+    }
+  }
+
+  async signIn(credentials: entities.UserCredentials) {
+    if ('code' in credentials && credentials.code !== null) {
+      return this.signInByCode(credentials)
+    } else {
+      return this.signInByPassword(credentials as entities.UserCredentialsByPassword)
     }
   }
 }

@@ -4,7 +4,7 @@ import {
   EntityExistsError,
   EntityDoesNotExistError,
   InvalidDataError,
-  TooEarlyError
+  TooEarlyError, InternalError
 } from '@core/error'
 
 

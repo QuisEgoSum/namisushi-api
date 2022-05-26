@@ -13,7 +13,21 @@
   </style>
 </head>
 <body>
-<redoc spec-url='{{DOC_URL}}/docs/swagger/json'></redoc>
-<script src='https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js'></script>
+  <div id='redoc'></div>
+  <script src='https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js'></script>
+  <script>
+    (async function() {
+      const url = '{{DOC_URL}}/docs/swagger/json'
+      const response = await fetch(url)
+      const spec = await response.json()
+      const signIn = spec.paths['/user/signin'].post.requestBody.content['application/json'].schema
+      delete signIn.properties
+      delete signIn.oneOf[0].properties.password
+      delete signIn.oneOf[0].properties.login
+      delete signIn.oneOf[1].properties.code
+      delete signIn.oneOf[1].properties.phone
+      Redoc.init(spec, {}, document.getElementById('redoc'))
+    })()
+  </script>
 </body>
 </html>

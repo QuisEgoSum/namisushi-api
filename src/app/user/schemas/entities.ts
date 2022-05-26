@@ -4,27 +4,64 @@ import {
   savedEmail,
   savedPhone, name, phone,
   allowedChangeRole, savedName,
-  otpCode
+  otpCode, username, password, savedUsername
 } from './properties'
 import {UserRole} from '@app/user/UserRole'
 import {QueryPageLimit, QueryPageNumber, QuerySortDirection} from '@common/schemas/query'
 import type {SortDirection} from 'mongodb'
 
 
-export interface UserCredentials {
+export interface UserCredentialsByCode {
   code: string
   phone: string
 }
+
+export interface UserCredentialsByPassword {
+  login: string
+  password: string
+}
+
+export type UserCredentials = UserCredentialsByCode | UserCredentialsByPassword
 
 export const UserCredentials = {
   title: 'UserCredentials',
   type: 'object',
   properties: {
-    code: otpCode,
-    phone: phone
+    login: {},
+    password: {},
+    code: {},
+    phone: {}
   },
   additionalProperties: false,
-  required: ['code', 'phone']
+  oneOf: [
+    {
+      title: 'UserCredentialsByCode',
+      type: 'object',
+      properties: {
+        code: otpCode,
+        phone: phone,
+        password: {type: 'null'},
+        login: {type: 'null'}
+      },
+      additionalProperties: false,
+      required: ['code', 'phone']
+    },
+    {
+      title: 'UserCredentialsByPassword',
+      type: 'object',
+      properties: {
+        login: {
+          description: '`username`, `email` или `phone`',
+          type: 'string'
+        },
+        password: password,
+        code: {type: 'null'},
+        phone: {type: 'null'}
+      },
+      additionalProperties: false,
+      required: ['password', 'login']
+    }
+  ]
 }
 
 export const UserBase = {
@@ -33,6 +70,7 @@ export const UserBase = {
   properties: {
     _id: _id,
     name: savedName,
+    username: savedUsername,
     email: savedEmail,
     phone: savedPhone,
     role: role,
@@ -44,6 +82,7 @@ export const UserBase = {
   required: [
     '_id',
     'name',
+    'username',
     'email',
     'phone',
     'role',
@@ -58,6 +97,8 @@ export interface CreateUser {
   email?: string
   role: UserRole
   phone: string
+  username?: string
+  password?: string
 }
 
 export const CreateUser = {
@@ -67,14 +108,16 @@ export const CreateUser = {
     name: name,
     email: email,
     phone: phone,
-    role: allowedChangeRole
+    role: allowedChangeRole,
+    username: username,
+    password: password
   },
   additionalProperties: false,
   required: ['role', 'phone'],
   errorMessage: {
     required: {
       role: 'Выберите роль',
-      phone: 'Номер телефона'
+      phone: 'Введите номер телефона'
     }
   }
 }
@@ -105,6 +148,8 @@ export interface UpdateUserById {
   email?: string
   phone?: string
   role?: UserRole
+  username?: string
+  password?: string
 }
 
 export const UpdateUserById = {
@@ -114,7 +159,9 @@ export const UpdateUserById = {
     name: name,
     email: email,
     phone: phone,
-    role: allowedChangeRole
+    role: allowedChangeRole,
+    username: username,
+    password: password
   },
   additionalProperties: false
 }

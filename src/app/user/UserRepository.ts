@@ -1,11 +1,33 @@
 import {BaseRepository} from '@core/repository/BaseRepository'
 import {UserRole} from '@app/user/UserRole'
 import type {IUser} from '@app/user/UserModel'
-import {v4} from 'uuid'
 import {Types} from 'mongoose'
 
 
 export class UserRepository extends BaseRepository<IUser> {
+  async findByLogin(login: string) {
+    return this.findOne(
+      {
+        $or: [
+          {username: login},
+          {email: login},
+          {phone: login}
+        ]
+      },
+      {
+        username: 1,
+        name: 1,
+        email: 1,
+        phone: 1,
+        role: 1,
+        avatar: 1,
+        passwordHash: 1,
+        createdAt: 1,
+        updatedAt: 1
+      }
+    )
+  }
+
   distinctTelegramIdsByRoles(...roles: UserRole[]): Promise<number[]> {
     return this.Model
       .distinct(

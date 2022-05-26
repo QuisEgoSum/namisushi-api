@@ -76,6 +76,30 @@ export const name = {
     maxLength: 'Имя не должно содержать больше 128 символов'
   }
 }
+export const savedUsername = {
+  type: ['string', 'null']
+}
+export const username = {
+  type: 'string',
+  minLength: 1,
+  maxLength: 24,
+  pattern: "^[a-z0-9_-]+$",
+  example: 'user',
+  errorMessage: {
+    minLength: 'Имя пользователя должно содержать как минимум 1 символ',
+    maxLength: 'Имя пользователя не может превышать 24 символа',
+    pattern: 'Имя пользователя может содержать цифры, английские символы, символ нижнего подчёркивания(_) и дефис(-)'
+  }
+}
+export const password = {
+  type: 'string',
+  minLength: 6,
+  maxLength: 1024,
+  errorMessage: {
+    minLength: 'Password must not be less than 6 characters',
+    maxLength: 'Password must not be more than 1024 characters'
+  }
+}
 export const telegramId = {
   type: ['string', 'null']
 }
