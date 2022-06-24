@@ -57,7 +57,17 @@ interface LoggerConfig {
 
 interface UserConfig {
   readonly otp: {
-    debug: boolean
+    readonly debug: boolean
+    readonly providers: {
+      readonly greenSMS: {
+        readonly dayLimits: {
+          readonly phone: number
+          readonly total: number
+        }
+        readonly testMode: boolean
+        readonly token: string
+      }
+    }
   }
   readonly session: {
     readonly maximum: number

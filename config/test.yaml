@@ -62,7 +62,14 @@ logger:
 
 user:
   otp:
-    debug: false
+    debug: true
+    providers:
+      greenSMS:
+        dayLimits:
+          phone: 10
+          total: 1000
+        testMode: false
+        token: stub
 
   session:
     maximum: 10

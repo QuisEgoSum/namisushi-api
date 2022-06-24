@@ -179,10 +179,45 @@
           "properties": {
             "debug": {
               "type": "boolean"
+            },
+            "providers": {
+              "type": "object",
+              "properties": {
+                "greenSMS": {
+                  "type": "object",
+                  "properties": {
+                    "dayLimits": {
+                      "type": "object",
+                      "properties": {
+                        "phone": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "total": {
+                          "type": "integer",
+                          "minimum": 0
+                        }
+                      },
+                      "additionalProperties": false,
+                      "required": ["phone", "total"]
+                    },
+                    "testMode": {
+                      "type": "boolean"
+                    },
+                    "token": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": ["testMode", "token", "dayLimits"]
+                }
+              },
+              "additionalProperties": false,
+              "required": ["greenSMS"]
             }
           },
           "additionalProperties": false,
-          "required": ["debug"]
+          "required": ["debug", "providers"]
         },
         "session": {
           "type": "object",

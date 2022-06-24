@@ -2,7 +2,7 @@ import type {RouteOptions} from 'fastify'
 import {
   Unauthorized, BadRequest, Forbidden,
   Ok, Created, DataList, MessageResponse,
-  OkBinaryString, NotFound
+  OkBinaryString, NotFound, TooEarly
 } from '@common/schemas/response'
 import {RequestHandlingError} from '@error'
 
@@ -20,6 +20,7 @@ declare module 'fastify' {
         [401]?: Unauthorized
         [403]?: Forbidden
         [404]?: NotFound
+        [429]?: TooEarly
         [key: string]: any
       },
       security?: Array<{[key: string]: []}>

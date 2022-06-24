@@ -180,3 +180,17 @@ export const UpdateUser = {
   },
   additionalProperties: false
 }
+
+export interface CallOtp {
+  phone: string
+}
+
+export const CallOtp = {
+  title: 'CallOtp',
+  type: 'object',
+  properties: {
+    phone
+  },
+  additionalProperties: false,
+  required: ['phone']
+}

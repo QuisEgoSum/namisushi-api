@@ -6,16 +6,18 @@ import type {IGenericService} from '@core/service/IGenericService'
 import type {ServiceError} from '@core/service/index'
 
 
-export class GenericService<T, R extends IGenericRepository<T>> implements IGenericService<T, R> {
-  public error: ServiceError
+export class GenericService<T, R extends IGenericRepository<T>, E = unknown> implements IGenericService<T, R, E> {
+  public error: ServiceError & E
 
   constructor(
-    public readonly repository: R
+    public readonly repository: R,
+    errors?: E
   ) {
     this.error = {
       EntityExistsError: EntityExistsError,
-      EntityDoesNotExistError: EntityDoesNotExistError
-    }
+      EntityDoesNotExistError: EntityDoesNotExistError,
+      ...(errors ? errors : {})
+    } as ServiceError & E
   }
 
   errorHandler<T>(error: Error | BaseRepositoryError): T {

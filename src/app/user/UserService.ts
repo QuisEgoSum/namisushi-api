@@ -1,9 +1,7 @@
-import {BaseService, ServiceError} from '@core/service'
+import {BaseService} from '@core/service'
 import {BaseRepositoryError} from '@core/repository'
 import {UserRole} from '@app/user/UserRole'
-import {UserStatus} from '@app/user/UserStatus'
 import type {OtpService} from '@app/user/packages/otp'
-import {OtpTarget} from '@app/user/packages/otp'
 import {UserSession} from '@app/user/UserSession'
 import * as error from '@app/user/user-error'
 import {escapeStringRegexp} from '@libs/alg/string'
@@ -19,7 +17,7 @@ import type * as entities from '@app/user/schemas/entities'
 import type {SessionService} from '@app/user/packages/session'
 
 
-export class UserService extends BaseService<IUser, UserRepository> {
+export class UserService extends BaseService<IUser, UserRepository, typeof error> {
 
   private static superadminId = '4920737570657261646d696e'
 
@@ -33,25 +31,21 @@ export class UserService extends BaseService<IUser, UserRepository> {
 
   private logger: typeof logger
   private telegramCache: {watcherIds: number[]; adminIds: number[]}
-  public error: ServiceError & typeof error
 
   constructor(
     userRepository: UserRepository,
     private readonly sessionService: SessionService,
     private readonly otpService: OtpService
   ) {
-    super(userRepository)
+    super(userRepository, error)
 
     this.telegramCache = {
       adminIds: [],
       watcherIds: []
     }
 
-    this.error = {
-      EntityExistsError: error.UserExistsError,
-      EntityDoesNotExistError: error.UserNotExistsError,
-      ...error
-    }
+    this.error.EntityExistsError = this.error.UserExistsError
+    this.error.EntityDoesNotExistError = this.error.UserNotExistsError
 
     this.logger = logger.child({label: 'UserService'})
   }
@@ -177,33 +171,8 @@ export class UserService extends BaseService<IUser, UserRepository> {
     return user._id
   }
 
-  /**
-   * @deprecated
-   */
-  async getStatusByPhone(phone: string): Promise<UserStatus> {
-    const user = await this.repository.findRoleByPhone(phone)
-    if (user === null || user.role === UserRole.CUSTOMER) {
-      return UserStatus.SIGN_UP
-    } else {
-      return UserStatus.SIGN_IN
-    }
-  }
-
-  /**
-   * @deprecated
-   */
-  async sendSignUpOtp(phone: string) {
-    const status = await this.getStatusByPhone(phone)
-    if (status === UserStatus.SIGN_IN) {
-      throw new this.error.UserRegisteredError()
-    }
-    const lastTimestamp = await this.otpService.findLastTimestamp(phone, OtpTarget.SIGN_IN)
-    const sendDif = lastTimestamp && Math.ceil((Date.now() - lastTimestamp) / 1000)
-    if (sendDif && sendDif < 60) {
-      throw new this.error.SendOtpTimeoutError({message: `Интервал между отправкой сообщений должен быть 60 секунд. Подождите ещё ${60 - sendDif || 1}`})
-    }
-    //TODO: send code
-    return await this.otpService.createCode(phone, OtpTarget.SIGN_IN)
+  async callOtpCode(phone: string): Promise<string> {
+    return await this.otpService.callOtpCode(phone)
   }
 
   private async signInByPassword(credentials: entities.UserCredentialsByPassword): Promise<{user: IUser, sessionId: string}> {
@@ -222,9 +191,7 @@ export class UserService extends BaseService<IUser, UserRepository> {
   }
 
   private async signInByCode(credentials: entities.UserCredentialsByCode): Promise<{user: IUser, sessionId: string}> {
-    if (!await this.otpService.isExists(credentials.phone, credentials.code, OtpTarget.SIGN_IN)) {
-      throw new this.error.InvalidOtpCodeError()
-    }
+    await this.otpService.verifyCode(credentials.phone, credentials.code)
     const setOnInsert: Partial<IUser> = {
       avatar: `#=${v4()}`,
       role: UserRole.USER,

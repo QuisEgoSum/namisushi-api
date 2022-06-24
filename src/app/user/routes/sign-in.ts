@@ -1,5 +1,10 @@
 import * as schemas from '../schemas'
-import {InvalidOtpCodeError} from '@app/user/user-error'
+import {IncorrectUserCredentials} from '@app/user/user-error'
+import {
+  OtpCodeDoesNotExistError,
+  OtpCodeHasAlreadyBeenUsedError,
+  OtpCodeHasExpiredError
+} from '@app/user/packages/otp/otp-error'
 import {ContentType, DocsTags} from '@app/docs'
 import {BadRequest, Ok} from '@common/schemas/response'
 import {config} from '@config'
@@ -24,7 +29,12 @@ export async function signIn(fastify: FastifyInstance, service: UserService) {
           body: schemas.entities.UserCredentials,
           response: {
             [200]: Ok.fromEntity(schemas.entities.UserBase, 'user'),
-            [400]: new BadRequest(InvalidOtpCodeError.schema())
+            [400]: new BadRequest(
+              IncorrectUserCredentials.schema(),
+              OtpCodeDoesNotExistError.schema(),
+              OtpCodeHasAlreadyBeenUsedError.schema(),
+              OtpCodeHasExpiredError.schema()
+            )
           }
         },
         security: {

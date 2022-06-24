@@ -67,6 +67,7 @@ export class MessageResponse {
   private additionalProperties: boolean
   private required: string[]
   private description: string
+  private headers?: Record<string, any>
   constructor(...messages: string[]) {
     this.description = 'Ok'
     this.type = 'object'
@@ -84,6 +85,11 @@ export class MessageResponse {
       this.properties.message.default = messages[0]
       this.properties.message.example = messages[0]
     }
+  }
+
+  addHeaders(headers: Record<string, any>) {
+    this.headers = headers
+    return this
   }
 }
 
@@ -167,6 +173,12 @@ export class BadRequest extends ErrorResponse {
   paramsErrors() {
     this.addSchema(JsonSchemaValidationErrors.schema())
     return this
+  }
+}
+
+export class TooEarly extends ErrorResponse {
+  constructor(...oneOfSchemas: Schema[]) {
+    super('Too Early', ...oneOfSchemas)
   }
 }
 

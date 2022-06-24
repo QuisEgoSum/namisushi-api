@@ -3,10 +3,10 @@ import type {ServiceError} from '@core/service/index'
 import type {FilterQuery, QueryOptions, ReturnsNewDoc, Types, UpdateQuery, UpdateWithAggregationPipeline} from 'mongoose'
 
 
-export interface IBaseService<T, R extends BaseRepository<T>> {
+export interface IBaseService<T, R extends BaseRepository<T>, E = unknown> {
   repository: R
 
-  error: ServiceError
+  error: ServiceError  & E
 
   /**
    * @throws {EntityExistsError}

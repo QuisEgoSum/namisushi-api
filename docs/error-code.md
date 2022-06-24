@@ -6,3 +6,4 @@
 - 5000-5999 - product category
 - 6000-6999 - order
 - 7000-7999 - product tag
+- 8000-8999 - otp

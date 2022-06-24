@@ -1,5 +1,5 @@
 import {model, Schema, Types} from 'mongoose'
-import {OtpTarget} from '@app/user/packages/otp/OtpTarget'
+import {OtpProvider, OtpTarget} from '@app/user/packages/otp/enums'
 
 
 export interface IOtp {
@@ -7,7 +7,11 @@ export interface IOtp {
   code: string
   phone: string
   target: OtpTarget
-  createdAt: Date
+  provider: OtpProvider
+  active: boolean
+  used: boolean
+  createdAt: number
+  updatedAt: number
 }
 
 
@@ -26,19 +30,38 @@ const OtpSchema = new Schema<IOtp>(
       required: true,
       enum: Object.values(OtpTarget)
     },
-    createdAt: Date
+    provider: {
+      type: String,
+      required: true,
+      enum: Object.values(OtpProvider)
+    },
+    active: {
+      type: Boolean,
+      default: true
+    },
+    used: {
+      type: Boolean,
+      default: false
+    },
+    createdAt: {
+      type: Number
+    },
+    updatedAt: {
+      type: Number
+    }
   },
   {
     versionKey: false,
     timestamps: {
       createdAt: true,
-      updatedAt: false
+      updatedAt: true
     }
   }
 )
-  .index({code: 1, phone: 1}, {unique: true})
-  .index({phone: 1, target: 1})
-  .index({createdAt: 1}, {expireAfterSeconds: 900})
+  .index({target: 1, phone: 1, code: 1, createdAt: 1})
+  .index({provider: 1, createdAt: 1})
+  .index({provider: 1, phone: 1, createdAt: 1})
+  .index({phone: 1, active: 1, target: 1})
 
 
 export const OtpModel = model<IOtp>('UserOtp', OtpSchema, 'user_otp')

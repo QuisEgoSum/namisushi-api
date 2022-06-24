@@ -3,10 +3,10 @@ import type {ServiceError} from '@core/service/index'
 import type {FilterQuery, QueryOptions, ReturnsNewDoc, Types, UpdateQuery, UpdateWithAggregationPipeline} from 'mongoose'
 
 
-export interface IGenericService<T, R extends IGenericRepository<T>> {
+export interface IGenericService<T, R extends IGenericRepository<T>, E = unknown> {
   repository: R
 
-  error: ServiceError
+  error: ServiceError & E
 
   /**
    * @throws {EntityExistsError}

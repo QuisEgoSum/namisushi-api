@@ -84,31 +84,3 @@ export const UserRegisteredError = InvalidDataError.extends(
     message: 'Пользователь с этим номером телефона уже зарегистрирован'
   }
 )
-
-export const SendOtpTimeoutError = TooEarlyError.extends(
-  {
-    properties: {
-      message: {
-        type: 'string',
-        default: 'Интервал между отправкой сообщений должен быть 60 секунд',
-        enum: [
-          'Интервал между отправкой сообщений должен быть 60 секунд',
-          'Интервал между отправкой сообщений должен быть 60 секунд. Подождите ещё {number}'
-        ]
-      }
-    }
-  },
-  {
-    error: 'SendOtpTimeoutError',
-    code: 2007
-  }
-)
-
-export const InvalidOtpCodeError = InvalidDataError.extends(
-  {},
-  {
-    error: 'InvalidOtpCodeError',
-    code: 2008,
-    message: 'Неверный код или время жизни кода истекло'
-  }
-)

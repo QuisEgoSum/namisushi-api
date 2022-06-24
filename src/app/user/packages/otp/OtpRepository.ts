@@ -1,18 +1,48 @@
 import {BaseRepository} from '@core/repository'
 import {IOtp} from '@app/user/packages/otp/OtpModel'
-import {OtpTarget} from '@app/user/packages/otp/OtpTarget'
+import {OtpProvider, OtpTarget} from '@app/user/packages/otp/enums'
+import {Types} from 'mongoose'
 
 
 export class OtpRepository extends BaseRepository<IOtp> {
-  async isExists(phone: string, code: string, target: OtpTarget) {
-    return await this.findOne({phone, code, target}, {_id: 1})
+  async findCode(phone: string, code: string, timestamp: number, target: OtpTarget) {
+    return this.findOne(
+      {
+        phone: phone,
+        code: code,
+        createdAt: {$gte: timestamp},
+        target: target
+      },
+      null,
+      {sort: {createdAt: -1}})
   }
 
-  async deleteOtp(phone: string, code: string, target: OtpTarget) {
-    return await this.deleteOne({phone, code, target})
+  async countGte(timestamp: number, provider: OtpProvider): Promise<number> {
+    return this.count({createdAt: {$gte: timestamp}, provider: provider})
   }
 
-  async findLastCreatedAt(phone: string, target: OtpTarget.SIGN_IN) {
-    return this.findOne({phone, target}, {createdAt: 1}, {sort: {createdAt: -1}})
+  async countGteByPhone(timestamp: number, phone: string, provider: OtpProvider): Promise<number> {
+    return this.count({createdAt: {$gte: timestamp}, phone: phone, provider: provider})
+  }
+
+  async disablePhoneCodes(phone: string, target: OtpTarget) {
+    await this.Model.updateMany(
+      {
+        phone: phone,
+        active: true,
+        target: target
+      },
+      {
+        active: false
+      }
+    )
+  }
+
+  async findLastByPhone(phone: string, target: OtpTarget): Promise<IOtp | null> {
+    return this.findOne({phone, target}, null, {sort: {createdAt: -1}})
+  }
+
+  async markAsUsed(_id: Types.ObjectId) {
+    await this.updateById(_id, {used: true, active: false})
   }
 }

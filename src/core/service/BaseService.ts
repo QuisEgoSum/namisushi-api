@@ -5,16 +5,18 @@ import type {Types, UpdateQuery, FilterQuery, QueryOptions, ReturnsNewDoc} from 
 import type {ServiceError} from '@core/service/index'
 
 
-export class BaseService<T, R extends BaseRepository<T>> implements IBaseService<T, R> {
-  public error: ServiceError
+export class BaseService<T, R extends BaseRepository<T>, E = unknown> implements IBaseService<T, R, E> {
+  public error: ServiceError & E
 
   constructor(
-    public readonly repository: R
+    public readonly repository: R,
+    errors?: E
   ) {
     this.error = {
       EntityExistsError: EntityExistsError,
-      EntityDoesNotExistError: EntityDoesNotExistError
-    }
+      EntityDoesNotExistError: EntityDoesNotExistError,
+      ...(errors ? errors : {})
+    } as ServiceError & E
   }
 
   errorHandler<T>(error: Error | BaseRepositoryError): T {
