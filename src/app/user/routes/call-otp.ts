@@ -1,7 +1,7 @@
 import * as schemas from '../schemas'
 import {DocsTags} from '@app/docs'
 import {BadRequest, MessageResponse, TooEarly} from '@common/schemas/response'
-import type {OtpService} from '@app/user/packages/otp'
+import {UserService} from '@app/user'
 import type {FastifyInstance} from 'fastify'
 import {config} from '@config'
 import {SendOtpDayLimitError, SendOtpPhoneDayLimitError, SendOtpTimeoutError} from '@app/user/packages/otp/otp-error'
@@ -12,7 +12,7 @@ interface CallOtpRequest {
 }
 
 
-export async function callOtp(fastify: FastifyInstance, service: OtpService) {
+export async function callOtp(fastify: FastifyInstance, service: UserService) {
   return fastify
     .route<CallOtpRequest>(
       {
