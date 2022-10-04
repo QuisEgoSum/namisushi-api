@@ -24,7 +24,6 @@ export class OtpService extends BaseService<IOtp, OtpRepository, typeof error> {
   private formatPhone(phone: string): string {
     return phone
       .replace(/\D/g, '')
-      .replace('380', '7949')
   }
 
   async verifyCode(phone: string, code: string): Promise<void> {
