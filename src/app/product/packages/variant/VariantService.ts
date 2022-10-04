@@ -49,7 +49,7 @@ export class VariantService extends BaseService<IVariant, VariantRepository> {
 
   async uploadIcon(file: MultipartFile) {
     const filepath = await fs.createFilepath(config.product.variant.icon.destination, 'svg')
-    await fs.writeFile(filepath.filepath, file.file)
+    await fs.writeFile(filepath.filepath, await file.toBuffer())
     await this.resetIconsList()
     return filepath.filename
   }

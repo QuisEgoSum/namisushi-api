@@ -30,7 +30,7 @@ export class TagService extends BaseService<ITag, TagRepository> {
   async createTag(name: string, icon: MultipartFile) {
     const filename = await fs.createFilepath(this.iconDestination, 'svg')
     const tag = await this.create({name: name, icon: filename.filename})
-    await fs.writeFile(filename.filepath, icon.file)
+    await fs.writeFile(filename.filepath, await icon.toBuffer())
     return tag
   }
 
@@ -44,7 +44,7 @@ export class TagService extends BaseService<ITag, TagRepository> {
       if (!oldTag) {
         throw new this.error.EntityDoesNotExistError()
       }
-      await fs.writeFile(filename.filepath, icon.file)
+      await fs.writeFile(filename.filepath, await icon.toBuffer())
       await fs.deleteFile(this.iconDestination, oldTag.icon)
       return await this.findById(tagId)
     } else {

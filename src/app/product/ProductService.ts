@@ -140,18 +140,21 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
     return await this.variantService.findAndUpdate(productId, variantId, update)
   }
 
+  async uploadImage(file: MultipartFile) {
+    const {filename, filepath} = await fs.createFilepath(
+      config.product.image.file.destination,
+      file.mimetype.split('/').pop() || 'png'
+    )
+    await fs.writeFile(filepath, await file.toBuffer())
+    return filename
+  }
+
   async attachImage(productId: string, files: MultipartFile[]): Promise<string[]> {
     const product = await this.findById(productId, {images: 1})
     if (product.images.length + files.length > config.product.image.maximum) {
       throw new this.error.MaximumImagesExceededError()
     }
-    const images = await Promise.all(
-      files
-        .map(file => fs.createFilepath(config.product.image.file.destination, file.mimetype.split('/').pop() || 'png'))
-        .map((promise, i) => promise.then(
-          file => fs.writeFile(file.filepath, files[i].file).then(() => file.filename))
-        )
-    )
+    const images = await Promise.all(files.map(file => this.uploadImage(file)))
     const updatedProduct = await this.repository.addToSetImages(productId, images)
     if (!updatedProduct) {
       await Promise.all(images.map(filename => fs.deleteFile(config.product.image.file.destination, filename)))

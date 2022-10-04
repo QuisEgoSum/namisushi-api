@@ -17,7 +17,7 @@
   "author": "QuisEgoSum",
   "license": "MIT",
   "dependencies": {
-    "@fastify/multipart": "^6.0.0",
+    "@fastify/multipart": "6.0.0",
     "ajv": "8.8.2",
     "ajv-errors": "3.0.0",
     "ajv-keywords": "5.1.0",
