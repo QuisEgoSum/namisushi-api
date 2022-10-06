@@ -26,6 +26,17 @@
       delete signIn.oneOf[0].properties.login
       delete signIn.oneOf[1].properties.code
       delete signIn.oneOf[1].properties.phone
+      for (const url of Object.keys(spec.paths)) {
+        const o = spec.paths[url]
+        for (const method of Object.keys(o)) {
+          const responses = o[method].responses
+          for (const status of Object.keys(responses)) {
+            if (Number(status) >= 400 && responses[status].content['application/json']) {
+              responses[status].content['application/json'].schema.additionalProperties = false
+            }
+          }
+        }
+      }
       Redoc.init(spec, {}, document.getElementById('redoc'))
     })()
   </script>
