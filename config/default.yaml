@@ -90,6 +90,13 @@ product:
   variant:
     icon:
       maximumSize: 10485760
+    image:
+      allowedTypes: [
+        image/jpeg,
+        image/png,
+        image/jpg
+      ]
+      maximumSize: 10485760
   tag:
     icon:
       maximumSize: 10485760

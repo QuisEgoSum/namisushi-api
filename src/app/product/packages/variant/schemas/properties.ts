@@ -12,6 +12,7 @@ export const title = {
     maxLength: 'Название продукта не должно превышать 64 символа'
   }
 }
+export const image = {type: ['string', 'null'], default: null}
 export const visible = {type: 'boolean'}
 export const weight = {
   description: 'Вес в граммах',

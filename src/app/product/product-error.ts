@@ -87,3 +87,12 @@ export const ProductExistError = EntityExistsError.extends(
     message: 'Продукт с таким названием уже существует'
   }
 )
+
+export const ProductVariantNotHaveImagesError = InvalidDataError.extends(
+  {},
+  {
+    error: 'ProductVariantNotHaveImagesError',
+    code: 3007,
+    message: 'Продукт с вариантами не имеет основных изображений'
+  }
+)

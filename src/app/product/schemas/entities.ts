@@ -55,7 +55,6 @@ export interface VariantProduct {
   title: string
   description: string
   ingredients: string[]
-  images: string[]
   variants: BaseVariant[],
   tags: string[],
   createdAt: number
@@ -71,7 +70,6 @@ export const VariantProduct = {
     title,
     description,
     ingredients,
-    images,
     visible,
     type: typeVariant,
     cost: nullCost,
@@ -91,7 +89,6 @@ export const VariantProduct = {
     'title',
     'description',
     'ingredients',
-    'images',
     'visible',
     'type',
     'cost',

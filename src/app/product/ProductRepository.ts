@@ -1,7 +1,8 @@
 import {IProduct, ISingleProduct, ProductModel} from '@app/product/ProductModel'
 import {GenericRepository} from '@core/repository/GenericRepository'
 import {
-  OrderSingleProductList, OrderVariantProductList,
+  OrderSingleProductList,
+  OrderVariantProductList,
   UpdateSingleProduct,
   UpdateVariantProduct,
   VariantProduct
@@ -47,7 +48,7 @@ export class ProductRepository extends GenericRepository<IProduct> {
           from: 'product_variants',
           let: {productId: '$_id'},
           pipeline: [
-            {$match: {$expr: {productId: '$$productId'}}},
+            {$match: {$expr: {$eq: ['$productId', '$$productId']}}},
             {$project: {
               productId: 0
             }}
@@ -59,7 +60,7 @@ export class ProductRepository extends GenericRepository<IProduct> {
   }
 
   async addToSetImages(productId: string, images: string[]): Promise<{images: string[]} | null> {
-    return this.findByIdAndUpdate<IProduct>(
+    return this.findByIdAndUpdate<ISingleProduct>(
       new Types.ObjectId(productId),
       {$addToSet: {images}},
       {new: true, projection: {images: 1}}
@@ -67,7 +68,10 @@ export class ProductRepository extends GenericRepository<IProduct> {
   }
 
   async pullImage(productId: string, filename: string) {
-    return this.updateOne({_id: new Types.ObjectId(productId), images: filename}, {$pull: {images: filename}})
+    return this.updateOne(
+      {_id: new Types.ObjectId(productId), images: filename, type: ProductType.SINGLE},
+      {$pull: {images: filename}}
+    )
   }
 
   async updateOrderImages(productId: string, images: string[], oldImages: string[]) {
@@ -87,7 +91,7 @@ export class ProductRepository extends GenericRepository<IProduct> {
             from: 'product_variants',
             let: {productId: '$_id'},
             pipeline: [
-              {$match: {$expr: {productId: '$$productId'}}},
+              {$match: {$expr: {$eq: ['$productId', '$$productId']}}},
               {$project: {productId: 0}}
             ],
             as: 'variants'
@@ -110,7 +114,7 @@ export class ProductRepository extends GenericRepository<IProduct> {
           from: 'product_variants',
           let: {productId: '$_id'},
           pipeline: [
-            {$match: {$expr: {productId: '$$productId', visible: true}}},
+            {$match: {$expr: {$eq: ['$productId', '$$productId']}, visible: true}},
             {$project: {productId: 0}}
           ],
           as: 'variants'
@@ -160,7 +164,7 @@ export class ProductRepository extends GenericRepository<IProduct> {
                 _id: {$in: variantIds.map(id => new Types.ObjectId(id))},
                 visible: true,
                 $expr: {
-                    productId: '$$productId',
+                  $eq: ['$productId', '$$productId']
                 }
               }
             },

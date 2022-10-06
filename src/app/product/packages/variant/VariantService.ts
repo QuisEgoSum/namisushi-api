@@ -73,4 +73,35 @@ export class VariantService extends BaseService<IVariant, VariantRepository> {
       update
     )
   }
+
+  private async uploadImage(file: MultipartFile) {
+    const {filename, filepath} = await fs.createFilepath(
+      config.product.variant.image.destination,
+      file.mimetype.split('/').pop() || 'png'
+    )
+    await fs.writeFile(filepath, await file.toBuffer())
+    return filename
+  }
+
+  async attachImage(variantId: string, file: MultipartFile) {
+    const variant = await this.findById(variantId)
+    const filename = await this.uploadImage(file)
+    if (variant.image) {
+      await fs.deleteFile(config.product.variant.image.destination, variant.image)
+    }
+    await this.repository.setImage(variantId, filename)
+    variant.image = filename
+    return variant
+  }
+
+  async deleteImage(variantId: string) {
+    const variant = await this.repository.findAndDeleteImage(variantId)
+    if (!variant) {
+      throw new this.error.VariantDoesNotExistError()
+    }
+    if (!variant.image) {
+      throw new this.error.VariantImageDoesNotExistError()
+    }
+    await fs.deleteFile(config.product.variant.image.destination, variant.image)
+  }
 }

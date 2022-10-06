@@ -372,10 +372,29 @@
               },
               "additionalProperties": false,
               "required": ["maximumSize"]
+            },
+            "image": {
+              "type": "object",
+              "properties": {
+                "allowedTypes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "maximumSize": {
+                  "type": "integer"
+                },
+                "destination": {
+                  "type": "string"
+                }
+              },
+              "required": ["allowedTypes", "maximumSize"],
+              "additionalProperties": false
             }
           },
           "additionalProperties": false,
-          "required": ["icon"]
+          "required": ["icon", "image"]
         },
         "tag": {
           "type": "object",

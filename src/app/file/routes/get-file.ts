@@ -17,6 +17,12 @@ export async function getFile(fastify: FastifyInstance) {
       summary: 'Получить иконку продукта',
       produces: ['image/svg+xml'],
       destination: config.product.variant.icon.destination
+    },
+    {
+      url: '/product/variant/image/:filename',
+      summary: 'Получить изображение варианта',
+      produces: config.product.variant.image.allowedTypes,
+      destination: config.product.variant.image.destination
     }
   ]) {
     fastify

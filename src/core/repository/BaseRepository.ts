@@ -57,7 +57,7 @@ export class BaseRepository<T> implements IBaseRepository<T> {
 
   }
 
-  findByIdAndUpdate(id: string | Types.ObjectId, update: UpdateQuery<T>, options: QueryOptions & { upsert?: true } & ReturnsNewDoc = {new: true}): Promise<T | null> {
+  findByIdAndUpdate(id: string | Types.ObjectId, update: UpdateQuery<T>, options: QueryOptions & { upsert?: true } & Partial<ReturnsNewDoc> = {new: true}): Promise<T | null> {
     return this.Model
       .findByIdAndUpdate(new Types.ObjectId(id), update, options)
       .lean()

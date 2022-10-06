@@ -107,6 +107,7 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
       title: variant.title,
       visible: variant.visible,
       icon: variant.icon,
+      image: null,
       cost: variant.cost,
       weight: variant.weight
     })
@@ -151,6 +152,9 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
 
   async attachImage(productId: string, files: MultipartFile[]): Promise<string[]> {
     const product = await this.findById(productId, {images: 1})
+    if (product.type === ProductType.VARIANT) {
+      throw new this.error.ProductVariantNotHaveImagesError()
+    }
     if (product.images.length + files.length > config.product.image.maximum) {
       throw new this.error.MaximumImagesExceededError()
     }
@@ -166,7 +170,10 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
   async deleteImage(productId: string, filename: string) {
     const result = await this.repository.pullImage(productId, filename)
     if (result.matchedCount == 0) {
-      await this.existsById(productId)
+      const product = await this.findById(productId)
+      if (product.type === ProductType.VARIANT) {
+        throw new this.error.ProductVariantNotHaveImagesError()
+      }
       throw new this.error.ProductImageDoesNotExist()
     }
     await fs.deleteFile(config.product.image.file.destination, filename)
@@ -174,6 +181,9 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
 
   async updateOrderImages(productId: string, images: string[]) {
     const product = await this.findById(productId, {images: 1})
+    if (product.type === ProductType.VARIANT) {
+      throw new this.error.ProductVariantNotHaveImagesError()
+    }
     const oldImages = new Set(product.images)
     if (oldImages.size !== images.length) {
       throw new this.error.ProductImagesNotCompatibleError()

@@ -8,7 +8,6 @@ interface ProductCommon {
   title: string
   description: string
   ingredients: string[]
-  images: string[]
   tags: Types.ObjectId[]
   createdAt: number
   updatedAt: number
@@ -16,6 +15,7 @@ interface ProductCommon {
 
 export interface ISingleProduct extends ProductCommon {
   type: ProductType.SINGLE
+  images: string[]
   cost: number
   weight: number
 }

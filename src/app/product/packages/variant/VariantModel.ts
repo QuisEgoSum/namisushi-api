@@ -5,6 +5,7 @@ export interface IVariant {
   _id: Types.ObjectId
   productId: Types.ObjectId
   title: string
+  image: string | null
   visible: boolean
   icon: string | null
   cost: number
@@ -19,6 +20,10 @@ const VariantSchema = new Schema<IVariant>(
     productId: {
       type: Schema.Types.ObjectId,
       ref: 'Product'
+    },
+    image: {
+      type: String,
+      default: null
     },
     visible: Boolean,
     title: String,

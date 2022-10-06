@@ -3,58 +3,59 @@ import {config} from '@config'
 import type {FastifyInstance} from 'fastify'
 import type {MultipartFile} from '@fastify/multipart'
 import {BadRequest, NotFound, Ok} from '@common/schemas/response'
-import {ProductService} from '@app/product/ProductService'
-import {ProductDoesNotExistError, ProductVariantNotHaveImagesError} from '@app/product/product-error'
 import {FastifyMultipartSchema} from '@common/schemas/payload'
+import {VariantService} from '@app/product/packages/variant'
+import {ProductService} from '@app/product'
+import {VariantDoesNotExistError} from '@app/product/packages/variant/variant-error'
 import {DocsTags} from '@app/docs'
 
 
 interface AttachImagesRequest {
-  Body: {images: MultipartFile[]}
+  Body: {image: MultipartFile[]}
   Params: {
-    productId: string
+    variantId: string
   }
 }
 
 
-export async function attachImages(fastify: FastifyInstance, service: ProductService) {
+export async function attachImages(fastify: FastifyInstance, service: VariantService, productService: ProductService) {
   return fastify
     .route<AttachImagesRequest>(
       {
         method: 'PUT',
-        url: '/admin/product/:productId/images',
+        url: '/admin/product/variant/:variantId',
         schema: {
           summary: 'Добавить продукту картинки',
           description: 'Один или несколько файлов в `images` свойстве'
             + `<br/><br/>*Допустимые mimetype: ${config.product.image.file.allowedTypes.join(', ')}.*`
             + `<br/>*Максимальный размер файла ${config.product.image.file.maximumSize}b.*`,
-          tags: [DocsTags.PRODUCT_ADMIN],
+          tags: [DocsTags.VARIANT_ADMIN],
           consumes: ['multipart/form-data'],
           params: {
             type: 'object',
             properties: {
-              productId: schemas.properties._id
+              variantId: schemas.properties._id
             }
           },
           body: {
             type: 'object',
             properties: {
-              images: new FastifyMultipartSchema(
+              image: new FastifyMultipartSchema(
                 {
                   minimum: 1,
-                  maximum: config.product.image.maximum,
-                  allowedMimetypes: config.product.image.file.allowedTypes,
-                  maximumFileSize: config.product.image.file.maximumSize
+                  maximum: 1,
+                  allowedMimetypes: config.product.variant.image.allowedTypes,
+                  maximumFileSize: config.product.variant.image.maximumSize
                 }
               )
             },
-            required: ['images'],
+            required: ['image'],
             additionalProperties: false
           },
           response: {
-            [200]: Ok.fromEntity(schemas.properties.images, 'images'),
-            [400]: new BadRequest(ProductVariantNotHaveImagesError.schema()).bodyErrors(),
-            [404]: new NotFound(ProductDoesNotExistError.schema())
+            [200]: Ok.fromEntity(schemas.entities.BaseVariant, 'variant'),
+            [400]: new BadRequest().bodyErrors(),
+            [404]: new NotFound(VariantDoesNotExistError.schema())
           }
         },
         security: {
@@ -62,14 +63,14 @@ export async function attachImages(fastify: FastifyInstance, service: ProductSer
           admin: true
         },
         handler: async function(request, reply) {
-          const images = await service.attachImage(request.params.productId, request.body.images)
+          const variant = await service.attachImage(request.params.variantId, request.body.image[0])
 
           reply
             .code(200)
             .type('application/json')
-            .send({images})
+            .send({variant})
         },
-        onSuccessful: () => service.reloadVisibleProductsCache(true)
+        onSuccessful: () => productService.reloadVisibleProductsCache(true)
       }
     )
 }

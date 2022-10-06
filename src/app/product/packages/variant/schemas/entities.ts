@@ -1,4 +1,14 @@
-import {_id, cost, icon, visible, title, weight, createdAt, updatedAt} from '@app/product/packages/variant/schemas/properties'
+import {
+  _id,
+  cost,
+  icon,
+  visible,
+  title,
+  weight,
+  createdAt,
+  updatedAt,
+  image
+} from '@app/product/packages/variant/schemas/properties'
 import {Types} from 'mongoose'
 
 
@@ -6,6 +16,7 @@ export interface BaseVariant {
   _id: Types.ObjectId | string
   title: string
   visible: boolean
+  image: string | null
   icon: string | null
   cost: number
   weight: number
@@ -20,6 +31,7 @@ export const BaseVariant = {
     _id,
     title,
     visible,
+    image,
     icon,
     cost,
     weight,
@@ -31,6 +43,7 @@ export const BaseVariant = {
     '_id',
     'title',
     'visible',
+    'image',
     'icon',
     'cost',
     'weight',

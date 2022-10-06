@@ -18,3 +18,12 @@ export const VariantIconDoesNotExistError = EntityDoesNotExistError.extends(
     code: 4001
   }
 )
+
+export const VariantImageDoesNotExistError = EntityDoesNotExistError.extends(
+  {},
+  {
+    error: 'VariantImageDoesNotExistError',
+    message: 'Вариант продукта не содержит картинку',
+    code: 4002
+  }
+)
