@@ -82,6 +82,11 @@ interface UserConfig {
     readonly password: string,
     readonly email: string
   }
+  readonly avatar: {
+    destination: string
+    readonly allowedTypes: string[]
+    readonly maximumSize: number
+  }
 }
 
 interface DatabaseConfig {
@@ -174,6 +179,10 @@ export class ConfigEntity {
     }
     if (!this.product.variant.image.destination) {
       this.product.variant.image.destination = path.resolve(rootDir, 'image/variant-image')
+    }
+
+    if (!this.user.avatar.destination) {
+      this.user.avatar.destination = path.resolve(rootDir, 'image/user/avatar')
     }
 
     this.paths = {

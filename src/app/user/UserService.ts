@@ -4,6 +4,7 @@ import {UserRole} from '@app/user/UserRole'
 import type {OtpService} from '@app/user/packages/otp'
 import {UserSession} from '@app/user/UserSession'
 import * as error from '@app/user/user-error'
+import * as fs from '@utils/fs'
 import {escapeStringRegexp} from '@libs/alg/string'
 import {config} from '@config'
 import {logger} from '@logger'
@@ -15,6 +16,7 @@ import type {IUser} from '@app/user/UserModel'
 import type {UserRepository} from '@app/user/UserRepository'
 import type * as entities from '@app/user/schemas/entities'
 import type {SessionService} from '@app/user/packages/session'
+import {MultipartFile} from '@fastify/multipart'
 
 
 export class UserService extends BaseService<IUser, UserRepository, typeof error> {
@@ -219,5 +221,30 @@ export class UserService extends BaseService<IUser, UserRepository, typeof error
     } else {
       return this.signInByPassword(credentials as entities.UserCredentialsByPassword)
     }
+  }
+
+  async uploadAvatar(userId: Types.ObjectId, file: MultipartFile): Promise<IUser> {
+    const user = await this.findById(userId)
+    if (!user.avatar.startsWith('#=')) {
+      await fs.deleteFile(config.user.avatar.destination, user.avatar)
+    }
+    const {filename, filepath} = await fs.createFilepath(
+      config.user.avatar.destination,
+      file.mimetype.split('/').pop() || 'png'
+    )
+    await fs.writeFile(filepath, await file.toBuffer())
+    await this.repository.setAvatar(userId, filename)
+    user.avatar = filename
+    return user
+  }
+
+  async setRandomAvatar(userId: Types.ObjectId) {
+    const user = await this.findById(userId)
+    if (!user.avatar.startsWith('#=')) {
+      await fs.deleteFile(config.user.avatar.destination, user.avatar)
+    }
+    user.avatar = `#=${v4()}`
+    await this.repository.setAvatar(userId, user.avatar)
+    return user
   }
 }

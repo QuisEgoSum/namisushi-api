@@ -86,6 +86,14 @@ user:
     email: admin@nowhere.org
     password: SuperSecretPassword
 
+  avatar:
+    allowedTypes: [
+      image/jpeg,
+      image/png,
+      image/jpg
+    ]
+    maximumSize: 10485760
+
 product:
   variant:
     icon:

@@ -275,13 +275,33 @@
             "password",
             "email"
           ]
+        },
+        "avatar": {
+          "type": "object",
+          "properties": {
+            "allowedTypes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "maximumSize": {
+              "type": "integer"
+            },
+            "destination": {
+              "type": "string"
+            }
+          },
+          "required": ["allowedTypes", "maximumSize"],
+          "additionalProperties": false
         }
       },
       "additionalProperties": false,
       "required": [
         "otp",
         "session",
-        "superadmin"
+        "superadmin",
+        "avatar"
       ]
     },
     "database": {

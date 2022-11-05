@@ -63,4 +63,8 @@ export class UserRepository extends BaseRepository<IUser> {
   async setUserRole(id: Types.ObjectId, role: UserRole) {
     await this.updateById(id, {role})
   }
+
+  async setAvatar(userId: Types.ObjectId, filename: string) {
+    await this.updateById(userId, {avatar: filename})
+  }
 }

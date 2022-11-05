@@ -23,6 +23,12 @@ export async function getFile(fastify: FastifyInstance) {
       summary: 'Получить изображение варианта',
       produces: config.product.variant.image.allowedTypes,
       destination: config.product.variant.image.destination
+    },
+    {
+      url: '/user/avatar/:filename',
+      summary: 'Получить аватар пользователя',
+      produces: config.product.variant.image.allowedTypes,
+      destination: config.user.avatar.destination
     }
   ]) {
     fastify
