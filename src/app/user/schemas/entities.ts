@@ -194,3 +194,19 @@ export const CallOtp = {
   additionalProperties: false,
   required: ['phone']
 }
+
+
+export interface UpdateAvatar {
+  avatar: string
+}
+
+
+export const UpdateAvatar = {
+  title: 'UpdateAvatar',
+  type: 'object',
+  properties: {
+    avatar: {type: 'string'}
+  },
+  additionalProperties: false,
+  required: ['avatar']
+}

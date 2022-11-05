@@ -238,13 +238,13 @@ export class UserService extends BaseService<IUser, UserRepository, typeof error
     return user
   }
 
-  async setRandomAvatar(userId: Types.ObjectId) {
+  async setAvatar(userId: Types.ObjectId, avatar: string) {
     const user = await this.findById(userId)
     if (!user.avatar.startsWith('#=')) {
       await fs.deleteFile(config.user.avatar.destination, user.avatar)
     }
-    user.avatar = `#=${v4()}`
-    await this.repository.setAvatar(userId, user.avatar)
+    await this.repository.setAvatar(userId, avatar)
+    user.avatar = avatar
     return user
   }
 }

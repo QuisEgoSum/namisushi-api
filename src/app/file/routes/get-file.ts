@@ -10,25 +10,29 @@ export async function getFile(fastify: FastifyInstance) {
       url: '/product/image/:filename',
       summary: 'Получить изображение продукта',
       produces: config.product.image.file.allowedTypes,
-      destination: config.product.image.file.destination
+      destination: config.product.image.file.destination,
+      tag: DocsTags.PRODUCT
     },
     {
       url: '/product/variant/icon/:filename',
       summary: 'Получить иконку продукта',
       produces: ['image/svg+xml'],
-      destination: config.product.variant.icon.destination
+      destination: config.product.variant.icon.destination,
+      tag: DocsTags.PRODUCT
     },
     {
       url: '/product/variant/image/:filename',
       summary: 'Получить изображение варианта',
       produces: config.product.variant.image.allowedTypes,
-      destination: config.product.variant.image.destination
+      destination: config.product.variant.image.destination,
+      tag: DocsTags.PRODUCT
     },
     {
       url: '/user/avatar/:filename',
       summary: 'Получить аватар пользователя',
       produces: config.product.variant.image.allowedTypes,
-      destination: config.user.avatar.destination
+      destination: config.user.avatar.destination,
+      tag: DocsTags.USER
     }
   ]) {
     fastify
@@ -38,7 +42,7 @@ export async function getFile(fastify: FastifyInstance) {
         schema: {
           summary: opt.summary,
           description: 'Заглушка для документации, статику отдаёт nginx',
-          tags: [DocsTags.PRODUCT],
+          tags: [opt.tag],
           produces: config.product.image.file.allowedTypes,
           params: {
             filename: {

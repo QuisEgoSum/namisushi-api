@@ -5,15 +5,22 @@ import {Ok} from '@common/schemas/response'
 import * as schemas from '@app/user/schemas'
 
 
+interface UploadAvatarRequest {
+  Body: schemas.entities.UpdateAvatar
+}
+
+
+
 export async function uploadAvatar(fastify: FastifyInstance, service: UserService) {
   return fastify
-    .route(
+    .route<UploadAvatarRequest>(
       {
         method: 'PATCH',
         url: '/user/avatar',
         schema: {
-          summary: 'Генерация случайного аватара',
+          summary: 'Засетить аватар',
           tags: [DocsTags.USER],
+          body: schemas.entities.UpdateAvatar,
           response: {
             [200]: Ok.fromEntity(schemas.entities.UserBase, 'user'),
           }
@@ -22,7 +29,7 @@ export async function uploadAvatar(fastify: FastifyInstance, service: UserServic
           auth: true
         },
         handler: async function(request, reply) {
-          const user = await service.setRandomAvatar(request.session.userId)
+          const user = await service.setAvatar(request.session.userId, request.body.avatar)
 
           reply
             .code(200)
