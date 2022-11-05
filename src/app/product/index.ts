@@ -9,6 +9,7 @@ import {initCategory, Category} from '@app/product/packages/category'
 import type {FastifyInstance} from 'fastify'
 import {initTag, Tag} from '@app/product/packages/tag'
 import {ProductEventListener} from '@app/product/ProductEventListener'
+import {Favorite, initFavorite} from '@app/product/packages/favorite'
 
 
 class Product {
@@ -19,6 +20,7 @@ class Product {
     public readonly variant: Variant,
     public readonly category: Category,
     public readonly tag: Tag,
+    public readonly favorite: Favorite,
     private readonly listener: ProductEventListener
   ) {
     this.schemas = schemas
@@ -32,7 +34,8 @@ class Product {
       routes(fastify, this.service),
       this.category.router(fastify, this.service),
       this.variant.router(fastify, this.service),
-      this.tag.router(fastify, this.service)
+      this.tag.router(fastify, this.service),
+      this.favorite.router(fastify)
     ])
   }
 }
@@ -42,7 +45,15 @@ export async function initProduct(): Promise<Product> {
   const variant = await initVariant()
   const category = await initCategory()
   const tag = await initTag()
-  const service = new ProductService(new ProductRepository(ProductModel), variant.service, category.service, tag.service)
+  const favorite = await initFavorite()
+
+  const service = new ProductService(
+    new ProductRepository(ProductModel),
+    variant.service,
+    category.service,
+    tag.service,
+    favorite.service
+  )
 
   await service.reloadVisibleProductsCache()
 
@@ -53,6 +64,7 @@ export async function initProduct(): Promise<Product> {
     variant,
     category,
     tag,
+    favorite,
     listener
   )
 }

@@ -7,3 +7,4 @@
 - 6000-6999 - order
 - 7000-7999 - product tag
 - 8000-8999 - otp
+- 9000-9999 - product favorite

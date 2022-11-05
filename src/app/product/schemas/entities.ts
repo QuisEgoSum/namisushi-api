@@ -11,6 +11,7 @@ import {
 import {BaseVariant} from '@app/product/packages/variant/schemas/entities'
 import {Types} from 'mongoose'
 import {ProductType} from '@app/product/ProductType'
+import {CutTag} from '@app/product/packages/tag/schemas/entities'
 
 
 export const SingleProduct = {
@@ -258,4 +259,83 @@ export interface OrderVariantProductList {
     cost: number,
     weight: number
   }[]
+}
+
+export const ExpandSingleProduct = {
+  title: 'ExpandSingleProduct',
+  type: 'object',
+  properties: {
+    _id,
+    title,
+    description,
+    ingredients,
+    images,
+    visible,
+    type: typeSingle,
+    cost,
+    weight,
+    tags: CutTag,
+    createdAt,
+    updatedAt
+  },
+  additionalProperties: false,
+  required: [
+    '_id',
+    'title',
+    'description',
+    'ingredients',
+    'images',
+    'visible',
+    'type',
+    'cost',
+    'weight',
+    'tags',
+    'createdAt',
+    'updatedAt'
+  ]
+}
+
+export const ExpandVariantProduct = {
+  title: 'ExpandVariantProduct',
+  type: 'object',
+  properties: {
+    _id,
+    title,
+    description,
+    ingredients,
+    visible,
+    type: typeVariant,
+    cost: nullCost,
+    weight: nullWeight,
+    tags: CutTag,
+    variants: {
+      type: 'array',
+      items: BaseVariant,
+      default: []
+    },
+    createdAt,
+    updatedAt
+  },
+  additionalProperties: false,
+  required: [
+    '_id',
+    'title',
+    'description',
+    'ingredients',
+    'visible',
+    'type',
+    'cost',
+    'weight',
+    'tags',
+    'variants',
+    'createdAt',
+    'updatedAt'
+  ]
+}
+
+export const ExpandProduct = {
+  title: 'ProductBase',
+  type: 'object',
+  additionalProperties: true,
+  oneOf: [ExpandSingleProduct, ExpandVariantProduct]
 }

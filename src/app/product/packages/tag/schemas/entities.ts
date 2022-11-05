@@ -2,6 +2,7 @@ import {_id, name, icon, createdAt, updatedAt} from './properties'
 import {config} from '@core/config'
 import {FastifyMultipartSchema} from '@common/schemas/payload'
 import type {MultipartFile} from '@fastify/multipart'
+import {Types} from 'mongoose'
 
 
 export const BaseTag = {
@@ -59,4 +60,19 @@ export const UpdateTag = {
     )
   },
   additionalProperties: false
+}
+
+
+export interface CutTag {
+  _id: Types.ObjectId
+  name: string
+  icon: string
+}
+
+export const CutTag = {
+  title: 'CutTag',
+  type: 'object',
+  properties: {_id, name, icon},
+  additionalProperties: false,
+  required: ['_id', 'name', 'icon']
 }

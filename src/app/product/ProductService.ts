@@ -12,6 +12,7 @@ import type {BaseVariant, CreateVariant, UpdateVariant} from '@app/product/packa
 import type {VariantService} from '@app/product/packages/variant'
 import type {CategoryService} from '@app/product/packages/category'
 import type {TagService} from '@app/product/packages/tag'
+import type {FavoriteService} from '@app/product/packages/favorite/FavoriteService'
 import type {CreateOrderProduct, CreateOrderSingleProduct, CreateOrderVariantProduct} from '@app/order/schemas/entities'
 import type {IOrderProduct} from '@app/order/OrderModel'
 import type {MultipartFile} from '@fastify/multipart'
@@ -28,7 +29,8 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
     repository: ProductRepository,
     private readonly variantService: VariantService,
     private readonly categoryService: CategoryService,
-    private readonly tagService: TagService
+    private readonly tagService: TagService,
+    private readonly favoriteService: FavoriteService
   ) {
     super(repository)
 
@@ -331,5 +333,10 @@ export class ProductService extends GenericService<IProduct, ProductRepository> 
     if (!updatedResult.matchedCount) {
       throw new this.error.ProductDoesNotExistError()
     }
+  }
+
+  async appendFavorite(userId: Types.ObjectId, productId: string) {
+    await this.existsById(productId)
+    await this.favoriteService.append(userId, productId)
   }
 }
