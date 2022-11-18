@@ -170,6 +170,9 @@ export class UserService extends BaseService<IUser, UserRepository, typeof error
 
   async upsertByPhone(phone: string, name: string): Promise<Types.ObjectId> {
     const user = await this.repository.upsertCustomerByPhone(phone, name)
+    if (!user.name) {
+      await this.repository.updateById(user._id, {name})
+    }
     return user._id
   }
 

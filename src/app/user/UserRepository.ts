@@ -41,7 +41,7 @@ export class UserRepository extends BaseRepository<IUser> {
     return await this.findOneAndUpdate(
       {phone},
       {$setOnInsert: {name}},
-      {new: true, upsert: true}
+      {new: true, upsert: true, projection: {_id: 1, name: 1}}
     ) as unknown as Promise<IUser> //upsert
   }
 

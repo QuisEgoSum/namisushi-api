@@ -11,3 +11,4 @@ test/**/*.js
 *.svg
 package-lock.json
 !jest-environment-fail-fast.js
+/dump/
