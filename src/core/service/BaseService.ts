@@ -71,7 +71,7 @@ export class BaseService<T, R extends BaseRepository<T>, E = unknown> implements
     return document
   }
 
-  async findOne(filter: FilterQuery<T>, projection?: unknown | null, options?: QueryOptions | null): Promise<T> {
+  async findOne(filter: FilterQuery<T> = {}, projection?: unknown | null, options?: QueryOptions | null): Promise<T> {
     const document = await this.repository.findOne(filter, projection, options)
     if (document === null) {
       throw new this.error.EntityDoesNotExistError()

@@ -50,6 +50,13 @@ export const swagger: Record<string, any> = {
           DocsTags.ORDER,
           DocsTags.ORDER_ADMIN
         ]
+      },
+      {
+        name: 'Конфигурация',
+        tags: [
+          DocsTags.CONFIG,
+          DocsTags.CONFIG_ADMIN
+        ]
       }
     ]
   }

@@ -8,6 +8,7 @@ import {initProduct} from '@app/product'
 import {initNotification} from '@app/notification'
 import {initOrder} from '@app/order'
 import {initFile} from '@app/file'
+import {initConfig} from '@app/config'
 import {loadModels} from '@utils/loader'
 import {logger} from '@logger'
 
@@ -21,15 +22,24 @@ export async function initApp() {
     model => model.once('index', error => error && logger.child({label: 'db'}).error(error))
   )
 
-  const telegramBot = await createTelegramBot()
+  const [
+    telegramBot,
+    file,
+    docs,
+    user,
+    applicationConfig
+  ] = await Promise.all([
+    createTelegramBot(),
+    initFile(),
+    initDocs(),
+    initUser(),
+    initConfig()
+  ])
 
-  const file = await initFile()
-  const docs = await initDocs()
-  const user = await initUser()
+  const product = await initProduct()
 
   const wsServer = createWsServer(user)
 
-  const product = await initProduct()
   const notification = await initNotification(telegramBot, wsServer, user)
   const order = await initOrder(product, notification, user)
 
@@ -40,7 +50,8 @@ export async function initApp() {
         user.router,
         product.router,
         order.router,
-        file.router
+        file.router,
+        applicationConfig.router
       ],
       swagger: docs.swagger,
       securityOptions: {
