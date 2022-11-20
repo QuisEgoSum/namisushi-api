@@ -82,10 +82,19 @@ export class OrderRepository extends BaseRepository<IOrder> {
     )
   }
 
-  async updateStatus(number: number, condition: OrderCondition, isTestOrder: boolean) {
-    return await this.updateOne(
+  async findAndUpdateConditionByNumber(number: number, condition: OrderCondition, isTestOrder: boolean) {
+    return await this.findOneAndUpdate(
       {number, isTestOrder},
-      {$set: {condition}}
+      {$set: {condition}},
+      {new: false, projection: {delivery: 1, clientId: 1, condition: 1}}
+    )
+  }
+
+  async findAndUpdateConditionById(orderId: string | Types.ObjectId, condition: OrderCondition) {
+    return await this.findOneAndUpdate(
+      {_id: new Types.ObjectId(orderId)},
+      {$set: {condition}},
+      {new: false, projection: {delivery: 1, clientId: 1, condition: 1}}
     )
   }
 }

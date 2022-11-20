@@ -19,7 +19,7 @@ function extractSessionId(socket: Socket) {
   if (!cookie) {
     return
   }
-  const sessionCookie = cookie.split(';').find(s => s.startsWith('sessionId='))
+  const sessionCookie = cookie.split(';').map(s => s.trim()).find(s => s.startsWith('sessionId='))
   if (!sessionCookie) {
     return
   }

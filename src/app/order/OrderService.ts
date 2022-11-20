@@ -125,24 +125,26 @@ export class OrderService extends BaseService<IOrder, OrderRepository> {
     return this.repository.findExpandPage(query)
   }
 
-  async updateStatus(number: number, condition: OrderCondition, isTestOrder = false) {
-    const result = await this.repository.updateStatus(number, condition, isTestOrder)
-    if (result.modifiedCount === 0) {
-      throw new this.error.EntityDoesNotExistError()
-    }
-  }
-
-  async updateStatusById(id: string, condition: OrderCondition) {
-    const order = await this.repository.findOneAndUpdate(
-      {_id: new Types.ObjectId(id)},
-      {condition: condition},
-      {new: false, projection: {delivery: 1, clientId: 1}}
-    )
+  private async updateCondition(order: IOrder | null, condition: OrderCondition) {
     if (!order) {
       throw new this.error.EntityDoesNotExistError()
     }
     if (order.condition != condition) {
-      await this.orderNotificationService.updateStatus(id, condition, order.delivery, order.clientId)
+      await this.orderNotificationService.updateStatus(String(order._id), condition, order.delivery, order.clientId)
     }
+  }
+
+  async updateConditionByNumber(number: number, condition: OrderCondition, isTestOrder = false) {
+    await this.updateCondition(
+      await this.repository.findAndUpdateConditionByNumber(number, condition, isTestOrder),
+      condition
+    )
+  }
+
+  async updateConditionById(orderId: string, condition: OrderCondition) {
+    await this.updateCondition(
+      await this.repository.findAndUpdateConditionById(orderId, condition),
+      condition
+    )
   }
 }

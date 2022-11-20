@@ -19,7 +19,7 @@ export function register(telegram: Telegram, service: OrderService) {
       {
         event: event,
         handler: async function(ctx, [orderId]) {
-          await service.updateStatusById(orderId, condition)
+          await service.updateConditionById(orderId, condition)
           await ctx.answerCbQuery()
         },
         security: {

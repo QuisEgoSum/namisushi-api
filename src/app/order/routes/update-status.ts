@@ -41,7 +41,7 @@ export async function updateStatus(fastify: FastifyInstance, service: OrderServi
           admin: true
         },
         handler: async function(request, reply) {
-          await service.updateStatus(request.params.number, request.body.condition, request.query.isTestOrder)
+          await service.updateConditionByNumber(request.params.number, request.body.condition, request.query.isTestOrder)
 
           reply
             .code(204)
