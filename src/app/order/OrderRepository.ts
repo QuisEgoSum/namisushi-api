@@ -1,6 +1,6 @@
 import {BaseRepository} from '@core/repository'
 import * as schemas from '@app/order/schemas'
-import {OrderCondition} from '@app/order/OrderCondition'
+import {OrderCondition} from '@app/order/enums'
 import {DataList} from '@common/data'
 import {FilterQuery, Types} from 'mongoose'
 import type {IOrder} from '@app/order/OrderModel'

@@ -1,6 +1,5 @@
-import {OrderCondition} from '@app/order/OrderCondition'
-import {OrderDiscount} from '@app/order/OrderDiscount'
 import {model, Schema, Types} from 'mongoose'
+import {OrderCondition, OrderDiscount} from '@app/order/enums'
 
 
 export interface IOrderProduct {

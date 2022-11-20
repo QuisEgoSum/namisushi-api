@@ -1,9 +1,6 @@
 import {BaseService} from '@core/service'
 import {rawPopulatedTransform} from '@app/order/order-transform'
-import {CreatedOrderDoesNotExistError, OrderDoesNotExistError} from '@app/order/order-error'
-import {OrderDiscount} from '@app/order/OrderDiscount'
-import {OrderCondition} from '@app/order/OrderCondition'
-import {INotificationEventEmitter, NotificationEvents} from '@app/notification'
+import {CreatedOrderDoesNotExistError, MISSING_ADDRESS_ERROR, OrderDoesNotExistError} from '@app/order/order-error'
 import * as schemas from '@app/order/schemas'
 import {config} from '@config'
 import type {IOrder} from '@app/order/OrderModel'
@@ -12,6 +9,9 @@ import type {CreateOrder} from '@app/order/schemas/entities'
 import type {ProductService} from '@app/product/ProductService'
 import type {CounterService} from '@app/order/packages/counter/CounterService'
 import {Types} from 'mongoose'
+import {OrderCondition, OrderDiscount} from '@app/order/enums'
+import {OrderNotificationService} from '@app/order/OrderNotificationService'
+import {UserService} from '@app/user'
 
 
 export class OrderService extends BaseService<IOrder, OrderRepository> {
@@ -35,7 +35,8 @@ export class OrderService extends BaseService<IOrder, OrderRepository> {
     repository: OrderRepository,
     private readonly productService: ProductService,
     private readonly counterService: CounterService,
-    private readonly notificationEmitter: INotificationEventEmitter
+    private readonly orderNotificationService: OrderNotificationService,
+    private readonly userService: UserService
   ) {
     super(repository)
 
@@ -48,6 +49,20 @@ export class OrderService extends BaseService<IOrder, OrderRepository> {
   }
 
   async createOrder(createOrder: CreateOrder) {
+    if (createOrder.delivery && !createOrder.address) {
+      throw MISSING_ADDRESS_ERROR
+    }
+    if (!createOrder.clientId) {
+      createOrder.clientId = await this.userService.upsertByPhone(
+        createOrder.phone,
+        createOrder.username
+      )
+    } else {
+      await this.userService.setNameIfNull(
+        createOrder.clientId,
+        createOrder.username
+      )
+    }
     const order: Partial<IOrder> & {productsSum: number, weight: number} = {
       username: createOrder.username,
       phone: createOrder.phone,
@@ -95,9 +110,7 @@ export class OrderService extends BaseService<IOrder, OrderRepository> {
     const savedOrder = await this.repository.create(order)
     const rawPopulatedOrder = await this.repository.findPopulatedOrderById(savedOrder._id)
     if (!rawPopulatedOrder) throw new CreatedOrderDoesNotExistError()
-    const populatedOrder = rawPopulatedTransform(rawPopulatedOrder)
-    this.notificationEmitter.emit(NotificationEvents.NEW_ORDER, populatedOrder)
-    return populatedOrder
+    return rawPopulatedTransform(rawPopulatedOrder)
   }
 
   async findByNumber(number: number, isTestOrder = false, clientId?: Types.ObjectId) {
@@ -116,6 +129,20 @@ export class OrderService extends BaseService<IOrder, OrderRepository> {
     const result = await this.repository.updateStatus(number, condition, isTestOrder)
     if (result.modifiedCount === 0) {
       throw new this.error.EntityDoesNotExistError()
+    }
+  }
+
+  async updateStatusById(id: string, condition: OrderCondition) {
+    const order = await this.repository.findOneAndUpdate(
+      {_id: new Types.ObjectId(id)},
+      {condition: condition},
+      {new: false, projection: {delivery: 1, clientId: 1}}
+    )
+    if (!order) {
+      throw new this.error.EntityDoesNotExistError()
+    }
+    if (order.condition != condition) {
+      await this.orderNotificationService.updateStatus(id, condition, order.delivery, order.clientId)
     }
   }
 }

@@ -1,7 +1,7 @@
 import {createConnection} from '@core/database'
-import {createHttpServer} from './servers/http'
-import {createTelegramBot} from './servers/telegram'
-import {createWsServer} from './servers/ws'
+import {createHttpServer} from './server/http'
+import {createTelegramBot} from './server/telegram'
+import {createWsServer} from './server/ws'
 import {initDocs} from '@app/docs'
 import {initUser} from '@app/user'
 import {initProduct} from '@app/product'
@@ -23,25 +23,24 @@ export async function initApp() {
   )
 
   const [
-    telegramBot,
     file,
     docs,
     user,
     applicationConfig
   ] = await Promise.all([
-    createTelegramBot(),
     initFile(),
     initDocs(),
     initUser(),
     initConfig()
   ])
 
+  const telegram = await createTelegramBot(user)
   const product = await initProduct()
 
   const wsServer = createWsServer(user)
 
-  const notification = await initNotification(telegramBot, wsServer, user)
-  const order = await initOrder(product, notification, user)
+  const notification = await initNotification(telegram, wsServer, user)
+  const order = await initOrder(product, notification, user, telegram)
 
   const httpServer = createHttpServer(
     {
@@ -62,7 +61,7 @@ export async function initApp() {
 
   return {
     http: httpServer,
-    bot: telegramBot,
+    bot: telegram,
     ws: wsServer,
     notification: notification
   }

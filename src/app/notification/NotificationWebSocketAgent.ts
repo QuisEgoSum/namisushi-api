@@ -3,7 +3,8 @@ import {UserRole} from '@app/user'
 
 
 export enum NotificationWebSocketEvents {
-  NEW_ORDER = 'order:new'
+  NEW_ORDER = 'order:new',
+  ORDER_CONDITION = 'order:condition'
 }
 
 

@@ -1,44 +1,31 @@
-import {NotificationEventEmitter, INotificationEventEmitter} from '@app/notification/NotificationEventEmitter'
-import {NotificationEventListener} from '@app/notification/NotificationEventListener'
+import {NotificationService} from '@app/notification/NotificationService'
 import {NotificationTelegramAgent} from '@app/notification/NotificationTelegramAgent'
 import {NotificationWebSocketAgent} from '@app/notification/NotificationWebSocketAgent'
-import {NotificationEvents} from '@app/notification/NotificationEvents'
 import {User} from '@app/user'
-import type {TelegramBot} from '../../servers/telegram'
 import type {Server} from 'socket.io'
+import {Telegram} from '../../server/telegram/Telegram'
 
 
 class Notification {
   constructor(
-    public readonly emitter: INotificationEventEmitter,
-    public readonly listener: NotificationEventListener
+    public readonly service: NotificationService
   ) {}
 }
 
 
 export async function initNotification(
-  bot: TelegramBot,
+  bot: Telegram,
   ws: Server,
   user: User
 ): Promise<Notification> {
-  let telegram: NotificationTelegramAgent | null = null
-  if (bot) {
-    telegram = new NotificationTelegramAgent(bot, user.service)
-  }
+  const telegram = new NotificationTelegramAgent(bot, user.service)
   const webSocketAgent = new NotificationWebSocketAgent(ws)
-  const emitter = new NotificationEventEmitter()
-  const listener = new NotificationEventListener(emitter, telegram, webSocketAgent)
-  return new Notification(emitter, listener)
-}
-
-
-export {
-  NotificationEvents
+  const service = new NotificationService(telegram, webSocketAgent)
+  return new Notification(service)
 }
 
 
 export type {
   Notification,
-  INotificationEventEmitter,
-  NotificationEventListener
+  NotificationService
 }

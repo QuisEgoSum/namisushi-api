@@ -1,21 +1,28 @@
 import type {UserService} from '@app/user/UserService'
-import type {Telegraf} from 'telegraf'
 import type {ExtraReplyMessage} from 'telegraf/typings/telegram-types'
+import {Telegram} from '../../server/telegram/Telegram'
 
 
 export class NotificationTelegramAgent {
   constructor(
-    private readonly bot: Telegraf,
+    private readonly telegram: Telegram,
     private readonly userService: UserService
   ) {}
 
-  private async sendMessages(ids: number[], messages: string[], options: ExtraReplyMessage = {parse_mode: 'Markdown'}) {
-    await Promise.all(ids.map(id => messages.map(message => this.bot.telegram.sendMessage(id, message, options))).flat())
+  private async sendMessages(
+    ids: number[],
+    messages: string[],
+    options: ExtraReplyMessage = {parse_mode: 'Markdown'}
+  ) {
+    return await this.telegram.sendMessage(ids, messages, options)
   }
 
-  public async sendAdminMessage(messages: string[]) {
+  public async sendAdminMessage(
+    messages: string[],
+    options: ExtraReplyMessage
+  ) {
     const recipientIds = this.userService.getTelegramAdminIds()
-    await this.sendMessages(recipientIds, messages)
+    return await this.sendMessages(recipientIds, messages, options)
   }
 
   public async sendWatcherMessage(messages: string[]) {

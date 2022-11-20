@@ -176,6 +176,13 @@ export class UserService extends BaseService<IUser, UserRepository, typeof error
     return user._id
   }
 
+  async setNameIfNull(id: string | Types.ObjectId, name: string) {
+    await this.repository.updateOne(
+      {_id: new Types.ObjectId(id), name: null},
+      {name}
+    )
+  }
+
   async callOtpCode(phone: string): Promise<string> {
     return await this.otpService.callOtpCode(phone)
   }
@@ -249,5 +256,12 @@ export class UserService extends BaseService<IUser, UserRepository, typeof error
     await this.repository.setAvatar(userId, avatar)
     user.avatar = avatar
     return user
+  }
+
+  async isAdminByTelegramId(telegramId: number) {
+    const user = await this.repository.findOne({telegramId}, {role: 1})
+    if (!user || !(user.role === UserRole.ADMIN || user.role === UserRole.WATCHER)) {
+      throw new this.error.UserRightsError()
+    }
   }
 }

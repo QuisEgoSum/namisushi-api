@@ -45,7 +45,6 @@ server:
       ]
   telegram:
     token: 0000000000:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-    enableBot: false
     enableWebhook: false
     webhook:
       port: 9000

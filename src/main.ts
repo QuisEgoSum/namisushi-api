@@ -4,10 +4,10 @@ import {config} from '@config'
 import {logger} from '@logger'
 import {promisify} from 'util'
 import mongoose from 'mongoose'
-import type {TelegramBot} from './servers/telegram'
-import type {NotificationEventListener} from '@app/notification'
+import type {NotificationService} from '@app/notification'
 import type {FastifyInstance} from 'fastify'
 import type {Server} from 'socket.io'
+import {Telegram} from './server/telegram/Telegram'
 
 
 (async function main() {
@@ -15,11 +15,11 @@ import type {Server} from 'socket.io'
 
   await listen(http, bot, ws)
 
-  await notification.listener.startApplication()
+  await notification.service.startApplication()
 
   {
     ['SIGINT', 'SIGTERM']
-      .forEach(event => process.once(event, () => shutdown(event, http, bot, ws, notification.listener)))
+      .forEach(event => process.once(event, () => shutdown(event, http, bot, ws, notification.service)))
   }
 })()
   .catch(error => {
@@ -30,44 +30,40 @@ import type {Server} from 'socket.io'
 
 async function listen(
   http: FastifyInstance,
-  bot: TelegramBot,
+  telegram: Telegram,
   ws: Server
 ) {
   await promisify(http.ready)()
   await http.listen(config.server.http.port, config.server.http.address)
   ws.listen(config.server.ws.port)
   logger.child({label: 'ws'}).info(`Server listening at http://127.0.0.1:${config.server.ws.port}`)
-  if (bot) {
-    let telegrafOptions = {}
-    if (config.server.telegram.enableWebhook) {
-      telegrafOptions = config.server.telegram.webhook
-    }
-    await bot.launch(telegrafOptions)
-    if (config.server.telegram.enableWebhook) {
-      logger.child({label: 'telegram'}).info(
-        `Telegram webhook server listen http://localhost:${
-          config.server.telegram.webhook.port} for domain ${
-          config.server.telegram.webhook.domain} at path ${
-          config.server.telegram.webhook.hookPath}`
-      )
-    } else {
-      logger.child({label: 'telegram'}).info(`Telegram long polling client started`)
-    }
+  let telegrafOptions = {}
+  if (config.server.telegram.enableWebhook) {
+    telegrafOptions = config.server.telegram.webhook
+  }
+  await telegram.bot.launch(telegrafOptions)
+  if (config.server.telegram.enableWebhook) {
+    logger.child({label: 'telegram'}).info(
+      `Telegram webhook server listen http://localhost:${
+        config.server.telegram.webhook.port} for domain ${
+        config.server.telegram.webhook.domain} at path ${
+        config.server.telegram.webhook.hookPath}`
+    )
+  } else {
+    logger.child({label: 'telegram'}).info(`Telegram long polling client started`)
   }
 }
 
 async function shutdown(
   event: string,
   http: FastifyInstance,
-  bot: TelegramBot,
+  telegram: Telegram,
   ws: Server,
-  notification: NotificationEventListener
+  notification: NotificationService
 ) {
   const sLogger = logger.child({label: 'shutdown'})
   sLogger.info({mgs: 'Shutdown start', event})
-  if (bot) {
-    bot.stop()
-  }
+  telegram.bot.stop()
   const results = await Promise.allSettled([
     notification.shutdownApplication(event),
     http.close(),

@@ -1,4 +1,26 @@
-import {EntityDoesNotExistError, InternalError, InvalidDataError} from '@error'
+import {
+  EntityDoesNotExistError,
+  InternalError,
+  InvalidDataError,
+  JsonSchemaValidationError,
+  JsonSchemaValidationErrors
+} from '@error'
+
+
+export const MISSING_ADDRESS_ERROR = new JsonSchemaValidationErrors({
+  in: 'body',
+  errors: [new JsonSchemaValidationError({
+    message: 'Укажите адрес доставки',
+    code: 1002,
+    error: 'JsonSchemaValidationError',
+    keyword: 'required',
+    schemaPath: '#/required',
+    dataPath: '',
+    details: {
+      'missingProperty': 'address'
+    }
+  })]
+})
 
 
 export const OrderDoesNotExistError = EntityDoesNotExistError.extends(

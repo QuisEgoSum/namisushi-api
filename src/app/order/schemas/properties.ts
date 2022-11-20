@@ -1,7 +1,6 @@
 import {ObjectId, Timestamp} from '@common/schemas/helpers'
 import {phonePattern} from '@common/schemas/pattern'
-import {OrderCondition} from '@app/order/OrderCondition'
-import {OrderDiscount} from '@app/order/OrderDiscount'
+import {OrderCondition, OrderDiscount} from '@app/order'
 
 
 export const _id = new ObjectId({errorMessage: 'Невалидный идентификатор заказа'})
