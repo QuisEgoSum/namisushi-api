@@ -45,7 +45,7 @@ export class NotificationService {
 
   async newOrder(order: PopulatedOrder, message: string[], options: ExtraReplyMessage) {
     this.ws.sendEvent(
-      NotificationWebSocketEvents.NEW_ORDER,
+      NotificationWebSocketEvents.ORDER_CONDITION,
       String(order.clientId),
       {_id: order.clientId, condition: order.condition}
     )
