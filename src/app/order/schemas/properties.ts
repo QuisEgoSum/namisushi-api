@@ -113,6 +113,14 @@ export const deliveryCalculateManually = {
 export const time = {
   description: 'Время доставки. Не может быть меньше часа от текущего времени',
   type: 'integer',
+  orderTime: true,
+  errorMessage: {
+    type: 'Временная метка должна быть целым числом'
+  }
+}
+export const timeResponse = {
+  description: 'Время доставки. Не может быть меньше часа от текущего времени',
+  type: 'integer',
   errorMessage: {
     type: 'Временная метка должна быть целым числом'
   }

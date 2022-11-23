@@ -35,6 +35,9 @@ export class OrderUtils {
     } else {
       orderTexts.push('Самовывоз\n')
     }
+    if (order.time) {
+      orderTexts.push(`Время выполнения: ${new Date(order.time).toLocaleString()}\n`)
+    }
     if (order.additionalInformation) {
       orderTexts.push(`Доп. информация: ${order.additionalInformation}\n`)
     }

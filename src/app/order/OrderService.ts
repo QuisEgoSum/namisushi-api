@@ -20,8 +20,8 @@ export class OrderService extends BaseService<IOrder, OrderRepository> {
   /**
    * @summary С понедельника по четверг с 11:00 до 16:00
    */
-  private static isWeekday(): boolean {
-    const date = new Date()
+  private static isWeekday(timestamp: number | null | undefined): boolean {
+    const date = timestamp ? new Date(timestamp) : new Date()
     const day = date.getDay()
     const isRequiredDay = day >= 1 && day <= 4
     if (!isRequiredDay) {
@@ -75,7 +75,8 @@ export class OrderService extends BaseService<IOrder, OrderRepository> {
       weight: 0,
       clientId: createOrder.clientId,
       condition: OrderCondition.NEW,
-      isTestOrder: createOrder.isTestOrder
+      isTestOrder: createOrder.isTestOrder,
+      time: createOrder.time || null
     }
     if (createOrder.delivery && (createOrder.deliveryCost === null || createOrder.deliveryCost === undefined)) {
       order.deliveryCalculateManually = true
@@ -93,7 +94,7 @@ export class OrderService extends BaseService<IOrder, OrderRepository> {
     if (!createOrder.delivery) {
       discounts.push({type: OrderDiscount.WITHOUT_DELIVERY, percent: this.discounts[OrderDiscount.WITHOUT_DELIVERY]})
     }
-    if (OrderService.isWeekday()) {
+    if (OrderService.isWeekday(order.time)) {
       discounts.push({type: OrderDiscount.WEEKDAY, percent: this.discounts[OrderDiscount.WEEKDAY]})
     }
     order.discount = discounts

@@ -1,3 +1,4 @@
+import './order-validator'
 import {OrderRepository} from './OrderRepository'
 import {OrderModel} from './OrderModel'
 import {OrderService} from './OrderService'

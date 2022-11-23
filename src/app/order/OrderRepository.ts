@@ -74,7 +74,8 @@ export class OrderRepository extends BaseRepository<IOrder> {
         additionalInformation: 1,
         deliveryCalculateManually: 1,
         createdAt: 1,
-        isTestOrder: 1
+        isTestOrder: 1,
+        time: 1
       },
       {
         sort: {createdAt: query.sCreatedAt}

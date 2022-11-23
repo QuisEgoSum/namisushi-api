@@ -5,7 +5,7 @@ import {
   deliveryCalculateManually,
   deliveryCost, discountPercent, discountType, isTestOrder, number,
   numberOfProducts, phone, productCost,
-  productId, productsSum, productWeight, updatedAt,
+  productId, productsSum, productWeight, time, timeResponse, updatedAt,
   username, variantId, weight
 } from '@app/order/schemas/properties'
 import {BaseProduct} from '@app/product/schemas/entities'
@@ -214,6 +214,7 @@ export const PopulatedOrder = {
     productsSum,
     products: PopulatedOrderedProductList,
     isTestOrder,
+    time: timeResponse,
     createdAt,
     updatedAt
   },
@@ -236,6 +237,7 @@ export const PopulatedOrder = {
     'productsSum',
     'products',
     'isTestOrder',
+    'time',
     'createdAt',
     'updatedAt'
   ]
@@ -264,6 +266,7 @@ export interface CreateOrder {
   products: CreateOrderProduct[]
   isTestOrder: boolean
   clientId: Types.ObjectId
+  time: number
 }
 
 export const CreateOrder = {
@@ -277,7 +280,8 @@ export const CreateOrder = {
     deliveryCost,
     additionalInformation,
     products: CreateOrderProductList,
-    isTestOrder
+    isTestOrder,
+    time
   },
   additionalProperties: false,
   required: [
@@ -350,6 +354,7 @@ export interface PreviewExpandOrder {
   } | null
   additionalInformation: string | null
   deliveryCalculateManually: boolean | null
+  time: number | null
   createdAt: number
 }
 
@@ -369,6 +374,7 @@ export const PreviewOrder = {
     additionalInformation,
     deliveryCalculateManually,
     isTestOrder,
+    time: timeResponse,
     createdAt
   },
   additionalProperties: false,
@@ -384,6 +390,7 @@ export const PreviewOrder = {
     'discount',
     'additionalInformation',
     'deliveryCalculateManually',
+    'time',
     'createdAt'
   ]
 }
