@@ -2,50 +2,33 @@ import {BaseService} from '@core/service'
 import {rawPopulatedTransform} from '@app/order/order-transform'
 import {CreatedOrderDoesNotExistError, MISSING_ADDRESS_ERROR, OrderDoesNotExistError} from '@app/order/order-error'
 import * as schemas from '@app/order/schemas'
-import {config} from '@config'
 import type {IOrder} from '@app/order/OrderModel'
 import type {OrderRepository} from '@app/order/OrderRepository'
 import type {CreateOrder} from '@app/order/schemas/entities'
 import type {ProductService} from '@app/product/ProductService'
 import type {CounterService} from '@app/order/packages/counter/CounterService'
 import {Types} from 'mongoose'
-import {OrderCondition, OrderDiscount} from '@app/order/enums'
+import {OrderCondition} from '@app/order/enums'
 import {OrderNotificationService} from '@app/order/OrderNotificationService'
 import {UserService} from '@app/user'
+import {DiscountService} from '@app/order/DiscountService'
+
+
+export type InitOrder = Partial<IOrder> & {productsSum: number, weight: number, cost: number}
 
 
 export class OrderService extends BaseService<IOrder, OrderRepository> {
-  private readonly discounts: {[key in OrderDiscount]: number}
-
-  /**
-   * @summary С понедельника по четверг с 11:00 до 16:00
-   */
-  private static isWeekday(timestamp: number | null | undefined): boolean {
-    const date = timestamp ? new Date(timestamp) : new Date()
-    const day = date.getDay()
-    const isRequiredDay = day >= 1 && day <= 4
-    if (!isRequiredDay) {
-      return false
-    }
-    const time = date.getHours() * 60 + date.getMinutes()
-    return  time >= 660 && time < 960
-  }
-
   constructor(
     repository: OrderRepository,
     private readonly productService: ProductService,
     private readonly counterService: CounterService,
     private readonly orderNotificationService: OrderNotificationService,
-    private readonly userService: UserService
+    private readonly userService: UserService,
+    private readonly discountService: DiscountService
   ) {
     super(repository)
 
     this.error.EntityDoesNotExistError = OrderDoesNotExistError
-
-    this.discounts = {
-      [OrderDiscount.WEEKDAY]: config.order.discount.weekday,
-      [OrderDiscount.WITHOUT_DELIVERY]: config.order.discount.withoutDelivery
-    }
   }
 
   async createOrder(createOrder: CreateOrder) {
@@ -63,7 +46,7 @@ export class OrderService extends BaseService<IOrder, OrderRepository> {
         createOrder.username
       )
     }
-    const order: Partial<IOrder> & {productsSum: number, weight: number} = {
+    const order: InitOrder = {
       username: createOrder.username,
       phone: createOrder.phone,
       delivery: createOrder.delivery,
@@ -90,20 +73,7 @@ export class OrderService extends BaseService<IOrder, OrderRepository> {
       order.productsSum += product.cost * product.number
       order.weight += product.weight * product.number
     }
-    const discounts: {type: OrderDiscount, percent: number}[] = []
-    if (!createOrder.delivery) {
-      discounts.push({type: OrderDiscount.WITHOUT_DELIVERY, percent: this.discounts[OrderDiscount.WITHOUT_DELIVERY]})
-    }
-    if (OrderService.isWeekday(order.time)) {
-      discounts.push({type: OrderDiscount.WEEKDAY, percent: this.discounts[OrderDiscount.WEEKDAY]})
-    }
-    order.discount = discounts
-      .sort((a, b) =>  a.percent > b.percent ? -1 : 1)[0] || null
-    if (order.discount) {
-      order.cost = Math.floor(order.productsSum * (100 - order.discount.percent) / 100)
-    } else {
-      order.cost = order.productsSum
-    }
+    await this.discountService.make(order)
     if (typeof order.deliveryCost === 'number') {
       order.cost += order.deliveryCost
     }

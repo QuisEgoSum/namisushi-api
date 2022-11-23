@@ -14,6 +14,7 @@ import {register} from '@app/order/order-telegram-handler'
 import {OrderNotificationService} from '@app/order/OrderNotificationService'
 import {OrderTelegramRepository} from '@app/order/OrderTelegramRepository'
 import {OrderTelegramModel} from '@app/order/OrderTelegramModel'
+import {DiscountService} from '@app/order/DiscountService'
 
 
 class Order {
@@ -44,6 +45,7 @@ export async function initOrder(
   telegram: Telegram
 ) {
   const counter = await initCounter()
+  const discountService = new DiscountService()
   const orderNotificationService = new OrderNotificationService(
     notification.service,
     new OrderTelegramRepository(OrderTelegramModel),
@@ -54,7 +56,8 @@ export async function initOrder(
     product.service,
     counter.service,
     orderNotificationService,
-    user.service
+    user.service,
+    discountService
   )
   register(telegram, service)
   return new Order(service, counter, orderNotificationService, user)
