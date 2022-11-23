@@ -120,7 +120,7 @@ export const time = {
 }
 export const timeResponse = {
   description: 'Время доставки. Не может быть меньше часа от текущего времени',
-  type: 'integer',
+  type: ['integer', 'null'],
   errorMessage: {
     type: 'Временная метка должна быть целым числом'
   }
