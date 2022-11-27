@@ -15,6 +15,8 @@ import {OrderNotificationService} from '@app/order/OrderNotificationService'
 import {OrderTelegramRepository} from '@app/order/OrderTelegramRepository'
 import {OrderTelegramModel} from '@app/order/OrderTelegramModel'
 import {DiscountService} from '@app/order/DiscountService'
+import {OrderTelegramMessageRepository} from '@app/order/OrderTelegramMessageRepository'
+import {OrderTelegramMessageModel} from '@app/order/OrderTelegramMessageModel'
 
 
 class Order {
@@ -49,6 +51,7 @@ export async function initOrder(
   const orderNotificationService = new OrderNotificationService(
     notification.service,
     new OrderTelegramRepository(OrderTelegramModel),
+    new OrderTelegramMessageRepository(OrderTelegramMessageModel),
     telegram
   )
   const service = new OrderService(

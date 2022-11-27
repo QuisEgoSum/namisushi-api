@@ -5,6 +5,8 @@ import {OrderUtils} from '@app/order/OrderUtils'
 import {OrderTelegramRepository} from '@app/order/OrderTelegramRepository'
 import {Telegram} from '../../server/telegram/Telegram'
 import {Types} from 'mongoose'
+import {OrderTelegramMessageRepository} from '@app/order/OrderTelegramMessageRepository'
+import {or} from 'ajv/dist/compile/codegen'
 
 
 export class OrderNotificationService {
@@ -12,6 +14,7 @@ export class OrderNotificationService {
   constructor(
     private readonly notificationService: NotificationService,
     private readonly telegramRepository: OrderTelegramRepository,
+    private readonly telegramMessageRepository: OrderTelegramMessageRepository,
     private readonly telegram: Telegram
   ) {}
 
@@ -26,7 +29,12 @@ export class OrderNotificationService {
         }
       }
     )
+    if (!telegramMessages.length) {
+      return
+    }
     const promises = []
+    const messageContent = telegramMessages[0].messages[telegramMessages[0].messages.length - 1].message
+    await this.telegramMessageRepository.create({orderId: order._id, message: messageContent})
     for (const message of telegramMessages) {
       const lastMessage = message.messages[message.messages.length - 1]
       promises.push(
@@ -34,8 +42,7 @@ export class OrderNotificationService {
           {
             chatId: message.chatId,
             orderId: order._id,
-            messageId: lastMessage.id,
-            message: lastMessage.message
+            messageId: lastMessage.id
           }
         )
       )
@@ -47,7 +54,7 @@ export class OrderNotificationService {
     await this.notificationService.updateStatus(String(clientId), orderId, condition)
     const orderIdObjectId = new Types.ObjectId(orderId)
     const [message, messages] = await Promise.all([
-      this.telegramRepository.findOne({orderId: orderIdObjectId}, {message: 1}),
+      this.telegramMessageRepository.findOne({orderId: orderIdObjectId}, {message: 1}),
       this.telegramRepository.find({orderId: orderIdObjectId}, {messageId: 1, chatId: 1})
     ])
     if (message) {

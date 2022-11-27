@@ -6,7 +6,6 @@ export interface IOrderTelegram {
   chatId: number
   messageId: number
   orderId: Types.ObjectId
-  message: string
 }
 
 
@@ -15,7 +14,6 @@ const OrderTelegramSchema = new Schema<IOrderTelegram>(
     chatId: Number,
     messageId: Number,
     orderId: Types.ObjectId,
-    message: String
   },
   {
     versionKey: false,
@@ -28,5 +26,5 @@ const OrderTelegramSchema = new Schema<IOrderTelegram>(
 export const OrderTelegramModel = model<IOrderTelegram>(
   'OrderTelegram',
   OrderTelegramSchema,
-  'order_telegram_messages'
+  'order_telegram_sent'
 )

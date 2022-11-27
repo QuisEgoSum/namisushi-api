@@ -1,6 +1,7 @@
 import {Telegram} from '../../server/telegram/Telegram'
 import {OrderCondition, OrderTelegramEvent} from '@app/order/enums'
 import {OrderService} from '@app/order/OrderService'
+import {or} from 'ajv/dist/compile/codegen'
 
 
 const TELEGRAM_EVENT_TO_UPDATE_CONDITION: [OrderTelegramEvent, OrderCondition][] = [
