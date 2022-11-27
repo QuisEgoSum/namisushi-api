@@ -57,6 +57,13 @@ export const swagger: Record<string, any> = {
           DocsTags.CONFIG,
           DocsTags.CONFIG_ADMIN
         ]
+      },
+      {
+        name: 'Новости',
+        tags: [
+          DocsTags.NEWS,
+          DocsTags.NEWS_ADMIN
+        ]
       }
     ]
   }

@@ -23,7 +23,8 @@ const NewsSchema = new Schema<INews>(
     contentHtml: String,
     isDeleted: {
       type: Boolean,
-      select: false
+      select: false,
+      default: false
     },
     updatedAt: Number,
     createdAt: Number

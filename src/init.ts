@@ -11,6 +11,7 @@ import {initFile} from '@app/file'
 import {initConfig} from '@app/config'
 import {loadModels} from '@utils/loader'
 import {logger} from '@logger'
+import {initNews} from '@app/news'
 
 
 export async function initApp() {
@@ -26,12 +27,14 @@ export async function initApp() {
     file,
     docs,
     user,
-    applicationConfig
+    applicationConfig,
+    news
   ] = await Promise.all([
     initFile(),
     initDocs(),
     initUser(),
-    initConfig()
+    initConfig(),
+    initNews()
   ])
 
   const telegram = await createTelegramBot(user)
@@ -50,7 +53,8 @@ export async function initApp() {
         product.router,
         order.router,
         file.router,
-        applicationConfig.router
+        applicationConfig.router,
+        news.router
       ],
       swagger: docs.swagger,
       securityOptions: {
