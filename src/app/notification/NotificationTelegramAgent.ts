@@ -1,6 +1,6 @@
 import type {UserService} from '@app/user/UserService'
 import type {ExtraReplyMessage} from 'telegraf/typings/telegram-types'
-import {Telegram} from '../../server/telegram/Telegram'
+import {Telegram, TelegramMessageReplacerOptions} from '../../server/telegram/Telegram'
 
 
 export class NotificationTelegramAgent {
@@ -12,9 +12,10 @@ export class NotificationTelegramAgent {
   private async sendMessages(
     ids: number[],
     messages: string[],
-    options: ExtraReplyMessage = {parse_mode: 'Markdown'}
+    options: ExtraReplyMessage = {parse_mode: 'Markdown'},
+    messageReplacerOptions?: TelegramMessageReplacerOptions
   ) {
-    return await this.telegram.sendMessage(ids, messages, options)
+    return await this.telegram.sendMessage(ids, messages, options, messageReplacerOptions)
   }
 
   public async sendAdminMessage(
@@ -25,8 +26,12 @@ export class NotificationTelegramAgent {
     return await this.sendMessages(recipientIds, messages, options)
   }
 
-  public async sendWatcherMessage(messages: string[]) {
+  public async sendWatcherMessage(
+    messages: string[],
+    options: ExtraReplyMessage = {parse_mode: 'Markdown'},
+    messageReplacerOptions?: TelegramMessageReplacerOptions
+  ) {
     const recipientIds = this.userService.getTelegramWatcherIds()
-    await this.sendMessages(recipientIds, messages)
+    await this.sendMessages(recipientIds, messages, options, messageReplacerOptions)
   }
 }

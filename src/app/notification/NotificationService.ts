@@ -59,7 +59,11 @@ export class NotificationService {
 
   private async errorHandler(level: 'FATAL' | 'ERROR', log: string): Promise<void> {
     try {
-      await this.telegram.sendWatcherMessage(NotificationMessageUtils.parseLog(level, log))
+      await this.telegram.sendWatcherMessage(
+        NotificationMessageUtils.parseLog(level, log),
+        {parse_mode: 'Markdown'},
+        {joinSeparator: '\n'}
+      )
     } catch (error) {
       logger.fatalOnlyStdout(error)
     }

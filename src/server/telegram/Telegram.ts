@@ -29,6 +29,11 @@ interface RegisterCallbackParams<T> {
   }
 }
 
+export interface TelegramMessageReplacerOptions {
+  joinSeparator?: string,
+  splitSeparators?: string[]
+}
+
 
 export class Telegram extends EventEmitter {
   private static readonly TELEGRAM_MAX_MESSAGE_LENGTH = 4096
@@ -131,8 +136,17 @@ export class Telegram extends EventEmitter {
     }
   }
 
-  async sendMessage(chatIds: number[], message: string | string[], options: ExtraReplyMessage): Promise<SentMessages[]> {
-    const messages = Telegram.messageReplacer(message)
+  async sendMessage(
+    chatIds: number[],
+    message: string | string[],
+    options: ExtraReplyMessage,
+    messageReplacerOptions: TelegramMessageReplacerOptions = {}
+  ): Promise<SentMessages[]> {
+    const messages = Telegram.messageReplacer(
+      message,
+      messageReplacerOptions.joinSeparator,
+      messageReplacerOptions.splitSeparators
+    )
     return await Promise.all(
       chatIds.map(
         chatId => this._sendMessages(chatId, messages, options)
