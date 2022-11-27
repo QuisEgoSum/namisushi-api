@@ -35,9 +35,9 @@ export class DiscountService {
     if (!order.delivery) {
       discounts.push({type: OrderDiscount.WITHOUT_DELIVERY, percent: this.getDiscountPercent(OrderDiscount.WITHOUT_DELIVERY)})
     }
-    if (this.isWeekday(order.time)) {
-      discounts.push({type: OrderDiscount.WEEKDAY, percent: this.getDiscountPercent(OrderDiscount.WEEKDAY)})
-    }
+    // if (this.isWeekday(order.time)) {
+    //   discounts.push({type: OrderDiscount.WEEKDAY, percent: this.getDiscountPercent(OrderDiscount.WEEKDAY)})
+    // }
     order.discount = discounts
       .sort((a, b) =>  a.percent > b.percent ? -1 : 1)[0] || null
     if (order.discount) {
