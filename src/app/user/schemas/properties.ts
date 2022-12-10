@@ -23,14 +23,23 @@ export const avatar = {
   example: `#=${v4()}`
 }
 export const mEmail = {
-  description: 'Поиск по частичному совпадению email',
+  description: 'Поиск по частичному совпадению `email`',
   type: 'string',
   minLength: 1,
-  maxLength: 1024,
-  errorMessage: {
-    minLength: 'Specify at least 1 character to search by email',
-    maxLength: 'Email address cannot be longer than 1024 characters'
-  }
+  maxLength: 1024
+}
+export const mPhone = {
+  description: 'Поиск по частичному совпадению `phone`. Часть номера телефона с маской',
+  type: 'string',
+  minLength: 1,
+  maxLength: 16,
+  transform: ['trim']
+}
+export const mName = {
+  description: 'Поиск по частичному совпадению `name`',
+  type: 'string',
+  minLength: 1,
+  maxLength: 128
 }
 export const allowedChangeRole = {
   type: 'string',

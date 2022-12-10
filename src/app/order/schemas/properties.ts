@@ -58,8 +58,21 @@ export const username = {
     maxLength: 'Имя пользователя не должно превышать 64 символа'
   }
 }
+export const mPhone = {
+  description: 'Поиск по частичному совпадению `phone`. Часть номера телефона с маской',
+  type: 'string',
+  minLength: 1,
+  maxLength: 16,
+  transform: ['trim']
+}
+export const mUsername = {
+  description: 'Поиск по частичному совпадению `username`',
+  type: 'string',
+  minLength: 1,
+  maxLength: 128
+}
 export const deliveryCost = {
-  description: 'Стоимость доставки заказа, null если стоимость невозможно расчитать',
+  description: 'Стоимость доставки заказа, `null` если стоимость невозможно расчитать',
   type: ['integer', 'null'],
   minimum: 0,
   errorMessage: {

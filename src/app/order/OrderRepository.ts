@@ -5,6 +5,7 @@ import {DataList} from '@common/data'
 import {FilterQuery, Types} from 'mongoose'
 import type {IOrder} from '@app/order/OrderModel'
 import type {RawPopulatedOrder} from '@app/order/schemas/entities'
+import {escapeStringRegexp} from '@libs/alg/string'
 
 
 export class OrderRepository extends BaseRepository<IOrder> {
@@ -57,6 +58,12 @@ export class OrderRepository extends BaseRepository<IOrder> {
     }
     if (query.fIsTestOrder) {
       filter.isTestOrder = true
+    }
+    if (query.mUsername) {
+      filter.username = new RegExp(escapeStringRegexp(query.mUsername), 'i')
+    }
+    if (query.mPhone) {
+      filter.phone = new RegExp(escapeStringRegexp(query.mPhone), 'i')
     }
     return this.findPage(
       {limit: query.limit, page: query.page},

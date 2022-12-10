@@ -48,6 +48,7 @@ export const CreateCategory = {
 export interface UpdateCategory {
   title: string
   visible: boolean
+  productIds: string[]
 }
 
 export const UpdateCategory = {
@@ -55,7 +56,8 @@ export const UpdateCategory = {
   type: 'object',
   properties: {
     title,
-    visible
+    visible,
+    productIds
   },
   additionalProperties: false
 }

@@ -4,7 +4,7 @@ import {
   savedEmail,
   savedPhone, name, phone,
   allowedChangeRole, savedName,
-  otpCode, username, password, savedUsername
+  otpCode, username, password, savedUsername, mPhone, mName
 } from './properties'
 import {UserRole} from '@app/user/UserRole'
 import {QueryPageLimit, QueryPageNumber, QuerySortDirection} from '@common/schemas/query'
@@ -123,11 +123,13 @@ export const CreateUser = {
 }
 
 export interface FindUsersQueryAdmin {
-  fRole?: UserRole,
-  mEmail?: string,
+  fRole?: UserRole
+  mEmail?: string
   sCreatedAt: SortDirection,
-  page: number,
+  page: number
   limit: number
+  mPhone?: string
+  mName?: string
 }
 
 export const FindUsersQueryAdmin = {
@@ -136,6 +138,8 @@ export const FindUsersQueryAdmin = {
   properties: {
     fRole: role,
     mEmail: mEmail,
+    mPhone: mPhone,
+    mName: mName,
     sCreatedAt: new QuerySortDirection().setDefault('desc'),
     page: new QueryPageNumber().setDefault(1),
     limit: new QueryPageLimit().setDefault(10)

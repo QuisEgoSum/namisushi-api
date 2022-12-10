@@ -3,7 +3,7 @@ import {
   address, clientId, condition,
   cost, createdAt, delivery,
   deliveryCalculateManually,
-  deliveryCost, discountPercent, discountType, isTestOrder, number,
+  deliveryCost, discountPercent, discountType, isTestOrder, mUsername, mPhone, number,
   numberOfProducts, phone, productCost,
   productId, productsSum, productWeight, time, timeResponse, updatedAt,
   username, variantId, weight
@@ -310,6 +310,8 @@ export interface FindQuery {
 export interface FindQueryAdmin extends FindQuery {
   fClientId?: string
   fIsTestOrder?: boolean
+  mPhone?: string
+  mUsername?: string
 }
 
 export const FindQuery = {
@@ -333,7 +335,9 @@ export const FindQueryAdmin = {
     sCreatedAt: new QuerySortDirection().setDefault("desc"),
     fClientId: clientId,
     fCondition: condition,
-    fIsTestOrder: isTestOrder
+    fIsTestOrder: isTestOrder,
+    mPhone: mPhone,
+    mUsername: mUsername
   },
   additionalProperties: false
 }

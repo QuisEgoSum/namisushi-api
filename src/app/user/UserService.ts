@@ -129,6 +129,12 @@ export class UserService extends BaseService<IUser, UserRepository, typeof error
     if (query.mEmail) {
       filter.email = new RegExp(escapeStringRegexp(query.mEmail), 'i')
     }
+    if (query.mName) {
+      filter.name = new RegExp(escapeStringRegexp(query.mName), 'i')
+    }
+    if (query.mPhone) {
+      filter.phone = new RegExp(escapeStringRegexp(query.mPhone), 'i')
+    }
     return this.repository.findPage(
       {
         limit: query.limit,
